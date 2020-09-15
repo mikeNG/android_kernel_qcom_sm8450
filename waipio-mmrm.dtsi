@@ -1,0 +1,26 @@
+#include <dt-bindings/clock/qcom,camcc-waipio.h>
+#include <dt-bindings/clock/qcom,videocc-waipio.h>
+#include <dt-bindings/clock/qcom,dispcc-waipio.h>
+
+&soc {
+	msm_mmrm: qcom,mmrm {
+		compatible = "qcom,msm-mmrm", "qcom,waipio-mmrm";
+		status = "ok";
+
+		/* MM Rail info */
+		mm-rail-corners = "svsl1", "nom", "turbo";
+		mm-rail-fact-volt = <44827 49283 54526>;
+
+		/* Scaling factors */
+		scaling-fact-dyn = <54133 66345 82613>;
+		scaling-fact-leak = <499319 589741 716198>;
+
+		/* Client info */
+		mmrm-client-info =
+			<0x1 CAM_CC_IFE_0_CLK_SRC 881 249692>,
+			<0x1 CAM_CC_IFE_1_CLK_SRC 881 249692>,
+			<0x2 VIDEO_CC_MVS1_CLK_SRC 291 199229>,
+			<0x3 DISP_CC_MDSS_MDP_CLK_SRC 400 183501>,
+			<0x4 VIDEO_CC_MVS0_CLK_SRC 582 838861>;
+	};
+};
