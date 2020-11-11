@@ -742,6 +742,7 @@
 					"CCI_I2C_CLK0",
 					"CCI_I2C_DATA1",
 					"CCI_I2C_CLK1";
+		status = "ok";
 
 		i2c_freq_100Khz_cci0: qcom,i2c_standard_mode {
 			hw-thigh = <201>;
@@ -802,8 +803,6 @@
 			cci-clk-src = <37500000>;
 			status = "ok";
 		};
-
-		status = "ok";
 	};
 
 	cam_cci1: qcom,cci1@ac16000 {
@@ -836,6 +835,7 @@
 					"CCI_I2C_CLK2",
 					"CCI_I2C_DATA3",
 					"CCI_I2C_CLK3";
+		status = "ok";
 
 		i2c_freq_100Khz_cci1: qcom,i2c_standard_mode {
 			hw-thigh = <201>;
@@ -896,8 +896,6 @@
 			cci-clk-src = <37500000>;
 			status = "ok";
 		};
-
-		status = "ok";
 	};
 
 	qcom,cam_smmu {
@@ -953,12 +951,6 @@
 			};
 		};
 
-		msm_cam_icp_fw {
-			compatible = "qcom,msm-cam-smmu-fw-dev";
-			label="icp";
-			memory-region = <&pil_camera_mem>;
-		};
-
 		msm_cam_smmu_icp {
 			compatible = "qcom,msm-cam-smmu-cb";
 			iommus = <&apps_smmu 0x2020 0x420>,
@@ -969,8 +961,8 @@
 				<&apps_smmu 0x2060 0x420>,
 				<&apps_smmu 0x2440 0x420>,
 				<&apps_smmu 0x2460 0x420>,
-				<&apps_smmu 0x2101 0x400>,
-				<&apps_smmu 0x2501 0x400>,
+				<&apps_smmu 0x2100 0x420>,
+				<&apps_smmu 0x2500 0x420>,
 				<&apps_smmu 0x2080 0x400>,
 				<&apps_smmu 0x2480 0x400>,
 				<&apps_smmu 0x2120 0x420>,
@@ -1026,9 +1018,10 @@
 				<&apps_smmu 0x24C0 0x0400>,
 				<&apps_smmu 0x20A0 0x0400>,
 				<&apps_smmu 0x24A0 0x0400>;
-			cam-smmu-label = "cpas-cdm";
+			cam-smmu-label = "cpas-cdm", "rt-cdm";
 			qcom,iommu-dma-addr-pool = <0x100000 0xffe00000>;
 			dma-coherent-hint-cached;
+			multiple-client-devices;
 			cpas_cdm_iova_mem_map: iova-mem-map {
 				iova-mem-region-io {
 					/* IO region is approximately 4.0 GB */
@@ -1132,6 +1125,7 @@
 			"ipe0", "cpas-cdm0", "rt-cdm0", "rt-cdm1", "rt-cdm2",
 			"cam-cdm-intf0", "bps0", "icp0", "jpeg-dma0", "jpeg-enc0", "tpg0",
 			"tpg1", "tpg2";
+		status = "ok";
 
 		camera-bus-nodes {
 			level3-nodes {
@@ -1334,7 +1328,7 @@
 					node-name = "ife2-ubwc-wr";
 					client-name = "ife2";
 					traffic-data =
-					<CAM_CPAS_PATH_DATA_IFE_UBWC;
+					<CAM_CPAS_PATH_DATA_IFE_UBWC>;
 					traffic-transaction-type =
 					<CAM_CPAS_TRANSACTION_WRITE>;
 					constituent-paths =
@@ -1808,28 +1802,8 @@
 					parent-node = <&level1_nrt0_rd1>;
 				};
 
-				ipe0_cdm_all_rd: ipe0-cdm-all-rd {
-					cell-index = <55>;
-					node-name = "ipe0-cdm-all-rd";
-					client-name = "ipe0-cdm";
-					traffic-data = <CAM_CPAS_PATH_DATA_ALL>;
-					traffic-transaction-type =
-					<CAM_CPAS_TRANSACTION_READ>;
-					parent-node = <&level1_nrt0_rd1>;
-				};
-
-				bps0_cdm_all_rd: bps0-cdm-all-rd {
-					cell-index = <56>;
-					node-name = "bps0-cdm-all-rd";
-					client-name = "bps0-cdm";
-					traffic-data = <CAM_CPAS_PATH_DATA_ALL>;
-					traffic-transaction-type =
-					<CAM_CPAS_TRANSACTION_READ>;
-					parent-node = <&level1_nrt0_rd1>;
-				};
-
 				icp0_all_rd: icp0-all-rd {
-					cell-index = <57>;
+					cell-index = <55>;
 					node-name = "icp0-all-rd";
 					client-name = "icp0";
 					traffic-data = <CAM_CPAS_PATH_DATA_ALL>;
@@ -1839,8 +1813,6 @@
 				};
 			};
 		};
-
-		status = "ok";
 	};
 
 	qcom,cam-cdm-intf {
@@ -1948,7 +1920,7 @@
 		reg-names = "rt-cdm2";
 		reg-cam-base = <0x27000>;
 		interrupt-names = "rt-cdm2";
-		interrupts = <GIC_SPI 643 IRQ_TYPE_EDGE_RISING>;
+		interrupts = <GIC_SPI 642 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
 		clock-names =
@@ -2067,9 +2039,7 @@
 			"csid_clk_src",
 			"csid_clk",
 			"cphy_rx_clk_src",
-			"csiphy_rx_clk",
-			"cam_cc_fast_ahb_clk_src",
-			"cpas_fast_ahb";
+			"csiphy_rx_clk";
 		clocks =
 			<&clock_camcc CAM_CC_CSID_CLK_SRC>,
 			<&clock_camcc CAM_CC_CSID_CLK>,
@@ -2218,7 +2188,7 @@
 			<0xac62000 0x64000>;
 		reg-cam-base = <0xbb000 0xb6000 0x62000>;
 		interrupt-names = "csid";
-		interrupts = <GIC_SPI 641 IRQ_TYPE_EDGE_RISING>;
+		interrupts = <GIC_SPI 640 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
 		clock-names =
@@ -2253,7 +2223,7 @@
 			<0xac62000 0x64000>;
 		reg-cam-base = <0x80000 0x19000 0x62000>;
 		interrupt-names = "ife";
-		interrupts = <GIC_SPI 642 IRQ_TYPE_EDGE_RISING>;
+		interrupts = <GIC_SPI 641 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc", "ife2";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
 		ife2-supply = <&cam_cc_ife_2_gdsc>;
@@ -2270,11 +2240,11 @@
 			<&clock_camcc CAM_CC_IFE_2_CLK>,
 			<&clock_camcc CAM_CC_CPAS_IFE_2_CLK>;
 		clock-rates =
-			<100000000 432000000 0 0>,
-			<200000000 594000000 0 0>,
-			<300000000 675000000 0 0>,
-			<400000000 785000000 0 0>,
-			<400000000 785000000 0 0>;
+			<100000000 0 432000000 0 0>,
+			<200000000 0 594000000 0 0>,
+			<300000000 0 675000000 0 0>,
+			<400000000 0 785000000 0 0>,
+			<400000000 0 785000000 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
 		src-clock-name = "ife_2_clk_src";
@@ -2543,6 +2513,7 @@
 		num-bps = <1>;
 		status = "ok";
 		icp_pc_en;
+		icp_use_pil;
 		ipe_bps_pc_en;
 	};
 
@@ -2557,6 +2528,7 @@
 		interrupts = <GIC_SPI 463 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		memory-region = <&camera_mem>;
 		clock-names =
 			"icp_clk_src",
 			"icp_clk";
@@ -2574,11 +2546,12 @@
 		src-clock-name = "icp_clk_src";
 		fw_name = "CAMERA_ICP.elf";
 		ubwc-ipe-fetch-cfg = <0x707b 0x7083>;
-		/* TO-DO write cfg redundant for BUS 2.0 architecture*/
+		//TO-DO write cfg redundant for BUS 2.0 architecture
 		ubwc-ipe-write-cfg = <0x161ef 0x1620f>;
 		ubwc-bps-fetch-cfg = <0x707b 0x7083>;
-		/* TO-DO write cfg redundant for BUS 2.0 architecture*/
+		//TO-DO write cfg redundant for BUS 2.0 architecture
 		ubwc-bps-write-cfg = <0x161ef 0x1620f>;
+		qos-val = <0x00000A0A>;
 		status = "ok";
 	};
 
@@ -2598,7 +2571,7 @@
 			"ipe_nps_fast_ahb_clk",
 			"ipe_pps_fast_ahb_clk",
 			"ipe_nps_clk_src",
-			"ipe_nps_clk";
+			"ipe_nps_clk",
 			"ipe_pps_clk",
 			"cam_cc_cpas_ipe_nps_clk";
 		clocks =

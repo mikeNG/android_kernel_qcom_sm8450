@@ -307,11 +307,11 @@
 		compatible = "qcom,eeprom";
 		cam_vio-supply = <&pm8008j_l3>;
 		cam_vana-supply = <&pm8008i_l3>;
-		cam_vana1-supply = <&pm8008j_l4>;
+		cam_v_custom1-supply = <&pm8008j_l4>;
 		cam_vdig-supply = <&pm8008j_l1>;
 		cam_clk-supply = <&cam_cc_titan_top_gdsc>;
 		cam_vaf-supply = <&pm8008i_l7>;
-		regulator-names = "cam_vio", "cam_vana", "cam_vana1",
+		regulator-names = "cam_vio", "cam_vana", "cam_v_custom1",
 			"cam_vdig", "cam_clk", "cam_vaf";
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <1800000 2704000 1704000 1000000 0 2704000>;
@@ -407,10 +407,10 @@
 		cell-index = <6>;
 		compatible = "qcom,eeprom";
 		cam_vio-supply = <&pm8008j_l3>;
-		cam_vdig-supply = <&pm8008j_l5>;
+		cam_vana-supply = <&pm8008j_l5>;
 		cam_clk-supply = <&cam_cc_titan_top_gdsc>;
-		cam_vana-supply = <&pm8008j_l2>;
-		regulator-names = "cam_vio", "cam_vdig","cam_clk", "cam_vana";
+		cam_vdig-supply = <&pm8008j_l2>;
+		regulator-names = "cam_vio", "cam_vana","cam_clk", "cam_vdig";
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <1800000 2704000 0 952000>;
 		rgltr-max-voltage = <1800000 2896000 0 1144000>;
@@ -448,11 +448,11 @@
 		led-flash-src = <&led_flash_triple_rear_aux2>;
 		cam_vio-supply = <&pm8008j_l3>;
 		cam_vana-supply = <&pm8008i_l3>;
-		cam_vana1-supply = <&pm8008j_l4>;
+		cam_v_custom1-supply = <&pm8008j_l4>;
 		cam_vdig-supply = <&pm8008j_l1>;
 		cam_clk-supply = <&cam_cc_titan_top_gdsc>;
 		cam_bob-supply = <&pm8350c_bob>;
-		regulator-names = "cam_vio", "cam_vana", "cam_vana1",
+		regulator-names = "cam_vio", "cam_vana", "cam_v_custom1",
 			"cam_vdig", "cam_clk", "cam_bob";
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <1800000 2704000 1704000 1000000 0 3008000>;
@@ -564,11 +564,11 @@
 		sensor-position-yaw = <0>;
 		eeprom-src = <&eeprom_aon>;
 		cam_vio-supply = <&pm8008j_l3>;
-		cam_vdig-supply = <&pm8008j_l5>;
+		cam_vana-supply = <&pm8008j_l5>;
 		cam_clk-supply = <&cam_cc_titan_top_gdsc>;
-		cam_vana-supply = <&pm8008j_l2>;
+		cam_vdig-supply = <&pm8008j_l2>;
 		cam_bob-supply = <&pm8350c_bob>;
-		regulator-names = "cam_vio", "cam_vdig", "cam_clk", "cam_vana",
+		regulator-names = "cam_vio", "cam_vana", "cam_clk", "cam_vdig",
 			"cam_bob";
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <1800000 2704000 0 952000 3008000>;
