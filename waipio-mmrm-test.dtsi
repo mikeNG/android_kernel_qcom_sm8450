@@ -1,0 +1,24 @@
+#include <dt-bindings/clock/qcom,camcc-waipio.h>
+#include <dt-bindings/clock/qcom,videocc-waipio.h>
+#include <dt-bindings/clock/qcom,dispcc-waipio.h>
+
+&soc {
+	msm_mmrm_test: qcom,mmrm-test {
+		compatible = "qcom,msm-mmrm-test", "qcom,waipio-mmrm-test";
+		status = "ok";
+
+		/* Clock info */
+		clock-names =
+			"cam_cc_ife_0_clk_src",
+			"cam_cc_ife_1_clk_src",
+			"video_cc_mvs1_clk_src",
+			"disp_cc_mdss_mdp_clk_src",
+			"video_cc_mvs0_clk_src";
+		clocks =
+			<&clock_camcc CAM_CC_IFE_0_CLK_SRC>,
+			<&clock_camcc CAM_CC_IFE_1_CLK_SRC>,
+			<&clock_videocc VIDEO_CC_MVS1_CLK_SRC>,
+			<&clock_dispcc DISP_CC_MDSS_MDP_CLK_SRC>,
+			<&clock_videocc VIDEO_CC_MVS0_CLK_SRC>;
+	};
+};
