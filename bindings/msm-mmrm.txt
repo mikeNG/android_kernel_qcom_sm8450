@@ -6,13 +6,13 @@ MMRM
 Required properties:
 - compatible : one of:
 	- "qcom,msm-mmrm"
-        - "qcom,waipio-mmrm" : Invokes driver specific data for Waipio.
+	- "qcom,waipio-mmrm" : Invokes driver specific data for Waipio.
 Optional properties:
 - mm-rail-corners : an array of voltage corner names supported by driver.
 - mm-rail-fact-volt : an array of voltage coner factors corresponding to
   voltage corners supported by driver for a chipset.
 - scaling-fact-dyn : an array of dynamic scaling factors corresponding to
-  voltage corners supported by driver for a chipset. 
+  voltage corners supported by driver for a chipset.
 - scaling-fact-leak: an array of leakage scaling factors corresponding to
   voltage corners supported by driver for a chipset.
 - client-info : an array of information for each clock source. Each entry
@@ -29,5 +29,5 @@ Example:
 		scaling-fact-dyn = <54133 66345 82613>;
 		scaling-fact-leak = <499319 589741 716198>;
 		client-info =
-			<0x4 VIDEO_CC_MVS0_CLK_SRC 582 838861>,
+			<0x4 VIDEO_CC_MVS0_CLK_SRC 28970189 582288>;
 	};
