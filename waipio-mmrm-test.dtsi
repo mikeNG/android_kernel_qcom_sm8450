@@ -1,11 +1,7 @@
-#include <dt-bindings/clock/qcom,camcc-waipio.h>
-#include <dt-bindings/clock/qcom,videocc-waipio.h>
-#include <dt-bindings/clock/qcom,dispcc-waipio.h>
-
 &soc {
 	msm_mmrm_test: qcom,mmrm-test {
 		compatible = "qcom,msm-mmrm-test", "qcom,waipio-mmrm-test";
-		status = "ok";
+		status = "disable";
 
 		/* Clock info */
 		clock-names =
