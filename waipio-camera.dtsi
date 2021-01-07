@@ -901,6 +901,7 @@
 	qcom,cam_smmu {
 		compatible = "qcom,msm-cam-smmu", "simple-bus";
 		status = "ok";
+		force_cache_allocs;
 
 		msm_cam_smmu_ife {
 			compatible = "qcom,msm-cam-smmu-cb";
@@ -913,7 +914,7 @@
 				<&apps_smmu 0xC40 0x460>,
 				<&apps_smmu 0xC60 0x460>;
 			qcom,iommu-dma-addr-pool = <0x100000 0xffe00000>;
-			dma-coherent-hint-cached;
+			dma-coherent;
 			cam-smmu-label = "ife", "sfe";
 			multiple-client-devices;
 			ife_iova_mem_map: iova-mem-map {
@@ -936,7 +937,7 @@
 				<&apps_smmu 0x24E0 0x400>;
 			cam-smmu-label = "jpeg";
 			qcom,iommu-dma-addr-pool = <0x100000 0xffe00000>;
-			dma-coherent-hint-cached;
+			dma-coherent;
 			jpeg_iova_mem_map: iova-mem-map {
 				/* IO region is approximately 4.0 GB */
 				iova-mem-region-io {
@@ -970,7 +971,7 @@
 			cam-smmu-label = "icp";
 			qcom,iommu-dma-addr-pool = <0x10c00000 0xee300000>;
 			iova-region-discard = <0xe0000000 0x800000>;
-			dma-coherent-hint-cached;
+			dma-coherent;
 			icp_iova_mem_map: iova-mem-map {
 				iova-mem-region-shared {
 					/* Shared region is 261MB long */
@@ -1020,7 +1021,7 @@
 				<&apps_smmu 0x24A0 0x0400>;
 			cam-smmu-label = "cpas-cdm", "rt-cdm";
 			qcom,iommu-dma-addr-pool = <0x100000 0xffe00000>;
-			dma-coherent-hint-cached;
+			dma-coherent;
 			multiple-client-devices;
 			cpas_cdm_iova_mem_map: iova-mem-map {
 				iova-mem-region-io {
@@ -2530,26 +2531,32 @@
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
 		memory-region = <&camera_mem>;
 		clock-names =
+			"icp_ahb_clk_src",
+			"icp_ahb_clk",
 			"icp_clk_src",
-			"icp_clk";
+			"icp_clk",
+			"camcc_debug_clk_src",
+			"camcc_debug_clk";
 		clocks =
+			<&clock_camcc CAM_CC_SLOW_AHB_CLK_SRC>,
+			<&clock_camcc CAM_CC_ICP_AHB_CLK>,
 			<&clock_camcc CAM_CC_ICP_CLK_SRC>,
-			<&clock_camcc CAM_CC_ICP_CLK>;
+			<&clock_camcc CAM_CC_ICP_CLK>,
+			<&clock_camcc CAM_CC_XO_CLK_SRC>,
+			<&clock_camcc CAM_CC_QDSS_DEBUG_XO_CLK>;
 		clock-rates =
-			<400000000 0>,
-			<480000000 0>,
-			<600000000 0>,
-			<600000000 0>,
-			<600000000 0>;
+			<800000000 0 400000000 0 19200000 0>,
+			<800000000 0 480000000 0 19200000 0>,
+			<800000000 0 600000000 0 19200000 0>,
+			<800000000 0 600000000 0 19200000 0>,
+			<800000000 0 600000000 0 19200000 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
 		src-clock-name = "icp_clk_src";
-		fw_name = "CAMERA_ICP.elf";
+		fw_name = "CAMERA_ICP";
 		ubwc-ipe-fetch-cfg = <0x707b 0x7083>;
-		//TO-DO write cfg redundant for BUS 2.0 architecture
 		ubwc-ipe-write-cfg = <0x161ef 0x1620f>;
 		ubwc-bps-fetch-cfg = <0x707b 0x7083>;
-		//TO-DO write cfg redundant for BUS 2.0 architecture
 		ubwc-bps-write-cfg = <0x161ef 0x1620f>;
 		qos-val = <0x00000A0A>;
 		status = "ok";
