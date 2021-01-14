@@ -64,5 +64,18 @@
 			virtual-addr-pool = <0x25800000 0xba800000>;
 			dma-coherent-hint-cached;
 		};
+
+		secure_non_pixel_cb {
+			compatible = "qcom,msm-vidc,context-bank";
+			label = "venus_sec_non_pixel";
+			iommus = <&apps_smmu 0x2104 0x0400>;
+			qcom,iommu-dma-addr-pool = <0x01000000 0x24800000>;
+			qcom,iommu-faults = "non-fatal";
+			qcom,iommu-pagetable = "LLC";
+			qcom,iommu-vmid = <0xB>; /* VMID_CP_NON_PIXEL */
+			buffer-types = <0x480>;
+			virtual-addr-pool = <0x01000000 0x24800000>;
+			qcom,secure-context-bank;
+		};
 	};
 };
