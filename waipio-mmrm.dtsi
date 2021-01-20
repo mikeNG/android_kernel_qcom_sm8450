@@ -5,11 +5,11 @@
 
 		/* MM Rail info */
 		mm-rail-corners = "svsl1", "nom", "turbo";
-		mm-rail-fact-volt = <44827 49283 54526>;
+		mm-rail-fact-volt = <44827 49152 54526>;
 
 		/* Scaling factors */
-		scaling-fact-dyn = <54133 66345 82613>;
-		scaling-fact-leak = <499319 589741 716198>;
+		scaling-fact-dyn = <66192 66192 66847>;
+		scaling-fact-leak = <609485 548537 463340>;
 
 		/* Client info */
 		mmrm-client-info =
