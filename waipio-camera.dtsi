@@ -902,6 +902,7 @@
 		compatible = "qcom,msm-cam-smmu", "simple-bus";
 		status = "ok";
 		force_cache_allocs;
+		need_shared_buffer_padding;
 
 		msm_cam_smmu_ife {
 			compatible = "qcom,msm-cam-smmu-cb";
