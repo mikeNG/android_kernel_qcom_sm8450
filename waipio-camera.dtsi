@@ -975,20 +975,20 @@
 			dma-coherent;
 			icp_iova_mem_map: iova-mem-map {
 				iova-mem-region-shared {
-					/* Shared region is 261MB long */
+					/* Shared region is 255MB long */
 					iova-region-name = "shared";
 					iova-region-start = <0x500000>;
-					iova-region-len = <0x10500000>;
+					iova-region-len = <0xFF00000>;
 					iova-region-id = <0x1>;
 					status = "ok";
 				};
 
-				iova-mem-region-secondary-heap {
-					/* Secondary heap region is 1MB long */
-					iova-region-name = "secheap";
-					iova-region-start = <0x10a00000>;
-					iova-region-len = <0x100000>;
-					iova-region-id = <0x4>;
+				iova-mem-region-fwuncached-region {
+					/* FW uncached region is 7MB long */
+					iova-region-name = "fw_uncached";
+					iova-region-start = <0x10400000>;
+					iova-region-len = <0x700000>;
+					iova-region-id = <0x6>;
 					status = "ok";
 				};
 
