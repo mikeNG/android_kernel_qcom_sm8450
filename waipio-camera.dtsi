@@ -540,7 +540,7 @@
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
-		rgltr-load-current = <0 54700 102000>;
+		rgltr-load-current = <0 59400 147000>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy0_clk",
 			"csi0phytimer_clk_src",
@@ -571,7 +571,7 @@
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
-		rgltr-load-current = <0 54700 102000>;
+		rgltr-load-current = <0 59400 147000>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy1_clk",
 			"csi1phytimer_clk_src",
@@ -603,7 +603,7 @@
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
-		rgltr-load-current = <0 54700 102000>;
+		rgltr-load-current = <0 59400 147000>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy2_clk",
 			"csi2phytimer_clk_src",
@@ -634,7 +634,7 @@
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
-		rgltr-load-current = <0 54700 102000>;
+		rgltr-load-current = <0 59400 147000>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy3_clk",
 			"csi3phytimer_clk_src",
@@ -665,7 +665,7 @@
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
-		rgltr-load-current = <0 54700 102000>;
+		rgltr-load-current = <0 59400 147000>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy4_clk",
 			"csi4phytimer_clk_src",
@@ -696,7 +696,7 @@
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
-		rgltr-load-current = <0 54700 102000>;
+		rgltr-load-current = <0 59400 147000>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy5_clk",
 			"csi5phytimer_clk_src",
@@ -1995,7 +1995,7 @@
 			<0xac62000 0x64000>;
 		reg-cam-base = <0xa6000 0x62000>;
 		interrupt-names = "sfe";
-		interrupts = <GIC_SPI 654 IRQ_TYPE_EDGE_RISING>;
+		interrupts = <GIC_SPI 653 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc", "sfe1";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
 		sfe1-supply = <&cam_cc_sfe_1_gdsc>;
