@@ -2569,8 +2569,7 @@
 		reg = <0xac42000 0x16000>;
 		reg-names = "ipe0_top";
 		reg-cam-base = <0x42000>;
-		regulator-names = "gdsc", "ipe0-vdd";
-		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		regulator-names = "ipe0-vdd";
 		ipe0-vdd-supply = <&cam_cc_ipe_0_gdsc>;
 		clock-names =
 			"cam_cc_slow_ahb_clk_src",
@@ -2612,8 +2611,7 @@
 		reg = <0xac2c000 0x7800>;
 		reg-names = "bps_top";
 		reg-cam-base = <0x2c000>;
-		regulator-names = "gdsc", "bps-vdd";
-		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		regulator-names = "bps-vdd";
 		bps-vdd-supply = <&cam_cc_bps_gdsc>;
 		clock-names =
 			"cam_cc_slow_ahb_clk_src",
