@@ -632,6 +632,11 @@ ACTUATOR MODULE
   Definition: should contain names of all regulators needed by this
 	actuator. i.e. "cam_vaf"
 
+- aon-user
+  Usage: optional
+  Value type: <boolean>
+  Definition: AON support detection
+
 - rgltr-cntrl-support
   Usage: optional
   Value type: <boolean>
@@ -810,6 +815,7 @@ Example:
          regulator-names = "cam_vio", "cam_vana", "cam_vdig",
                 "cam_clk", "cam_bob";
          rgltr-cntrl-support;
+	 aon-user;
          pwm-switch;
          rgltr-min-voltage = <0 2800000 1200000 0 3008000>;
          rgltr-max-voltage = <0 2800000 1200000 0 4000000>;
