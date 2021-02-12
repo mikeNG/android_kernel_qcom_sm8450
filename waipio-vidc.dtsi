@@ -59,7 +59,7 @@
 			label = "venus_ns";
 			iommus = <&apps_smmu 0x2180 0x0400>;
 			qcom,iommu-dma-addr-pool = <0x25800000 0xba800000>;
-			qcom,iommu-faults = "non-fatal";
+			qcom,iommu-faults = "non-fatal", "stall-disable";
 			qcom,iommu-pagetable = "LLC";
 			buffer-types = <0xfff>;
 			virtual-addr-pool = <0x25800000 0xba800000>;
@@ -71,7 +71,7 @@
 			label = "venus_sec_non_pixel";
 			iommus = <&apps_smmu 0x2184 0x0400>;
 			qcom,iommu-dma-addr-pool = <0x01000000 0x24800000>;
-			qcom,iommu-faults = "non-fatal";
+			qcom,iommu-faults = "non-fatal", "stall-disable";
 			qcom,iommu-pagetable = "LLC";
 			qcom,iommu-vmid = <0xB>; /* VMID_CP_NON_PIXEL */
 			buffer-types = <0x480>;
