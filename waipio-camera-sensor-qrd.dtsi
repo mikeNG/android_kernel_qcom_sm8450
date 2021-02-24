@@ -291,7 +291,7 @@
 
 &cam_cci1 {
 	actuator_triple_wide: qcom,actuator2 {
-		cell-index = <0>;
+		cell-index = <2>;
 		compatible = "qcom,actuator";
 		cci-master = <0>;
 		cam_vaf-supply = <&L7I>;
