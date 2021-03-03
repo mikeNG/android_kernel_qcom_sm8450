@@ -548,6 +548,7 @@
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
+		shared-clks = <1 0 0 0>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy0_clk",
 			"csi0phytimer_clk_src",
@@ -580,6 +581,7 @@
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
+		shared-clks = <1 0 0 0>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy1_clk",
 			"csi1phytimer_clk_src",
@@ -613,6 +615,7 @@
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
+		shared-clks = <1 0 0 0>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy2_clk",
 			"csi2phytimer_clk_src",
@@ -645,6 +648,7 @@
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
+		shared-clks = <1 0 0 0>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy3_clk",
 			"csi3phytimer_clk_src",
@@ -677,6 +681,7 @@
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
+		shared-clks = <1 0 0 0>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy4_clk",
 			"csi4phytimer_clk_src",
@@ -709,6 +714,7 @@
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
+		shared-clks = <1 0 0 0>;
 		clock-names = "cphy_rx_clk_src",
 			"csiphy5_clk",
 			"csi5phytimer_clk_src",
@@ -2023,6 +2029,7 @@
 		interrupts = <GIC_SPI 464 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		shared-clks = <1 0 0>;
 		clock-names =
 			"csid_clk_src",
 			"csid_clk",
@@ -2097,6 +2104,7 @@
 		interrupts = <GIC_SPI 466 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		shared-clks = <1 0 0>;
 		clock-names =
 			"csid_clk_src",
 			"csid_clk",
@@ -2171,6 +2179,7 @@
 		interrupts = <GIC_SPI 640 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		shared-clks = <1 0 0>;
 		clock-names =
 			"csid_clk_src",
 			"csid_clk",
@@ -2243,6 +2252,7 @@
 		interrupts = <GIC_SPI 468 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		shared-clks = <0 1 0 0 0 0>;
 		clock-names =
 			"ife_lite_ahb",
 			"ife_lite_csid_clk_src",
@@ -2280,6 +2290,7 @@
 		interrupts = <GIC_SPI 469 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		shared-clks = <0 0 0 1 0 0>;
 		clock-names =
 			"ife_lite_ahb",
 			"ife_lite_csid_clk",
@@ -2318,6 +2329,7 @@
 		interrupts = <GIC_SPI 359 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		shared-clks = <0 1 0 0 0 0>;
 		clock-names =
 			"ife_lite_ahb",
 			"ife_lite_csid_clk_src",
@@ -2355,6 +2367,7 @@
 		interrupts = <GIC_SPI 360 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		shared-clks = <0 0 0 1 0 0>;
 		clock-names =
 			"ife_lite_ahb",
 			"ife_lite_csid_clk",
@@ -2394,6 +2407,7 @@
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
 		interrupt-names = "tpg0";
 		interrupts = <GIC_SPI 413 IRQ_TYPE_EDGE_RISING>;
+		shared-clks = <1 0>;
 		clock-names =
 			"cphy_rx_clk_src",
 			"csid_csiphy_rx_clk";
@@ -2419,6 +2433,7 @@
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
 		interrupt-names = "tpg1";
 		interrupts = <GIC_SPI 416 IRQ_TYPE_EDGE_RISING>;
+		shared-clks = <1 0>;
 		clock-names =
 			"cphy_rx_clk_src",
 			"csid_csiphy_rx_clk";
@@ -2444,6 +2459,7 @@
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
 		interrupt-names = "tpg2";
 		interrupts = <GIC_SPI 417 IRQ_TYPE_EDGE_RISING>;
+		shared-clks = <1 0>;
 		clock-names =
 			"cphy_rx_clk_src",
 			"csid_csiphy_rx_clk";
@@ -2606,6 +2622,7 @@
 		interrupts = <GIC_SPI 474 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		shared-clks = <1 0>;
 		clock-names =
 			"jpegenc_clk_src",
 			"jpegenc_clk";
@@ -2629,6 +2646,7 @@
 		interrupts = <GIC_SPI 475 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		shared-clks = <1 0>;
 		clock-names =
 			"jpegdma_clk_src",
 			"jpegdma_clk";

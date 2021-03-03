@@ -122,6 +122,11 @@ the device register map, interrupt map, clocks and regulators.
   Definition: List of strings corresponds clock-rates levels.
   Supported strings: minsvs, lowsvs, svs, svs_l1, nominal, turbo.
 
+- shared-clks
+  Usage: optional
+  Value type: <u32>
+  Definition: List of 0 or 1 values indicating whether shared clk or not.
+
 Examples:
 	cam_jpeg_enc: qcom,jpegenc@ac4e000 {
 		cell-index = <0>;
@@ -133,22 +138,12 @@ Examples:
 		interrupts = <0 474 0>;
 		regulator-names = "camss-vdd";
 		camss-vdd-supply = <&titan_top_gdsc>;
-		clock-names = "camera_ahb",
-			"camera_axi",
-			"soc_ahb_clk",
-			"cpas_ahb_clk",
-			"camnoc_axi_clk",
-			"jpegenc_clk_src",
+		shared-clks = <1 0>;
+		clock-names = "jpegenc_clk_src",
 			"jpegenc_clk";
-		clocks = <&clock_gcc GCC_CAMERA_AHB_CLK>,
-			<&clock_gcc GCC_CAMERA_AXI_CLK>,
-			<&clock_camcc CAM_CC_SOC_AHB_CLK>,
-			<&clock_camcc CAM_CC_CPAS_AHB_CLK>,
-			<&clock_camcc CAM_CC_CAMNOC_AXI_CLK>,
-			<&clock_camcc CAM_CC_JPEG_CLK_SRC>,
+		clocks = <&clock_camcc CAM_CC_JPEG_CLK_SRC>,
 			<&clock_camcc CAM_CC_JPEG_CLK>;
-
-		clock-rates = <0 0 0 0 0 600000000 0>;
+		clock-rates = <600000000 0>;
 		src-clock-name = "jpegenc_clk_src";
 		clock-cntl-level = "nominal";
 		status = "ok";
@@ -164,22 +159,13 @@ Examples:
 		interrupts = <0 475 0>;
 		regulator-names = "camss-vdd";
 		camss-vdd-supply = <&titan_top_gdsc>;
-		clock-names = "camera_ahb",
-			"camera_axi",
-			"soc_ahb_clk",
-			"cpas_ahb_clk",
-			"camnoc_axi_clk",
-			"jpegdma_clk_src",
+		shared-clks = <1 0>;
+		clock-names = "jpegdma_clk_src",
 			"jpegdma_clk";
-		clocks = <&clock_gcc GCC_CAMERA_AHB_CLK>,
-			<&clock_gcc GCC_CAMERA_AXI_CLK>,
-			<&clock_camcc CAM_CC_SOC_AHB_CLK>,
-			<&clock_camcc CAM_CC_CPAS_AHB_CLK>,
-			<&clock_camcc CAM_CC_CAMNOC_AXI_CLK>,
-			<&clock_camcc CAM_CC_JPEG_CLK_SRC>,
+		clocks = <&clock_camcc CAM_CC_JPEG_CLK_SRC>,
 			<&clock_camcc CAM_CC_JPEG_CLK>;
 
-		clock-rates = <0 0 0 0 0 600000000 0>;
+		clock-rates = <600000000 0>;
 		src-clock-name = "jpegdma_clk_src";
 		clock-cntl-level = "nominal";
 		status = "ok";
