@@ -9,8 +9,8 @@
 
 #include "waipio-camera-sensor-cdp.dtsi"
 / {
-        model = "Qualcomm Technologies, Inc. Waipio CDP";
-        compatible = "qcom,waipio";
-        qcom,msm-id = <457 0x10000>;
-        qcom,board-id = <0x10001 0>;
+	model = "Qualcomm Technologies, Inc. Waipio CDP";
+	compatible = "qcom,waipio", "qcom,waipiop";
+	qcom,msm-id = <457 0x10000>, <482 0x10000>;
+	qcom,board-id = <0x10001 0>;
 };
