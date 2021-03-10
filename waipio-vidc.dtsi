@@ -66,6 +66,17 @@
 			dma-coherent;
 		};
 
+		non_secure_pixel_cb {
+			compatible = "qcom,msm-vidc,context-bank";
+			label = "venus_ns_pixel";
+			iommus = <&apps_smmu 0x2187 0x0400>;
+			qcom,iommu-dma-addr-pool = <0x00100000 0xdff00000>;
+			qcom,iommu-faults = "non-fatal", "stall-disable";
+			qcom,iommu-pagetable = "LLC";
+			virtual-addr-pool = <0x00100000 0xdff00000>;
+			dma-coherent;
+		};
+
 		secure_non_pixel_cb {
 			compatible = "qcom,msm-vidc,context-bank";
 			label = "venus_sec_non_pixel";
