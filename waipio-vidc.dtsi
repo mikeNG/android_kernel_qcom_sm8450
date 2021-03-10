@@ -61,7 +61,6 @@
 			qcom,iommu-dma-addr-pool = <0x25800000 0xba800000>;
 			qcom,iommu-faults = "non-fatal", "stall-disable";
 			qcom,iommu-pagetable = "LLC";
-			buffer-types = <0xfff>;
 			virtual-addr-pool = <0x25800000 0xba800000>;
 			dma-coherent;
 		};
@@ -85,7 +84,6 @@
 			qcom,iommu-faults = "non-fatal", "stall-disable";
 			qcom,iommu-pagetable = "LLC";
 			qcom,iommu-vmid = <0xB>; /* VMID_CP_NON_PIXEL */
-			buffer-types = <0x480>;
 			virtual-addr-pool = <0x01000000 0x24800000>;
 			qcom,secure-context-bank;
 		};
@@ -98,7 +96,6 @@
 			qcom,iommu-faults = "non-fatal";
 			qcom,iommu-pagetable = "LLC";
 			qcom,iommu-vmid = <0x9>; /* VMID_CP_BITSTREAM */
-			buffer-types = <0x241>;
 			virtual-addr-pool = <0x00500000 0xdfb00000>;
 			qcom,secure-context-bank;
 		};
@@ -111,7 +108,6 @@
 			qcom,iommu-faults = "non-fatal";
 			qcom,iommu-pagetable = "LLC";
 			qcom,iommu-vmid = <0xA>; /* VMID_CP_PIXEL */
-			buffer-types = <0x106>;
 			virtual-addr-pool = <0x00500000 0xdfb00000>;
 			qcom,secure-context-bank;
 		};
