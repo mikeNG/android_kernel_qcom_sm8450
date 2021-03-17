@@ -1140,6 +1140,8 @@
 			"ipe0", "cpas-cdm0", "rt-cdm0", "rt-cdm1", "rt-cdm2",
 			"cam-cdm-intf0", "bps0", "icp0", "jpeg-dma0", "jpeg-enc0", "tpg0",
 			"tpg1", "tpg2";
+		sys-cache-names = "small-1", "small-2";
+		sys-cache-uids = <34 38>;
 		status = "ok";
 
 		camera-bus-nodes {
