@@ -145,6 +145,11 @@ to CDM interface node.
   Definition: Flag to indicate that the CDM is being used in single
   context mode.
 
+- nrt-device
+  Usage: optional
+  Value type: <empty>
+  Definition: Flag to indicate whether this is non real time device.
+
 Example:
 	qcom,cpas-cdm0@ac48000 {
 		cell-index = <0>;
@@ -170,6 +175,7 @@ Example:
 			<&clock_camcc CAM_CC_CAMNOC_AXI_CLK>;
 		qcom,clock-rates = <0 80000000 80000000 80000000 80000000 80000000>;
 		clock-cntl-level = "turbo";
+		nrt-device;
 		cdm-client-names = "ife0";
 		config-fifo;
 		fifo-depths = <64 0 0 0>;

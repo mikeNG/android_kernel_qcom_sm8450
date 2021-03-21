@@ -166,6 +166,11 @@ and name of firmware image.
   Definition: UBWC configuration, this is mandatory if above
               ipe/bps ubwc properties are not used.
 
+- nrt-device
+  Usage: optional
+  Value type: <empty>
+  Definition: Flag to indicate whether this is non real time device.
+
 Examples:
 cam_a5: qcom,a5 {
 	cell-index = <0>;
@@ -199,6 +204,7 @@ cam_a5: qcom,a5 {
 		<0 0 600000000 0>;
 	clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 		"turbo";
+	nrt-device;
 	fw_name = "CAMERA_ICP.elf";
 	ubwc-ipe-fetch-cfg = <0x707b 0x7083>;
 	ubwc-ipe-write-cfg = <0x161ef 0x1620f>;
@@ -238,6 +244,7 @@ cam_lx7: qcom,lx7 {
 		<80000000 0 600000000 0>;
 	clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 		"turbo";
+	nrt-device;
 	fw_name = "CAMERA_ICP.elf";
 	ubwc-ipe-fetch-cfg = <0x707b 0x7083>;
 	ubwc-ipe-write-cfg = <0x161ef 0x1620f>;
@@ -283,6 +290,7 @@ cam_ipe0: qcom,ipe0@ac42000 {
 		<80000000 0 400000000 0 0 700000000 0 0>;
 	clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 		"turbo";
+	nrt-device;
 	status = "ok";
 };
 
@@ -310,6 +318,7 @@ qcom,ipe1 {
 		<0 0 0 0 600000000>;
 	clock-cntl-level = "lowsvs", "svs",
 		"svs_l1", "nominal", "turbo";
+	nrt-device;
 };
 
 cam_bps: qcom,bps@ac2c000 {
@@ -345,5 +354,6 @@ cam_bps: qcom,bps@ac2c000 {
 		<80000000 0 400000000 0 600000000 0>;
 	clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 		"turbo";
+	nrt-device;
 	status = "ok";
 };
