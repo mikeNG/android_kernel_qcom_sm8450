@@ -111,6 +111,16 @@ First Level Node - CCI device
   Value type: <phandle>
   Definition: should contain gdsr regulator used for cci clocks.
 
+- pctrl-idx-mapping
+  Usage: required
+  Value type: <u32>
+  Definition: should contain master index associated with cci hw.
+
+- pctrl-map-names
+  Usage: required
+  Value type: <string>
+  Definition: should contain pctrl-idx-mapping associated mapping name.
+
 - mmagic-supply
   Usage: optional
   Value type: <phandle>
@@ -183,6 +193,14 @@ Example:
 				"CCI_I2C_CLK0",
 				"CCI_I2C_DATA1",
 				"CCI_I2C_CLK1";
+		pctrl-idx-mapping = <CCI_MASTER_0 CCI_MASTER_1>;
+		pctrl-map-names = "m0", "m1";
+		pinctrl-names = "m0_active", "m0_suspend",
+			"m1_active", "m1_suspend";
+		pinctrl-0 = <&cci0_active>;
+		pinctrl-1 = <&cci0_suspend>;
+		pinctrl-2 = <&cci1_active>;
+		pinctrl-3 = <&cci1_suspend>;
 		i2c_freq_100Khz: qcom,i2c_standard_mode {
 			 hw-thigh = <78>;
 			 hw-tlow = <114>;

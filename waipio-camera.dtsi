@@ -748,19 +748,14 @@
 		clock-rates = <37500000 0>;
 		clock-cntl-level = "lowsvs";
 		src-clock-name = "cci_0_clk_src";
-		pinctrl-names = "cam_default", "cam_suspend";
-		pinctrl-0 = <&cci0_active &cci1_active>;
-		pinctrl-1 = <&cci0_suspend &cci1_suspend>;
-		gpios = <&tlmm 110 0>,
-			<&tlmm 111 0>,
-			<&tlmm 112 0>,
-			<&tlmm 113 0>;
-		gpio-req-tbl-num = <0 1 2 3>;
-		gpio-req-tbl-flags = <1 1 1 1>;
-		gpio-req-tbl-label = "CCI_I2C_DATA0",
-					"CCI_I2C_CLK0",
-					"CCI_I2C_DATA1",
-					"CCI_I2C_CLK1";
+		pctrl-idx-mapping = <CCI_MASTER_0 CCI_MASTER_1>;
+		pctrl-map-names = "m0", "m1";
+		pinctrl-names = "m0_active", "m0_suspend",
+			"m1_active", "m1_suspend";
+		pinctrl-0 = <&cci0_active>;
+		pinctrl-1 = <&cci0_suspend>;
+		pinctrl-2 = <&cci1_active>;
+		pinctrl-3 = <&cci1_suspend>;
 		status = "ok";
 
 		i2c_freq_100Khz_cci0: qcom,i2c_standard_mode {
@@ -841,19 +836,14 @@
 		clock-rates = <37500000 0>;
 		clock-cntl-level = "lowsvs";
 		src-clock-name = "cci_1_clk_src";
-		pinctrl-names = "cam_default", "cam_suspend";
-		pinctrl-0 = <&cci2_active &cci3_active>;
-		pinctrl-1 = <&cci2_suspend &cci3_suspend>;
-		gpios = <&tlmm 114 0>,
-			<&tlmm 115 0>,
-			<&tlmm 208 0>,
-			<&tlmm 209 0>;
-		gpio-req-tbl-num = <0 1 2 3>;
-		gpio-req-tbl-flags = <1 1 1 1>;
-		gpio-req-tbl-label = "CCI_I2C_DATA2",
-					"CCI_I2C_CLK2",
-					"CCI_I2C_DATA3",
-					"CCI_I2C_CLK3";
+		pctrl-idx-mapping = <CCI_MASTER_0 CCI_MASTER_1>;
+		pctrl-map-names = "m0", "m1";
+		pinctrl-names = "m0_active", "m0_suspend",
+			"m1_active", "m1_suspend";
+		pinctrl-0 = <&cci2_active>;
+		pinctrl-1 = <&cci2_suspend>;
+		pinctrl-2 = <&cci3_active>;
+		pinctrl-3 = <&cci3_suspend>;
 		status = "ok";
 
 		i2c_freq_100Khz_cci1: qcom,i2c_standard_mode {

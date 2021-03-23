@@ -1,4 +1,5 @@
 #include <dt-bindings/clock/qcom,camcc-waipio.h>
+#include <dt-bindings/msm-camera.h>
 
 &soc {
 	led_flash_triple_rear: qcom,camera-flash@1 {
@@ -38,7 +39,7 @@
 	actuator_triple_uw: qcom,actuator0 {
 		cell-index = <0>;
 		compatible = "qcom,actuator";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		cam_vaf-supply = <&L7I>;
 		regulator-names = "cam_vaf";
 		rgltr-cntrl-support;
@@ -50,7 +51,7 @@
 	actuator_triple_tele: qcom,actuator1 {
 		cell-index = <1>;
 		compatible = "qcom,actuator";
-		cci-master = <1>;
+		cci-master = <CCI_MASTER_1>;
 		cam_vaf-supply = <&L7I>;
 		regulator-names = "cam_vaf";
 		rgltr-cntrl-support;
@@ -124,7 +125,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK0",
 					"CAM_RESET0";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK0_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -194,7 +195,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK1",
 					"CAM_RESET1";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK1_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -229,7 +230,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK3",
 					"CAM_RESET3";
-		cci-master = <1>;
+		cci-master = <CCI_MASTER_1>;
 		clocks = <&clock_camcc CAM_CC_MCLK3_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -266,7 +267,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK0",
 					"CAM_RESET0";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK0_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -379,7 +380,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK1",
 					"CAM_RESET1";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK1_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -421,7 +422,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK3",
 					"CAM_RESET3";
-		cci-master = <1>;
+		cci-master = <CCI_MASTER_1>;
 		clocks = <&clock_camcc CAM_CC_MCLK3_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -560,7 +561,7 @@
 	actuator_triple_wide: qcom,actuator2 {
 		cell-index = <2>;
 		compatible = "qcom,actuator";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		cam_vaf-supply = <&L7I>;
 		regulator-names = "cam_vaf";
 		rgltr-cntrl-support;
@@ -597,7 +598,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK2",
 					"CAM_RESET2";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK2_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -628,7 +629,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK6",
 			"CAM_RESET4";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK6_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -662,7 +663,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK5",
 					"CAM_RESET5";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK5_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -695,7 +696,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK4",
 					"CAM_RESET6";
-		cci-master = <1>;
+		cci-master = <CCI_MASTER_1>;
 		clocks = <&clock_camcc CAM_CC_MCLK4_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -738,7 +739,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK2",
 					"CAM_RESET2";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK2_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -774,7 +775,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK6",
 			"CAM_RESET4";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK6_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -814,7 +815,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK5",
 					"CAM_RESET5";
-		cci-master = <0>;
+		cci-master = <CCI_MASTER_0>;
 		clocks = <&clock_camcc CAM_CC_MCLK5_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
@@ -855,7 +856,7 @@
 		gpio-req-tbl-flags = <1 0>;
 		gpio-req-tbl-label = "CAMIF_MCLK4",
 					"CAM_RESET6";
-		cci-master = <1>;
+		cci-master = <CCI_MASTER_1>;
 		clocks = <&clock_camcc CAM_CC_MCLK4_CLK>;
 		clock-names = "cam_clk";
 		clock-cntl-level = "nominal";
