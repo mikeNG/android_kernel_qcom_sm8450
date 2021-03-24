@@ -22,6 +22,8 @@
 		/* Clocks */
 		clock-names = "gcc_video_axi0",
 			"core_clk", "vcodec_clk", "video_cc_mvs0_clk_src";
+		clock-ids = <GCC_VIDEO_AXI0_CLK VIDEO_CC_MVS0C_CLK
+			VIDEO_CC_MVS0_CLK VIDEO_CC_MVS0_CLK_SRC>;
 		clocks = <&clock_gcc GCC_VIDEO_AXI0_CLK>,
 			<&clock_videocc VIDEO_CC_MVS0C_CLK>,
 			<&clock_videocc VIDEO_CC_MVS0_CLK>,
