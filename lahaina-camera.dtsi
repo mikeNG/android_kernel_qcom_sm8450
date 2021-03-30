@@ -1309,9 +1309,7 @@
 		clock-names =
 			"ife_csid_clk_src",
 			"ife_csid_clk",
-			"cphy_rx_clk_src",
 			"ife_cphy_rx_clk",
-			"ife_clk_src",
 			"ife_clk",
 			"ife_0_areg",
 			"ife_0_ahb",
@@ -1319,19 +1317,17 @@
 		clocks =
 			<&clock_camcc CAM_CC_IFE_0_CSID_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_0_CSID_CLK>,
-			<&clock_camcc CAM_CC_CPHY_RX_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_0_CPHY_RX_CLK>,
-			<&clock_camcc CAM_CC_IFE_0_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_0_CLK>,
 			<&clock_camcc CAM_CC_IFE_0_AREG_CLK>,
 			<&clock_camcc CAM_CC_IFE_0_AHB_CLK>,
 			<&clock_camcc CAM_CC_IFE_0_AXI_CLK>;
 		clock-rates =
-			<400000000 0 400000000 0 338000000 0 0 0 0>,
-			<400000000 0 400000000 0 475000000 0 0 0 0>,
-			<400000000 0 400000000 0 600000000 0 0 0 0>,
-			<400000000 0 400000000 0 720000000 0 0 0 0>,
-			<400000000 0 400000000 0 720000000 0 0 0 0>;
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
 		src-clock-name = "ife_csid_clk_src";
@@ -1395,9 +1391,7 @@
 		clock-names =
 			"ife_csid_clk_src",
 			"ife_csid_clk",
-			"cphy_rx_clk_src",
 			"ife_cphy_rx_clk",
-			"ife_clk_src",
 			"ife_clk",
 			"ife_1_areg",
 			"ife_1_ahb",
@@ -1405,19 +1399,17 @@
 		clocks =
 			<&clock_camcc CAM_CC_IFE_1_CSID_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_1_CSID_CLK>,
-			<&clock_camcc CAM_CC_CPHY_RX_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_1_CPHY_RX_CLK>,
-			<&clock_camcc CAM_CC_IFE_1_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_1_CLK>,
 			<&clock_camcc CAM_CC_IFE_1_AREG_CLK>,
 			<&clock_camcc CAM_CC_IFE_1_AHB_CLK>,
 			<&clock_camcc CAM_CC_IFE_1_AXI_CLK>;
 		clock-rates =
-			<400000000 0 400000000 0 338000000 0 0 0 0>,
-			<400000000 0 400000000 0 475000000 0 0 0 0>,
-			<400000000 0 400000000 0 600000000 0 0 0 0>,
-			<400000000 0 400000000 0 720000000 0 0 0 0>,
-			<400000000 0 400000000 0 720000000 0 0 0 0>;
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
 		src-clock-name = "ife_csid_clk_src";
@@ -1481,9 +1473,7 @@
 		clock-names =
 			"ife_csid_clk_src",
 			"ife_csid_clk",
-			"cphy_rx_clk_src",
 			"ife_cphy_rx_clk",
-			"ife_clk_src",
 			"ife_clk",
 			"ife_2_areg",
 			"ife_2_ahb",
@@ -1491,19 +1481,17 @@
 		clocks =
 			<&clock_camcc CAM_CC_IFE_2_CSID_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_2_CSID_CLK>,
-			<&clock_camcc CAM_CC_CPHY_RX_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_2_CPHY_RX_CLK>,
-			<&clock_camcc CAM_CC_IFE_2_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_2_CLK>,
 			<&clock_camcc CAM_CC_IFE_2_AREG_CLK>,
 			<&clock_camcc CAM_CC_IFE_2_AHB_CLK>,
 			<&clock_camcc CAM_CC_IFE_2_AXI_CLK>;
 		clock-rates =
-			<400000000 0 400000000 0 338000000 0 0 0 0>,
-			<400000000 0 400000000 0 475000000 0 0 0 0>,
-			<400000000 0 400000000 0 600000000 0 0 0 0>,
-			<400000000 0 400000000 0 720000000 0 0 0 0>,
-			<400000000 0 400000000 0 720000000 0 0 0 0>;
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>,
+			<400000000 0 0 0 0 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
 		src-clock-name = "ife_csid_clk_src";
@@ -1563,25 +1551,21 @@
 		clock-names =
 			"ife_csid_clk_src",
 			"ife_csid_clk",
-			"cphy_rx_clk_src",
 			"ife_cphy_rx_clk",
-			"ife_clk_src",
 			"ife_lite_ahb",
 			"ife_clk";
 		clocks =
 			<&clock_camcc CAM_CC_IFE_LITE_CSID_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_LITE_CSID_CLK>,
-			<&clock_camcc CAM_CC_CPHY_RX_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_LITE_CPHY_RX_CLK>,
-			<&clock_camcc CAM_CC_IFE_LITE_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_LITE_AHB_CLK>,
 			<&clock_camcc CAM_CC_IFE_LITE_CLK>;
 		clock-rates =
-			<400000000 0 0 0 400000000 0 0>,
-			<400000000 0 0 0 480000000 0 0>,
-			<400000000 0 0 0 480000000 0 0>,
-			<400000000 0 0 0 480000000 0 0>,
-			<400000000 0 0 0 480000000 0 0>;
+			<400000000 0 0 0 0>,
+			<400000000 0 0 0 0>,
+			<400000000 0 0 0 0>,
+			<400000000 0 0 0 0>,
+			<400000000 0 0 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
 		src-clock-name = "ife_csid_clk_src";
@@ -1636,25 +1620,21 @@
 		clock-names =
 			"ife_csid_clk_src",
 			"ife_csid_clk",
-			"cphy_rx_clk_src",
 			"ife_cphy_rx_clk",
-			"ife_clk_src",
 			"ife_lite_ahb",
 			"ife_clk";
 		clocks =
 			<&clock_camcc CAM_CC_IFE_LITE_CSID_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_LITE_CSID_CLK>,
-			<&clock_camcc CAM_CC_CPHY_RX_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_LITE_CPHY_RX_CLK>,
-			<&clock_camcc CAM_CC_IFE_LITE_CLK_SRC>,
 			<&clock_camcc CAM_CC_IFE_LITE_AHB_CLK>,
 			<&clock_camcc CAM_CC_IFE_LITE_CLK>;
 		clock-rates =
-			<400000000 0 0 0 400000000 0 0>,
-			<400000000 0 0 0 480000000 0 0>,
-			<400000000 0 0 0 480000000 0 0>,
-			<400000000 0 0 0 480000000 0 0>,
-			<400000000 0 0 0 480000000 0 0>;
+			<400000000 0 0 0 0>,
+			<400000000 0 0 0 0>,
+			<400000000 0 0 0 0>,
+			<400000000 0 0 0 0>,
+			<400000000 0 0 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
 		src-clock-name = "ife_csid_clk_src";
