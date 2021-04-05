@@ -2515,7 +2515,7 @@
 
 	cam_ipe0: qcom,ipe0@ac42000 {
 		cell-index = <0>;
-		compatible = "qcom,cam-ipe";
+		compatible = "qcom,cam-ipe680";
 		reg = <0xac42000 0x16000>;
 		reg-names = "ipe0_top";
 		reg-cam-base = <0x42000>;
@@ -2554,7 +2554,7 @@
 
 	cam_bps: qcom,bps@ac2c000 {
 		cell-index = <0>;
-		compatible = "qcom,cam-bps";
+		compatible = "qcom,cam-bps680";
 		reg = <0xac2c000 0x7800>;
 		reg-names = "bps_top";
 		reg-cam-base = <0x2c000>;
