@@ -9,6 +9,6 @@
 / {
 	model = "Qualcomm Technologies, Inc. waipio v1 SoC";
 	compatible = "qcom,waipio";
-	qcom,msm-id = <457 0x10000>;
+	qcom,msm-id = <457 0x10000>, <482 0x10000>;
 	qcom,board-id = <0 0>; /* required by merge_dtbs.py */
 };
