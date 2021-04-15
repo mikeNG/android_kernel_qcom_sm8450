@@ -200,6 +200,16 @@ First Level Node - CAM CPAS device
   Definition: Bool property specifying whether Clients are connected
 	through CAMNOC for AXI access.
 
+- sys-cache-names
+  Usage: optional
+  Value type: <string>
+  Definition: last level cache info for camera
+
+- sys-cache-uids
+  Usage: optional
+  Value type: <u32>
+  Definition: Client ID for camera caches
+
 ===================================================================
 Third Level Node - CAMNOC Level nodes
 ===================================================================
@@ -359,7 +369,8 @@ Example:
 			"cpas-cdm2",
 			"bps0", "icp0", "jpeg-dma0", "jpeg-enc0",
 			"fd0";
-
+		sys-cache-names = "small-1", "small-2";
+		sys-cache-uids = <34 38>;
 		camera-bus-nodes {
 			level3-nodes {
 				level-index = <3>;
