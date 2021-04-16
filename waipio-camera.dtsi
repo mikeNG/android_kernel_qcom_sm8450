@@ -2503,6 +2503,7 @@
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
 		src-clock-name = "icp_clk_src";
+		clock-control-debugfs = "true";
 		fw_name = "CAMERA_ICP";
 		ubwc-ipe-fetch-cfg = <0x707b 0x7083>;
 		ubwc-ipe-write-cfg = <0x161ef 0x1620f>;
