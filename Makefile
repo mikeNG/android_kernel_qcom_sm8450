@@ -10,7 +10,7 @@ KBUILD_OPTIONS += MODNAME=audio-devicetree
 all: dtbs
 
 dtbs:
-	$(MAKE) -C $(KERNEL_SRC) M=$(M) modules dtbs $(KBUILD_OPTIONS)
+	$(MAKE) -C $(KERNEL_SRC) M=$(M) dtbs $(KBUILD_OPTIONS)
 
 modules_install:
 	$(MAKE) M=$(M) -C $(KERNEL_SRC) modules_install
