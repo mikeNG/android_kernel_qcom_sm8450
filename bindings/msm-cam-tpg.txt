@@ -96,6 +96,11 @@ Required properties:
   Definition: Scalable clock names to identify which clocks needs to update
 	along with source clock.
 
+- shared-clks
+  Usage: optional
+  Value type: <u32>
+  Definition: List of 0 or 1 values indicating whether shared clk or not.
+
 Example:
 cam_csiphy_tpg0: qcom,tpg0@acf6000 {
 	cell-index = <0>;
@@ -108,6 +113,7 @@ cam_csiphy_tpg0: qcom,tpg0@acf6000 {
 	camss-supply = <&cam_cc_titan_top_gdsc>;
 	interrupt-names = "tpg0";
 	interrupts = <GIC_SPI 413 IRQ_TYPE_EDGE_RISING>;
+	shared-clks = <1 0 0 0>;
 	clock-names =
 		"cphy_rx_clk_src",
 		"csiphy0_clk",

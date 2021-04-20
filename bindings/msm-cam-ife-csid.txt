@@ -93,6 +93,11 @@ First Level Node - CAM IFE CSID device
   Value type: <string>
   Definition: Enable/Disable clk rate control.
 
+- shared-clks
+  Usage: optional
+  Value type: <u32>
+  Definition: List of 0 or 1 values indicating whether shared clk or not.
+
 Example:
 
 cam_csid0: qcom,csid0@acb7000 {
@@ -107,6 +112,7 @@ cam_csid0: qcom,csid0@acb7000 {
 	interrupts = <GIC_SPI 464 IRQ_TYPE_EDGE_RISING>;
 	regulator-names = "camss";
 	camss-supply = <&cam_cc_titan_top_gdsc>;
+	shared-clks = <1 0 0 0 0 0>;
 	clock-names =
 		"csid_clk_src",
 		"csid_clk",

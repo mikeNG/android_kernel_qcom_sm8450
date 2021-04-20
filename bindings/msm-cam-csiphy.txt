@@ -128,6 +128,11 @@ First Level Node - CSIPHY device
   Value type: <u32>
   Definition: List of clock rates in Hz for CSIPHY HW.
 
+- shared-clks
+  Usage: optional
+  Value type: <u32>
+  Definition: List of 0 or 1 values indicating whether shared clk or not.
+
 Example:
 
 cam_csiphy0: qcom,csiphy0@ace4000 {
@@ -146,6 +151,7 @@ cam_csiphy0: qcom,csiphy0@ace4000 {
 	rgltr-min-voltage = <0 1200000 880000>;
 	rgltr-max-voltage = <0 1248000 912000>;
 	rgltr-load-current = <0 54700 102000>;
+	shared-clks = <1 0 0 0>;
 	clocks = <&clock_camcc CAM_CC_CPHY_RX_CLK_SRC>,
 		<&clock_camcc CAM_CC_CSIPHY0_CLK>,
 		<&clock_camcc CAM_CC_CSI0PHYTIMER_CLK_SRC>,
