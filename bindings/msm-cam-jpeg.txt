@@ -127,6 +127,11 @@ the device register map, interrupt map, clocks and regulators.
   Value type: <u32>
   Definition: List of 0 or 1 values indicating whether shared clk or not.
 
+- nrt-device
+  Usage: optional
+  Value type: <empty>
+  Definition: Flag to indicate whether this is non real time device.
+
 Examples:
 	cam_jpeg_enc: qcom,jpegenc@ac4e000 {
 		cell-index = <0>;
@@ -146,6 +151,7 @@ Examples:
 		clock-rates = <600000000 0>;
 		src-clock-name = "jpegenc_clk_src";
 		clock-cntl-level = "nominal";
+		nrt-device;
 		status = "ok";
 	};
 
@@ -168,5 +174,6 @@ Examples:
 		clock-rates = <600000000 0>;
 		src-clock-name = "jpegdma_clk_src";
 		clock-cntl-level = "nominal";
+		nrt-device;
 		status = "ok";
 	};

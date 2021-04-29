@@ -1864,6 +1864,7 @@
 		clocks = <&clock_camcc CAM_CC_CPAS_AHB_CLK>;
 		clock-rates = <0>;
 		clock-cntl-level = "svs";
+		nrt-device;
 		cdm-client-names = "ife3", "ife4", "ife5", "ife6", "ife7";
 		config-fifo;
 		fifo-depths = <64 0 0 0>;
@@ -1887,6 +1888,7 @@
 		clocks = <&clock_camcc CAM_CC_CPAS_AHB_CLK>;
 		clock-rates = <0>;
 		clock-cntl-level = "turbo";
+		nrt-device;
 		cdm-client-names = "ife0", "dualife0";
 		config-fifo;
 		fifo-depths = <64 0 0 0>;
@@ -1910,6 +1912,7 @@
 		clocks = <&clock_camcc CAM_CC_CPAS_AHB_CLK>;
 		clock-rates = <0>;
 		clock-cntl-level = "turbo";
+		nrt-device;
 		cdm-client-names = "ife1", "dualife1";
 		config-fifo;
 		fifo-depths = <64 0 0 0>;
@@ -1933,6 +1936,7 @@
 		clocks = <&clock_camcc CAM_CC_CPAS_AHB_CLK>;
 		clock-rates = <0>;
 		clock-cntl-level = "turbo";
+		nrt-device;
 		cdm-client-names = "ife2", "dualife2";
 		config-fifo;
 		fifo-depths = <64 0 0 0>;
@@ -2520,6 +2524,7 @@
 			<0 600000000 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
+		nrt-device;
 		src-clock-name = "icp_clk_src";
 		fw_name = "CAMERA_ICP";
 		ubwc-ipe-fetch-cfg = <0x707b 0x7083>;
@@ -2564,6 +2569,7 @@
 			<0 0 0 700000000 0 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
+		nrt-device;
 		src-clock-name = "ipe_nps_clk_src";
 		clock-control-debugfs = "true";
 		cam_hw_pid = <22 23 30>;
@@ -2599,6 +2605,7 @@
 			<0 0 600000000 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
+		nrt-device;
 		src-clock-name = "bps_clk_src";
 		clock-control-debugfs = "true";
 		cam_hw_pid = <10 16>;
@@ -2634,6 +2641,7 @@
 		clock-rates = <600000000 0>;
 		src-clock-name = "jpegenc_clk_src";
 		clock-cntl-level = "nominal";
+		nrt-device;
 		cam_hw_pid = <12 14>;
 		status = "ok";
 	};
@@ -2658,6 +2666,7 @@
 		clock-rates = <600000000 0>;
 		src-clock-name = "jpegdma_clk_src";
 		clock-cntl-level = "nominal";
+		nrt-device;
 		cam_hw_pid = <13 15>;
 		status = "ok";
 	};
