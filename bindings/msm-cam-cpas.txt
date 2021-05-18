@@ -210,6 +210,21 @@ First Level Node - CAM CPAS device
   Value type: <u32>
   Definition: Client ID for camera caches
 
+- enable-smart-qos
+  Usage: optional
+  Value type: <empty>
+  Definition: Bool property specifying whether Smart Qos feature is enabled.
+
+- rt-wr-priority-min
+  Usage: optional
+  Value type: <u32>
+  Definition: Minimum priority value for rt write NIUs.
+
+- rt-wr-priority-max
+  Usage: optional
+  Value type: <u32>
+  Definition: Maximum priority value for rt write NIUs.
+
 ===================================================================
 Third Level Node - CAMNOC Level nodes
 ===================================================================
@@ -277,6 +292,22 @@ Fourth Level Node - Generic CAMNOC node properties
   Definition: Parent node of this node. Parent node must be at least
               one level above the current level.
 
+- rt-wr-niu
+  Usage: optional
+  Value type: <empty>
+  Definition: Bool property representing whether this node represents a
+              Real Time Write NIU node.
+
+- niu-size
+  Usage: optional
+  Value type: <u32>
+  Definition: Size of NIU represented by this node.
+
+- priority-lut-low-offset
+  Usage: optional
+  Value type: <u32>
+  Definition: Priority lut low register offset of NIU represented by this node.
+
 - bus-width-factor
   Usage: optional
   Value type: <u32>
@@ -291,6 +322,12 @@ Fourth Level Node - Generic CAMNOC node properties
   Usage: optional
   Value type: <empty>
   Definition: Bool property indicating axi port requires instantaneous bandwidth
+
+- rt-axi-port
+  Usage: optional
+  Value type: <empty>
+  Definition: Bool property indicating whether this axi port represents
+              a real time port.
 
 ===================================================================
 Fifth Level Node - CAM AXI Bus Properties
@@ -371,6 +408,9 @@ Example:
 			"fd0";
 		sys-cache-names = "small-1", "small-2";
 		sys-cache-uids = <34 38>;
+		enable-smart-qos;
+		rt-wr-priority-min = <3>;
+		rt-wr-priority-max = <6>;
 		camera-bus-nodes {
 			level3-nodes {
 				level-index = <3>;
@@ -381,6 +421,7 @@ Example:
 					<CAM_CPAS_TRAFFIC_MERGE_SUM>;
 					qcom,axi-port-name = "cam_hf_0";
 					ib-bw-voting-needed;
+					rt-axi-port;
 					qcom,axi-port-mnoc {
 						qcom,msm-bus,name =
 						"cam_hf_0_mnoc";
@@ -415,6 +456,9 @@ Example:
 					parent-node = <&level2_rt0_wr>;
 					traffic-merge-type =
 					<CAM_CPAS_TRAFFIC_MERGE_SUM>;
+					rt-wr-niu;
+					niu-size = <175>;
+					priority-lut-low-offset = <0x5830>;
 				};
 			};
 			level0-nodes {
