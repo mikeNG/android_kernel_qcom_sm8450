@@ -170,6 +170,7 @@
 		qcom,wsa-bcl-pmic-params = /bits/ 8 <0x00 0x03 0x48>;
 		qcom,default-clk-id = <WSA_TX_CORE_CLK>;
 		qcom,thermal-max-state = <11>;
+		#cooling-cells = <2>;
 		swr0: wsa_swr_master {
 			compatible = "qcom,swr-mstr";
 			#address-cells = <2>;
@@ -227,6 +228,7 @@
 		qcom,wsa2-bcl-pmic-params = /bits/ 8 <0x00 0x03 0x48>;
 		qcom,default-clk-id = <WSA2_TX_CORE_CLK>;
 		qcom,thermal-max-state = <11>;
+		#cooling-cells = <2>;
 		status = "disabled";
 		swr3: wsa2_swr_master {
 			compatible = "qcom,swr-mstr";
@@ -416,12 +418,6 @@
 				   "wcd938x_codec", "swr-haptics",
 			   	"wsa-codec1", "wsa-codec2";
 		qcom,wsa-max-devs = <2>;
-		qcom,cps_reg_phy_addr = <0x3250300 0x3250304 0x3250318>;
-		qcom,cps_wsa_vbatt_temp_reg_addr = <0x0000429 0x0000422>;
-		qcom,cps_threshold_levels = <148 168>;
-		qcom,cps_normal_values = <0x8E 0x8F 0x8F>;
-		qcom,cps_lower1_values = <0x10 0xD0 0xD0>;
-		qcom,cps_lower2_values = <0x0F 0x0F 0x18>;
 		qcom,msm_audio_ssr_devs = <&audio_gpr>, <&lpi_tlmm>,
 				  <&lpass_cdc>;
 	};

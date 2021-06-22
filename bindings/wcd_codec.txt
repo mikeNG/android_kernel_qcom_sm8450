@@ -68,6 +68,7 @@ Optional properties:
 		This property is required if qcom,va-clk-mux-select is provided
  - qcom,disable-afe-wakeup-event-listener : If enabled wakeup event listener
    will not be called from VA macro.
+ - qcom,wcd-dmic-enabled: indicate if wcd dmic is enabled.
 
 Example:
 
@@ -84,6 +85,7 @@ Example:
 		qcom,va-dmic-sample-rate = <4800000>;
 		qcom,va-clk-mux-select = <1>;
 		qcom,va-island-mode-muxsel = <0x033A0000>;
+		qcom,wcd-dmic-enabled;
 	};
 };
 
@@ -141,6 +143,7 @@ Optional properties:
  - qcom,swrm-hctl-reg: HW_CTL and CLK_ENABLE bits of SWR module.
                        Need Disable HW_CTL bit(to gate HW control)
                        for particular Soundwire master version as SW workaround.
+ - qcom,wcd-dmic-enabled: indicate if wcd dmic is enabled.
 
 Example:
 
@@ -153,6 +156,7 @@ Example:
 			 <&clock_audio_tx_2 0>;
 		qcom,tx-swr-gpios = <&tx_swr_gpios>;
 		qcom,tx-dmic-sample-rate = <4800000>;
+		qcom,wcd-dmic-enabled;
 		swr_2: tx_swr_master {
 			compatible = "qcom,swr-mstr";
 			qcom,swrm-hctl-reg = <0xa53a400>;
@@ -293,6 +297,7 @@ Optional properties:
  - qcom,va-clk-mux-select VA macro MCLK MUX selection
  - qcom,va-island-mode-muxsel VA macro island mode MUX selection
 		This property is required if qcom,va-clk-mux-select is provided
+ - qcom,wcd-dmic-enabled: indicate if wcd dmic is enabled.
 
 Example:
 
@@ -311,6 +316,7 @@ Example:
 		qcom,va-island-mode-muxsel = <0x033A0000>;
 		qcom,is-used-swr-gpio = <1>;
 		qcom,va-swr-gpios = <&va_swr_gpios>;
+		qcom,wcd-dmic-enabled;
 		swr_2: tx_swr_master {
 			compatible = "qcom,swr-mstr";
 			wcd938x_tx_slave: wcd938x-tx-slave {
@@ -367,6 +373,9 @@ Required properties:
  - clocks : clock handles defined for TX macro
  - qcom,tx-dmic-sample-rate: Sample rate defined for DMICs connected to TX macro
 
+Optional properties:
+ - qcom,wcd-dmic-enabled: indicate if wcd dmic is enabled.
+
 Example:
 
 &lpass_cdc {
@@ -377,6 +386,7 @@ Example:
 		clocks = <&clock_audio_tx_1 0>
 			 <&clock_audio_tx_2 0>;
 		qcom,tx-dmic-sample-rate = <4800000>;
+		qcom,wcd-dmic-enabled;
 	};
 };
 
