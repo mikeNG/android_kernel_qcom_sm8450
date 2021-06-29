@@ -22,7 +22,12 @@ Required properties:
   Usage: required
   Value type: <string>
   Definition: Should specify the compatibility string for matching the
-	driver. e.g. "qcom,tpg101", "qcom,tpg102", "qcom,tpgv1", "qcom,tpg103"
+	driver. e.g. "qcom,cam-tpg101", "qcom,cam-tpg102", "qcom,cam-tpgv1", "qcom,cam-tpg103"
+
+- phy-id
+  Usage: required
+  Value type: <u32>
+  Definition: Should specify the phy index number for csid input configuration
 
 - reg-names
   Usage: required

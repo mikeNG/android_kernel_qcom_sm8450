@@ -1144,8 +1144,8 @@
 			"csid5", "csid6", "csid7", "ife0", "ife1", "ife2", "ife3", "ife4",
 			"ife5", "ife6", "ife7", "sfe0", "sfe1", "custom0", "custom1",
 			"ipe0", "cpas-cdm0", "rt-cdm0", "rt-cdm1", "rt-cdm2",
-			"cam-cdm-intf0", "bps0", "icp0", "jpeg-dma0", "jpeg-enc0", "tpg0",
-			"tpg1", "tpg2";
+			"cam-cdm-intf0", "bps0", "icp0", "jpeg-dma0", "jpeg-enc0", "tpg13",
+			"tpg14", "tpg15";
 		sys-cache-names = "small-1", "small-2";
 		sys-cache-uids = <34 38>;
 		status = "ok";
@@ -2402,9 +2402,10 @@
 		status = "ok";
 	};
 
-	cam_csiphy_tpg0: qcom,tpg0@acf6000 {
-		cell-index = <0>;
-		compatible = "qcom,tpg103";
+	cam_csiphy_tpg13: qcom,tpg13@acf6000 {
+		cell-index = <13>;
+		phy-id     = <0>;
+		compatible = "qcom,cam-tpg103";
 		reg-names = "tpg0", "cam_cpas_top";
 		reg = <0xacf6000 0x400>,
 			<0xac13000 0x1000>;
@@ -2428,9 +2429,10 @@
 		status = "ok";
 	};
 
-	cam_csiphy_tpg1: qcom,tpg1@acf7000 {
-		cell-index = <1>;
-		compatible = "qcom,tpg103";
+	cam_csiphy_tpg14: qcom,tpg14@acf7000 {
+		cell-index = <14>;
+		phy-id     = <1>;
+		compatible = "qcom,cam-tpg103";
 		reg-names = "tpg1", "cam_cpas_top";
 		reg = <0xacf7000 0x400>,
 			<0xac13000 0x1000>;
@@ -2454,9 +2456,10 @@
 		status = "ok";
 	};
 
-	cam_csiphy_tpg2: qcom,tpg2@acf8000 {
-		cell-index = <2>;
-		compatible = "qcom,tpg103";
+	cam_csiphy_tpg15: qcom,tpg15@acf8000 {
+		cell-index = <15>;
+		phy-id     = <2>;
+		compatible = "qcom,cam-tpg103";
 		reg-names = "tpg2", "cam_cpas_top";
 		reg = <0xacf8000 0x400>,
 			<0xac13000 0x1000>;
