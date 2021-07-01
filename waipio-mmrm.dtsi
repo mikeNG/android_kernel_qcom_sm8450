@@ -8,8 +8,8 @@
 		mm-rail-fact-volt = <44827 49152 54526>;
 
 		/* Scaling factors */
-		scaling-fact-dyn = <66192 66192 66847>;
-		scaling-fact-leak = <609485 548537 463340>;
+		scaling-fact-dyn = <54395 66192 82576>;
+		scaling-fact-leak = <633078 746456 920126>;
 
 		/* Client info */
 		mmrm-client-info =
