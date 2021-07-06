@@ -4,12 +4,12 @@
 		status = "okay";
 
 		/* MM Rail info */
-		mm-rail-corners = "svsl1", "nom", "turbo";
-		mm-rail-fact-volt = <44827 49152 54526>;
+		mm-rail-corners = "lowsvs", "svs", "svsl1", "nom", "turbo";
+		mm-rail-fact-volt = <36439 41157 44827 49152 54526>;
 
 		/* Scaling factors */
-		scaling-fact-dyn = <54395 66192 82576>;
-		scaling-fact-leak = <633078 746456 920126>;
+		scaling-fact-dyn = <35390 45876 54395 66192 82576>;
+		scaling-fact-leak = <451544 548537 633078 746456 920126>;
 
 		/* Client info */
 		mmrm-client-info =
@@ -20,7 +20,7 @@
 			<0x1 CAM_CC_SFE_0_CLK_SRC 20833895 135660>,
 			<0x1 CAM_CC_SFE_1_CLK_SRC 20833895 135660>,
 			<0x1 CAM_CC_IPE_NPS_CLK_SRC 67423437 608830>,
-			<0x1 CAM_CC_BPS_CLK_SRC 19833816 212992>,
+			<0x1 CAM_CC_BPS_CLK_SRC 70584894 212992>,
 			<0x1 CAM_CC_IFE_LITE_CLK_SRC 1698431 20055>,
 			<0x1 CAM_CC_JPEG_CLK_SRC 1011876 0>,
 			<0x1 CAM_CC_CAMNOC_AXI_CLK_SRC 3407872 589824>,

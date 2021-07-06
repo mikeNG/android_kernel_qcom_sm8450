@@ -23,11 +23,13 @@ Example:
 	qcom,mmrm {
 		compatible = "qcom,msm-mmrm";
 
-		mm-rail-corners = "svsl1", "nom", "turbo";
-		mm-rail-fact-volt = <44827 49283 54526>;
+		mm-rail-corners = "lowsvs", "svs", "svsl1", "nom", "turbo";
+		mm-rail-fact-volt = <36439 41157 44827 49152 54526>;
 
-		scaling-fact-dyn = <54133 66345 82613>;
-		scaling-fact-leak = <499319 589741 716198>;
+		/* Scaling factors */
+		scaling-fact-dyn = <35390 45876 54395 66192 82576>;
+		scaling-fact-leak = <451544 548537 633078 746456 920126>;
+
 		client-info =
 			<0x4 VIDEO_CC_MVS0_CLK_SRC 28970189 582288>;
 	};
