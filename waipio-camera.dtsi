@@ -2638,6 +2638,8 @@
 		clock-cntl-level = "nominal";
 		nrt-device;
 		cam_hw_pid = <12 14>;
+		cam_hw_rd_mid = <0>;
+		cam_hw_wr_mid = <1>;
 		status = "ok";
 	};
 
@@ -2663,6 +2665,8 @@
 		clock-cntl-level = "nominal";
 		nrt-device;
 		cam_hw_pid = <13 15>;
+		cam_hw_rd_mid = <0>;
+		cam_hw_wr_mid = <1>;
 		status = "ok";
 	};
 };
