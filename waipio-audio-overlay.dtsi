@@ -370,13 +370,13 @@
 			"VA AMIC5", "Analog Mic5",
 			"VA AMIC5", "VA MIC BIAS4",
 			"TX DMIC0", "Digital Mic0",
-			"Digital Mic0", "MIC BIAS3",
+			"TX DMIC0", "MIC BIAS3",
 			"TX DMIC1", "Digital Mic1",
-			"Digital Mic1", "MIC BIAS3",
+			"TX DMIC1", "MIC BIAS3",
 			"TX DMIC2", "Digital Mic2",
-			"Digital Mic2", "MIC BIAS1",
+			"TX DMIC2", "MIC BIAS1",
 			"TX DMIC3", "Digital Mic3",
-			"Digital Mic3", "MIC BIAS1",
+			"TX DMIC3", "MIC BIAS1",
 			"IN1_HPHL", "HPHL_OUT",
 			"IN2_HPHR", "HPHR_OUT",
 			"IN3_AUX", "AUX_OUT",
@@ -400,10 +400,10 @@
 			"VA DMIC1", "Digital Mic1",
 			"VA DMIC2", "Digital Mic2",
 			"VA DMIC3", "Digital Mic3",
-			"Digital Mic0", "VA MIC BIAS3",
-			"Digital Mic1", "VA MIC BIAS3",
-			"Digital Mic2", "VA MIC BIAS1",
-			"Digital Mic3", "VA MIC BIAS1";
+			"VA DMIC0", "VA MIC BIAS3",
+			"VA DMIC1", "VA MIC BIAS3",
+			"VA DMIC2", "VA MIC BIAS1",
+			"VA DMIC3", "VA MIC BIAS1";
 		qcom,msm-mbhc-usbc-audio-supported = <0>;
 		qcom,msm-mbhc-hphl-swh = <1>;
 		qcom,msm-mbhc-gnd-swh = <1>;
