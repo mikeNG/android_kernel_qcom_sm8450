@@ -1235,7 +1235,7 @@
 				camnoc-max-needed;
 				level1_rt0_wr0: level1-rt0-wr0 {
 					cell-index = <8>;
-					node-name = "level1-rt0-wr0";
+					node-name = "level1-ife-ubwc-wr";
 					parent-node = <&level2_rt0_wr>;
 					traffic-merge-type =
 					<CAM_CPAS_TRAFFIC_MERGE_SUM>;
@@ -1243,7 +1243,7 @@
 
 				level1_rt0_wr1: level1-rt0-wr1 {
 					cell-index = <9>;
-					node-name = "level1-rt0-wr1";
+					node-name = "level1-ife-rdi-wr";
 					parent-node = <&level2_rt0_wr>;
 					traffic-merge-type =
 					<CAM_CPAS_TRAFFIC_MERGE_SUM>;
@@ -1251,7 +1251,7 @@
 
 				level1_rt0_wr2: level1-rt0-wr2 {
 					cell-index = <10>;
-					node-name = "level1-rt0-wr2";
+					node-name = "level1-ife-pdaf";
 					parent-node = <&level2_rt0_wr>;
 					traffic-merge-type =
 					<CAM_CPAS_TRAFFIC_MERGE_SUM>;
@@ -1259,7 +1259,7 @@
 
 				level1_rt0_wr3: level1-rt0-wr3 {
 					cell-index = <11>;
-					node-name = "level1-rt0-wr3";
+					node-name = "level1-ife01-linear-stats";
 					parent-node = <&level2_rt0_wr>;
 					traffic-merge-type =
 					<CAM_CPAS_TRAFFIC_MERGE_SUM>;
@@ -1267,7 +1267,7 @@
 
 				level1_rt0_wr4: level1-rt0-wr4 {
 					cell-index = <12>;
-					node-name = "level1-rt0-wr4";
+					node-name = "level1-ife2-linear-stats";
 					parent-node = <&level2_rt0_wr>;
 					traffic-merge-type =
 					<CAM_CPAS_TRAFFIC_MERGE_SUM>;
@@ -1275,7 +1275,7 @@
 
 				level1_rt0_wr5: level1-rt0-wr5 {
 					cell-index = <13>;
-					node-name = "level1-rt0-wr5";
+					node-name = "level1-ifelite";
 					parent-node = <&level2_rt0_wr>;
 					traffic-merge-type =
 					<CAM_CPAS_TRAFFIC_MERGE_SUM>;
@@ -1283,7 +1283,7 @@
 
 				level1_rt0_rd0: level1-rt0-rd0 {
 					cell-index = <14>;
-					node-name = "level1-rt0-rd0";
+					node-name = "level1-sfe-rd";
 					parent-node = <&level2_rt0_rd>;
 					traffic-merge-type =
 					<CAM_CPAS_TRAFFIC_MERGE_SUM>;
