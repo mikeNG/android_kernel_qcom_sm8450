@@ -103,6 +103,12 @@ First Level Node - CSIPHY device
   Definition: should contain peak current for gdsr, csi-vdd-1p2
 	and csi-vdd-0p9 supply for CSIPHY.
 
+- rgltr-enable-sync
+  Usage: required
+  Value type: <u8>
+  Definition: Decides whether regulator enable should be done in sync
+   for all the csiphys together or not.
+
 - clocks
   Usage: required
   Value type: <phandle>
@@ -147,6 +153,7 @@ cam_csiphy0: qcom,csiphy0@ace4000 {
 	csi-vdd-1p2-supply = <&pm8350_l6>;
 	csi-vdd-0p9-supply = <&pm8350_l5>;
 	rgltr-cntrl-support;
+	rgltr-enable-sync = <1>;
 	regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 	rgltr-min-voltage = <0 1200000 880000>;
 	rgltr-max-voltage = <0 1248000 912000>;
