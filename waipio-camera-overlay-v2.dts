@@ -66,4 +66,46 @@
 				<0 727000000 0 0>;
 		};
 	};
+
+	fragment@5 {
+		target = <&cam_csiphy0>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@6 {
+		target = <&cam_csiphy1>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@7 {
+		target = <&cam_csiphy2>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@8 {
+		target = <&cam_csiphy3>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@9 {
+		target = <&cam_csiphy4>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@10 {
+		target = <&cam_csiphy5>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
 };
