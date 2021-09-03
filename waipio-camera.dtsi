@@ -1873,6 +1873,7 @@
 		config-fifo;
 		fifo-depths = <64 0 0 0>;
 		cam_hw_pid = <24>;
+		cam-hw-mid = <0>;
 		single-context-cdm;
 		status = "ok";
 	};
@@ -1897,6 +1898,7 @@
 		config-fifo;
 		fifo-depths = <64 0 0 0>;
 		cam_hw_pid = <25>;
+		cam-hw-mid = <0>;
 		single-context-cdm;
 		status = "ok";
 	};
@@ -1921,6 +1923,7 @@
 		config-fifo;
 		fifo-depths = <64 0 0 0>;
 		cam_hw_pid = <26>;
+		cam-hw-mid = <0>;
 		single-context-cdm;
 		status = "ok";
 	};
@@ -1945,6 +1948,7 @@
 		config-fifo;
 		fifo-depths = <64 0 0 0>;
 		cam_hw_pid = <27>;
+		cam-hw-mid = <0>;
 		single-context-cdm;
 		status = "ok";
 	};
