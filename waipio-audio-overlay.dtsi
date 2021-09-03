@@ -350,6 +350,8 @@
 		qcom,wcn-bt = <1>;
 		qcom,ext-disp-audio-rx = <1>;
 		qcom,tdm-max-slots = <8>;
+		qcom,tdm-clk-attribute = <0x1>, <0x1>, <0x1>, <0x1>, <0x1>, <0x1>;
+		qcom,mi2s-clk-attribute = <0x1>, <0x1>, <0x1>, <0x1>, <0x1>, <0x1>;
 		qcom,audio-routing =
 			"AMIC1", "Analog Mic1",
 			"AMIC1", "MIC BIAS1",
