@@ -23,6 +23,7 @@
 		csi-vdd-1p2-supply = <&pm8350_l6>;
 		csi-vdd-0p9-supply = <&pm8350_l5>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1208000 888000>;
@@ -54,6 +55,7 @@
 		csi-vdd-1p2-supply = <&pm8350_l6>;
 		csi-vdd-0p9-supply = <&pm8350_l5>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1208000 888000>;
@@ -86,6 +88,7 @@
 		csi-vdd-1p2-supply = <&pm8350_l6>;
 		csi-vdd-0p9-supply = <&pm8350_l5>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1208000 888000>;
@@ -117,6 +120,7 @@
 		csi-vdd-1p2-supply = <&pm8350_l6>;
 		csi-vdd-0p9-supply = <&pm8350_l5>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1208000 888000>;
@@ -148,6 +152,7 @@
 		csi-vdd-1p2-supply = <&pm8350_l6>;
 		csi-vdd-0p9-supply = <&pm8350_l5>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1208000 888000>;
@@ -179,6 +184,7 @@
 		csi-vdd-1p2-supply = <&pm8350_l6>;
 		csi-vdd-0p9-supply = <&pm8350_l5>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1208000 888000>;

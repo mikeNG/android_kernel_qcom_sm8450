@@ -545,6 +545,7 @@
 		csi-vdd-1p2-supply = <&L6B>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
@@ -578,6 +579,7 @@
 		csi-vdd-1p2-supply = <&L6B>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
@@ -612,6 +614,7 @@
 		csi-vdd-1p2-supply = <&L6B>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
@@ -645,6 +648,7 @@
 		csi-vdd-1p2-supply = <&L6B>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
@@ -678,6 +682,7 @@
 		csi-vdd-1p2-supply = <&L6B>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;
@@ -711,6 +716,7 @@
 		csi-vdd-1p2-supply = <&L6B>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
+		rgltr-enable-sync = <1>;
 		rgltr-min-voltage = <0 1200000 880000>;
 		rgltr-max-voltage = <0 1248000 912000>;
 		rgltr-load-current = <0 59400 147000>;

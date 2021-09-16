@@ -5,7 +5,7 @@
 	model = "Qualcomm Technologies, Inc. Waipio v2 SoC";
 	compatible = "qcom,waipio", "qcom,waipiop";
 	qcom,msm-id = <457 0x20000>, <482 0x20000>;
-	qcom,board-id = <8 0>, <0x10008 0>;
+	qcom,board-id = <8 0>, <0x10008 0>, <0x03010008 0x03>;
 
 	fragment@0 {
 		target = <&cam_sfe0>;
@@ -64,6 +64,48 @@
 				<0 675000000 0 0>,
 				<0 727000000 0 0>,
 				<0 727000000 0 0>;
+		};
+	};
+
+	fragment@5 {
+		target = <&cam_csiphy0>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@6 {
+		target = <&cam_csiphy1>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@7 {
+		target = <&cam_csiphy2>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@8 {
+		target = <&cam_csiphy3>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@9 {
+		target = <&cam_csiphy4>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
+		};
+	};
+
+	fragment@10 {
+		target = <&cam_csiphy5>;
+		__overlay__ {
+			rgltr-enable-sync = <0>;
 		};
 	};
 };

@@ -214,7 +214,7 @@
 		regulator-names = "cam_vio", "cam_vana", "cam_vdig",
 			"cam_clk", "cam_vaf";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <1800000 2704000 952000 0 2704000>;
+		rgltr-min-voltage = <1800000 2800000 1050000 0 2704000>;
 		rgltr-max-voltage = <1800000 2896000 1144000 0 3000000>;
 		rgltr-load-current = <10000 52000 140400 0 103000>;
 		gpio-no-mux = <0>;
@@ -406,7 +406,7 @@
 		regulator-names = "cam_vio", "cam_vana", "cam_vdig",
 			"cam_clk", "cam_bob";
 		rgltr-cntrl-support;
-		rgltr-min-voltage = <1800000 2704000 952000 0 3008000>;
+		rgltr-min-voltage = <1800000 2800000 1050000 0 3008000>;
 		rgltr-max-voltage = <1800000 2896000 1144000 0 3960000>;
 		rgltr-load-current = <10000 52000 140400 0 7070000>;
 		gpio-no-mux = <0>;
