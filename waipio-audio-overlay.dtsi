@@ -346,8 +346,10 @@
 	waipio_snd: sound {
 		qcom,model = "waipio-mtp-snd-card";
 		qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>, <1>;
+		qcom,mi2s-tdm-is-hw-vote-needed = <1>, <0>, <1>, <0>, <0>, <0>;
 		qcom,wcn-bt = <1>;
 		qcom,ext-disp-audio-rx = <1>;
+		qcom,tdm-max-slots = <8>;
 		qcom,audio-routing =
 			"AMIC1", "Analog Mic1",
 			"AMIC1", "MIC BIAS1",
