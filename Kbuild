@@ -12,6 +12,11 @@ dtbo-$(CONFIG_ARCH_DIWALI) += diwali-audio.dtbo \
                  diwali-audio-qrd.dtbo \
                  diwali-audio-idp-usbc.dtbo
 
+dtbo-$(CONFIG_ARCH_CAPE) += cape-audio.dtbo \
+                 cape-audio-cdp.dtbo \
+                 cape-audio-mtp.dtbo \
+                 cape-audio-atp.dtbo
+
  always-y    := $(dtb-y) $(dtbo-y)
  subdir-y    := $(dts-dirs)
  clean-files    := *.dtb *.dtbo
