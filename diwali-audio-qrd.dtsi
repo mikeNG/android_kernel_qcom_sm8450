@@ -1,0 +1,7 @@
+#include "diwali-audio-overlay.dtsi"
+
+&waipio_snd {
+	qcom,model = "diwali-qrd-snd-card";
+	qcom,ext-disp-audio-rx = <0>;
+	qcom,msm-mbhc-usbc-audio-supported = <1>;
+};
