@@ -46,6 +46,7 @@
 		rgltr-min-voltage = <2704000>;
 		rgltr-max-voltage = <3000000>;
 		rgltr-load-current = <103000>;
+		status = "ok";
 	};
 
 	actuator_triple_tele: qcom,actuator1 {
@@ -58,6 +59,7 @@
 		rgltr-min-voltage = <2704000>;
 		rgltr-max-voltage = <3000000>;
 		rgltr-load-current = <103000>;
+		status = "ok";
 	};
 
 	actuator_triple_ois: qcom,actuator2 {
@@ -70,6 +72,7 @@
 		rgltr-min-voltage = <2800000>;
 		rgltr-max-voltage = <3000000>;
 		rgltr-load-current = <103000>;
+		status = "ok";
 	};
 
 	ois0: qcom,ois0 {
@@ -571,6 +574,7 @@
 		rgltr-min-voltage = <2704000>;
 		rgltr-max-voltage = <3000000>;
 		rgltr-load-current = <103000>;
+		status = "ok";
 	};
 
 	eeprom_triple_wide: qcom,eeprom2 {
