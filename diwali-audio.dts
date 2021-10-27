@@ -1,9 +1,9 @@
 /dts-v1/;
 /plugin/;
 
-#include <dt-bindings/clock/qcom,gcc-waipio.h>
+#include <dt-bindings/clock/qcom,gcc-diwali.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
-#include <dt-bindings/interconnect/qcom,waipio.h>
+#include <dt-bindings/interconnect/qcom,diwali.h>
 #include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
 
 #include "waipio-audio.dtsi"
