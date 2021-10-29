@@ -2446,6 +2446,13 @@ Required properties:
 		       codec devices.
 
 Optional properties:
+- qcom,sku-model : This property is used to set the soundcard name when
+  a platform supports different sku variants and it has to be differentiated
+  based on multiple factors other than board type.
+- nvmem-cells = phandle of nvmem specifier for the adsp variant fuse.
+- nvmem-cell-names : name of nvmem cell used for adsp variant fuse. Based on this
+  fuse value, sound card name might have to be updated. Default value of
+  this fuse is 0 and in that case, qcom,model will be used to set snd card name.
 - qcom,msm-mi2s-master: This property is used to inform machine driver
   if MSM is the clock master of mi2s. 1 means master and 0 means slave. The
   first entry is primary mi2s; the second entry is secondary mi2s, and so on.

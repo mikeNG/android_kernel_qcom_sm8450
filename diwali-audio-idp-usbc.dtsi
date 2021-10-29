@@ -1,0 +1,5 @@
+#include "diwali-audio-idp.dtsi"
+
+&waipio_snd {
+	qcom,msm-mbhc-usbc-audio-supported = <1>;
+};

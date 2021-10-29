@@ -5,6 +5,9 @@
 };
 
 &waipio_snd {
+	qcom,sku-model = "diwali-idp-sku1-snd-card";
+	nvmem-cells = <&adsp_variant>;
+	nvmem-cell-names = "adsp_variant";
 	qcom,tert-mi2s-gpios = <&cdc_tert_mi2s_gpios>;
 	qcom,wcn-bt = <0>;
 	qcom,ext-disp-audio-rx = <0>;
