@@ -7,4 +7,6 @@
 	nvmem-cell-names = "adsp_variant";
 	qcom,ext-disp-audio-rx = <0>;
 	qcom,msm-mbhc-usbc-audio-supported = <1>;
+	qcom,msm-mbhc-hphl-swh = <0>;
+	qcom,msm-mbhc-gnd-swh = <0>;
 };
