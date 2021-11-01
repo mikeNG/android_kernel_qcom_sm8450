@@ -6,6 +6,7 @@
 
 
 #include <linux/clk.h>
+#include <linux/delay.h>
 #include <linux/dmaengine.h>
 #include <linux/dma-mapping.h>
 #include <linux/interrupt.h>
@@ -204,7 +205,46 @@ struct spi_geni_master {
 	bool gpi_reset; /* GPI channel reset*/
 	bool disable_dma;
 	bool use_fixed_timeout;
+	bool first_transfer;
+	bool low_latency;
+	u32 cur_real_speed_hz;
+	u32 max_fifo_bytes;
+	u32 tx_fifo_watermark_delay_us;
 };
+
+static void get_tx_fifo_watermark_delay_us(struct spi_geni_master *mas)
+{
+	/* - Compute the new tx_fifo_watermark_delay_us.
+	 * Due to the lack of documentation on the GENI Serial Engine,
+	 * the delay values come from empirical tests that have been validated
+	 * on a Snapdragon SDM845:
+	 * - SPI speed 3MHz: delay of 150us
+	 * - SPI speed 20MHz: delay of 20us
+	 * - SPI speed 33.333333MHz: delay of 12us
+	 * Please see the comment "Wait for reload the TX FIFO" in setup_fifo_xfer()
+	 * below for the use of this delay.
+	 */
+	switch (mas->cur_real_speed_hz) {
+	case 3000000:
+		mas->tx_fifo_watermark_delay_us = 150;
+		break;
+	case 20000000:
+		mas->tx_fifo_watermark_delay_us = 20;
+		break;
+	case 33333333:
+		mas->tx_fifo_watermark_delay_us = 12;
+		break;
+	default:
+		mas->tx_fifo_watermark_delay_us = 150;
+		break;
+	}
+	dev_dbg(mas->dev,
+		"TX FIFO watermark delay: %u us for %lu Hz transfer.\n",
+		mas->tx_fifo_watermark_delay_us, mas->cur_real_speed_hz);
+}
+
+static void geni_spi_handle_rx(struct spi_geni_master *mas);
+static void geni_spi_handle_tx(struct spi_geni_master *mas);
 
 static struct spi_master *get_spi_master(struct device *dev)
 {
@@ -243,6 +283,12 @@ static int get_spi_clk_cfg(u32 speed_hz, struct spi_geni_master *mas,
 
 	dev_dbg(mas->dev, "%s: req %u resultant %lu sclk %lu, idx %d, div %d\n",
 		__func__, speed_hz, res_freq, sclk_freq, *clk_idx, *clk_div);
+
+	/* Store the real effective clock speed. It is needed for the
+	 * tx_fifo_watermark_delay_us calculation.
+	 */
+	if (mas->low_latency)
+		mas->cur_real_speed_hz = res_freq;
 
 	ret = clk_set_rate(rsc->se_clk, sclk_freq);
 	if (ret) {
@@ -350,6 +396,9 @@ static int setup_fifo_params(struct spi_device *spi_slv,
 	geni_write_reg(clk_sel, mas->base, SE_GENI_CLK_SEL);
 	geni_write_reg(m_clk_cfg, mas->base, GENI_SER_M_CLK_CFG);
 	geni_write_reg(spi_delay_params, mas->base, SE_SPI_DELAY_COUNTERS);
+	/* In low latancy mode, compute the mandatory tx_fifo_watermark_delay_us. */
+	if (mas->low_latency)
+		get_tx_fifo_watermark_delay_us(mas);
 	SPI_LOG_DBG(mas->ipc, false, mas->dev,
 		"%s:Loopback%d demux_sel0x%x demux_op_inv 0x%x clk_cfg 0x%x\n",
 		__func__, loopback_cfg, demux_sel, demux_output_inv, m_clk_cfg);
@@ -1017,8 +1066,10 @@ static int spi_geni_prepare_message(struct spi_master *spi,
 		geni_se_select_mode(mas->base, GSI_DMA);
 		ret = spi_geni_map_buf(mas, spi_msg);
 	} else {
-		geni_se_select_mode(mas->base, mas->cur_xfer_mode);
-		ret = setup_fifo_params(spi_msg->spi, spi);
+		if (!mas->low_latency || mas->first_transfer) {
+			geni_se_select_mode(mas->base, mas->cur_xfer_mode);
+			ret = setup_fifo_params(spi_msg->spi, spi);
+		}
 	}
 
 exit_prepare_message:
@@ -1356,6 +1407,32 @@ static int spi_geni_unprepare_transfer_hardware(struct spi_master *spi)
 	return 0;
 }
 
+static inline u32 geni_spi_wait_irq_status(struct spi_geni_master *mas,
+					   u32 mask, unsigned int tx_remain)
+{
+	u32 m_irq;
+	/* Active wait for selected bits in IRQ status register.
+	 *
+	 * If waiting for reload the TX FIFO, the active udelay() wait is
+	 * mandatory. Don't ask why, the datasheet of the the GENI Serial
+	 * Engine is not publicly available.
+	 *
+	 * But, if SE_GENI_M_IRQ_STATUS is accessed in loop without delay,
+	 * the last M_CMD_DONE_EN interrupt flag will never happen and this
+	 * function will remain stuck endlessly while waiting for this flag.
+	 *
+	 * This delay is not necessary for the last reload, don't ask for it
+	 * either!
+	 */
+	do {
+		if (tx_remain)
+			udelay(mas->tx_fifo_watermark_delay_us);
+		m_irq = geni_read_reg(mas->base, SE_GENI_M_IRQ_STATUS);
+	} while (!(m_irq & mask));
+
+	return m_irq;
+}
+
 static int setup_fifo_xfer(struct spi_transfer *xfer,
 				struct spi_geni_master *mas, u16 mode,
 				struct spi_master *spi)
@@ -1363,9 +1440,22 @@ static int setup_fifo_xfer(struct spi_transfer *xfer,
 	int ret = 0;
 	u32 m_cmd = 0;
 	u32 m_param = 0;
-	u32 spi_tx_cfg = geni_read_reg(mas->base, SE_SPI_TRANS_CFG);
+	u32 spi_tx_cfg = 0;
 	u32 trans_len = 0, fifo_size = 0;
+	u32 m_irq;
 
+	/* These calls accesses the hardware and takes about 20µs.
+	 * In low_latency mode, the hardware setup is made only at the first transfer.
+	 */
+	if (!mas->low_latency || mas->first_transfer) {
+		mas->first_transfer = false;
+		if (!spi->slave) {
+			spi_tx_cfg = geni_read_reg(mas->base, SE_SPI_TRANS_CFG);
+			spi_tx_cfg &= ~CS_TOGGLE;
+			geni_write_reg(spi_tx_cfg, mas->base, SE_SPI_TRANS_CFG);
+		}
+	}
+	/* The FIFO still needs to be setup every time */
 	if (xfer->bits_per_word != mas->cur_word_len) {
 		spi_setup_word_len(mas, mode, xfer->bits_per_word);
 		mas->cur_word_len = xfer->bits_per_word;
@@ -1389,6 +1479,9 @@ static int setup_fifo_xfer(struct spi_transfer *xfer,
 		m_clk_cfg |= ((div << CLK_DIV_SHFT) | SER_CLK_EN);
 		geni_write_reg(clk_sel, mas->base, SE_GENI_CLK_SEL);
 		geni_write_reg(m_clk_cfg, mas->base, GENI_SER_M_CLK_CFG);
+		/* Update tx_fifo_watermark_delay_us according to the new clock speed. */
+		if (mas->low_latency)
+			get_tx_fifo_watermark_delay_us(mas);
 	}
 
 	mas->tx_rem_bytes = 0;
@@ -1400,7 +1493,6 @@ static int setup_fifo_xfer(struct spi_transfer *xfer,
 	else if (xfer->rx_buf)
 		m_cmd = SPI_RX_ONLY;
 
-	spi_tx_cfg &= ~CS_TOGGLE;
 	if (!(mas->cur_word_len % MIN_WORD_LEN)) {
 		trans_len =
 			((xfer->len << 3) / mas->cur_word_len) & TRANS_LEN_MSK;
@@ -1440,35 +1532,76 @@ static int setup_fifo_xfer(struct spi_transfer *xfer,
 		mas->cur_xfer_mode = FIFO_MODE;
 	geni_se_select_mode(mas->base, mas->cur_xfer_mode);
 
-	geni_write_reg(spi_tx_cfg, mas->base, SE_SPI_TRANS_CFG);
 	geni_setup_m_cmd(mas->base, m_cmd, m_param);
 	SPI_LOG_DBG(mas->ipc, false, mas->dev,
 	"%s: trans_len %d xferlen%d tx_cfg 0x%x cmd 0x%x cs%d mode%d\n",
 		__func__, trans_len, xfer->len, spi_tx_cfg, m_cmd,
 			xfer->cs_change, mas->cur_xfer_mode);
-	if ((m_cmd & SPI_RX_ONLY) && (mas->cur_xfer_mode == SE_DMA)) {
-		ret =  geni_se_rx_dma_prep(mas->wrapper_dev, mas->base,
-				xfer->rx_buf, xfer->len, &xfer->rx_dma);
-		if (ret || !xfer->rx_buf) {
-			SPI_LOG_ERR(mas->ipc, true, mas->dev,
-				"Failed to setup Rx dma %d\n", ret);
-			xfer->rx_dma = 0;
-			return ret;
+	if (mas->low_latency) {
+		if ((m_cmd & SPI_TX_ONLY) && (trans_len > mas->max_fifo_bytes)) {
+			/* TX transfer and the size of the data are greater of the TX FIFO,
+			 * Enable the M_TX_FIFO_WATERMARK_EN interrupt flag. This is mandatory
+			 * when the TX FIFO is reloaded several times.
+			 */
+			writel(mas->tx_wm, mas->base + SE_GENI_TX_WATERMARK_REG);
 		}
-	}
-	if (m_cmd & SPI_TX_ONLY) {
-		if (mas->cur_xfer_mode == FIFO_MODE) {
-			geni_write_reg(mas->tx_wm, mas->base,
-					SE_GENI_TX_WATERMARK_REG);
-		} else if (mas->cur_xfer_mode == SE_DMA) {
-			ret =  geni_se_tx_dma_prep(mas->wrapper_dev, mas->base,
-					(void *)xfer->tx_buf, xfer->len,
-							&xfer->tx_dma);
-			if (ret || !xfer->tx_buf) {
+		do {
+			m_irq = 0;
+			/* If TX transfer, push the data in the TX FIFO */
+			if (m_cmd & SPI_TX_ONLY) {
+				const u32 mask = M_TX_FIFO_WATERMARK_EN;
+				/* Load or reload the TX FIFO */
+				geni_spi_handle_tx(mas);
+				/* If TX only transfer and remaining data, active wait the end of the sending
+				 * of the current data in the TX FIFO, aka the M_TX_FIFO_WATERMARK_EN flag.
+				 * If TX / RX transfer or no remaining data, just wait for the RX data.
+				 */
+				if (mas->tx_rem_bytes && !(m_cmd & SPI_RX_ONLY))
+					m_irq = geni_spi_wait_irq_status(
+						mas, mask, mas->tx_rem_bytes);
+			}
+			/* If RX transfer, active wait and get the data in the RX FIFO */
+			if (m_cmd & SPI_RX_ONLY) {
+				const u32 mask = M_RX_FIFO_WATERMARK_EN |
+						 M_RX_FIFO_LAST_EN;
+				if (!(m_irq & mask))
+					m_irq = geni_spi_wait_irq_status(
+						mas, mask, 0);
+				/* Get the data from the RX FIFO */
+				geni_spi_handle_rx(mas);
+			}
+		} while (mas->tx_rem_bytes || mas->rx_rem_bytes);
+		/* Here, all the data are sent and/or received. */
+		/* Active wait of the end of the SPI transfer. */
+		if (!(m_irq & M_CMD_DONE_EN))
+			m_irq = geni_spi_wait_irq_status(mas, M_CMD_DONE_EN, 0);
+		/* RAZ the IRQ flags status and the current command */
+		writel(m_irq, mas->base + SE_GENI_M_IRQ_CLEAR);
+	} else {
+		if ((m_cmd & SPI_RX_ONLY) && (mas->cur_xfer_mode == SE_DMA)) {
+			ret =  geni_se_rx_dma_prep(mas->wrapper_dev, mas->base,
+					xfer->rx_buf, xfer->len, &xfer->rx_dma);
+			if (ret || !xfer->rx_buf) {
 				SPI_LOG_ERR(mas->ipc, true, mas->dev,
-					"Failed to setup tx dma %d\n", ret);
-				xfer->tx_dma = 0;
+					"Failed to setup Rx  dma %d\n", ret);
+				xfer->rx_dma = 0;
 				return ret;
+			}
+		}
+		if (m_cmd & SPI_TX_ONLY) {
+			if (mas->cur_xfer_mode == FIFO_MODE) {
+				geni_write_reg(mas->tx_wm, mas->base,
+						SE_GENI_TX_WATERMARK_REG);
+			} else if (mas->cur_xfer_mode == SE_DMA) {
+				ret =  geni_se_tx_dma_prep(mas->wrapper_dev, mas->base,
+						(void *)xfer->tx_buf, xfer->len,
+								&xfer->tx_dma);
+				if (ret || !xfer->tx_buf) {
+					SPI_LOG_ERR(mas->ipc, true, mas->dev,
+						"Failed to setup tx dma %d\n", ret);
+					xfer->tx_dma = 0;
+					return ret;
+				}
 			}
 		}
 	}
@@ -1592,6 +1725,9 @@ static int spi_geni_transfer_one(struct spi_master *spi,
 			goto err_fifo_geni_transfer_one;
 		}
 
+		if (mas->low_latency)
+			goto end_geni_transfer_one;
+
 		timeout = wait_for_completion_timeout(&mas->xfer_done,
 					xfer_timeout);
 		if (!timeout) {
@@ -1662,6 +1798,7 @@ static int spi_geni_transfer_one(struct spi_master *spi,
 			}
 		}
 	}
+end_geni_transfer_one:
 	return ret;
 err_gsi_geni_transfer_one:
 	geni_se_dump_dbg_regs(&mas->spi_rsc, mas->base, mas->ipc);
@@ -1906,6 +2043,13 @@ static int spi_geni_probe(struct platform_device *pdev)
 		dev_info(&pdev->dev, "LA-VM usecase\n");
 	}
 
+	if (of_property_read_bool(pdev->dev.of_node, "qcom,low-latency")) {
+		dev_info(&pdev->dev, "low-latency enabled!\n");
+		geni_mas->low_latency = true;
+		spi->rt = true;
+	}
+	geni_mas->first_transfer = true;
+
 	geni_mas->spi_rsc.wrapper_dev = &wrapper_pdev->dev;
 	geni_mas->spi_rsc.ctrl_dev = geni_mas->dev;
 	/*
@@ -1981,12 +2125,26 @@ static int spi_geni_probe(struct platform_device *pdev)
 			goto spi_geni_probe_unmap;
 		}
 
-		ret = devm_request_irq(&pdev->dev, geni_mas->irq,
-			geni_spi_irq, IRQF_TRIGGER_HIGH, "spi_geni", geni_mas);
-		if (ret) {
-			dev_err(&pdev->dev, "Request_irq failed:%d: err:%d\n",
-					   geni_mas->irq, ret);
-			goto spi_geni_probe_unmap;
+		/* In low latency mode, active polling used instead of irq */
+		if (!geni_mas->low_latency) {
+			ret = devm_request_irq(&pdev->dev, geni_mas->irq,
+				geni_spi_irq, IRQF_TRIGGER_HIGH, "spi_geni", geni_mas);
+			if (ret) {
+				dev_err(&pdev->dev, "Request_irq failed:%d: err:%d\n",
+						   geni_mas->irq, ret);
+				goto spi_geni_probe_unmap;
+			}
+		} else {
+			/* Set the max bytes in the FIFO.
+			 * This calculation comes from geni_spi_handle_tx() with the right
+			 * bytes per fifo word. Calling geni_byte_per_fifo_word() returns
+			 * a erroneous value.
+			 * So we use mas->tx_fifo_width instead.
+			 */
+			geni_mas->max_fifo_bytes = ((geni_mas->tx_fifo_depth - geni_mas->tx_wm) *
+						    geni_mas->tx_fifo_width) / BITS_PER_BYTE;
+
+			dev_dbg(&pdev->dev, "FIFO size: %d bytes\n", geni_mas->max_fifo_bytes);
 		}
 	}
 
@@ -2164,6 +2322,8 @@ static int spi_geni_runtime_suspend(struct device *dev)
 	struct spi_master *spi = get_spi_master(dev);
 	struct spi_geni_master *geni_mas = spi_master_get_devdata(spi);
 
+	if (!geni_mas->low_latency)
+		disable_irq(geni_mas->irq);
 	if (geni_mas->is_le_vm)
 		return spi_geni_levm_suspend_proc(geni_mas, spi);
 
@@ -2261,6 +2421,8 @@ exit_rt_resume:
 		"%s: Error %d turning on clocks\n", __func__, ret);
 		return ret;
 	}
+	if (!geni_mas->low_latency)
+		enable_irq(geni_mas->irq);
 
 	if (geni_mas->gsi_mode)
 		ret = spi_geni_gpi_pause_resume(geni_mas, false);
