@@ -44,6 +44,11 @@ Required properties:
   Value type: <u32>
   Definition: List of bases.
 
+- rt-wrapper-base
+  Usage: required
+  Value type: u32
+  Definition: Titan offset of start of the RT Wrapper.
+
 - interrupt-names
   Usage: Required
   Value type: <string>
@@ -131,11 +136,11 @@ Example:
 cam_vfe0: qcom,ife0@ac62000 {
 	cell-index = <0>;
 	compatible = "qcom,vfe680";
-	reg-names = "ife", "cam_camnoc", "rt_wrapper";
+	reg-names = "ife", "cam_camnoc";
 	reg = <0xac62000 0xF000>,
-		<0xac19000 0x9000>,
-		<0xac62000 0x64000>;
-	reg-cam-base = <0x62000 0x19000 0x62000>;
+		<0xac19000 0x9000>;
+	reg-cam-base = <0x62000 0x19000>;
+	rt-wrapper-base = <0x62000>;
 	interrupt-names = "ife";
 	interrupts = <GIC_SPI 465 IRQ_TYPE_EDGE_RISING>;
 	regulator-names = "camss", "ife0";
