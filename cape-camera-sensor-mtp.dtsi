@@ -1,4 +1,4 @@
-#include <dt-bindings/clock/qcom,camcc-cape.h>
+#include <dt-bindings/clock/qcom,camcc-waipio.h>
 #include <dt-bindings/msm-camera.h>
 
 &soc {
