@@ -10,7 +10,7 @@
 #include "cape-camera-sensor-qrd.dtsi"
 / {
 	model = "Qualcomm Technologies, Inc. Cape QRD";
-	compatible = "qcom,cape";
+	compatible = "qcom,cape", "qcom,capep";
 	qcom,msm-id = <530 0x10000>, <540 0x10000>;
 	qcom,board-id = <0x1000B 0>;
 };
