@@ -23,9 +23,9 @@ Required properties:
   Value type: <string>
   Definition: Should specify the compatibility string for matching the
 
-  driver. e.g. "qcom,vfe680", "qcom,vfe580", "qcom,vfe580", "qcom,vfe480",
-  "qcom,vfe175", "qcom,vfe170", "qcom,vfe175_130", "qcom,vfe170_150",
-  "qcom,vfe165_160", "qcom,vfe-lite680", "qcom,vfe-lite580",,
+  driver. e.g. "qcom,vfe680", "qcom,vfe680_110", "qcom,vfe580", "qcom,vfe580",
+  "qcom,vfe480", "qcom,vfe175", "qcom,vfe170", "qcom,vfe175_130", "qcom,vfe170_150",
+  "qcom,vfe165_160", "qcom,vfe-lite680", "qcom,vfe-lite680_110", "qcom,vfe-lite580",,
   "qcom,vfe-lite580", "qcom,vfe-lite480", "qcom,vfe-lite175",
   "qcom,vfe-lite175_130" or "qcom,vfe-lite170", "qcom,vfe-lite165".
 
@@ -43,6 +43,11 @@ Required properties:
   Usage: required
   Value type: <u32>
   Definition: List of bases.
+
+- rt-wrapper-base
+  Usage: required
+  Value type: u32
+  Definition: Titan offset of start of the RT Wrapper.
 
 - interrupt-names
   Usage: Required
@@ -131,11 +136,11 @@ Example:
 cam_vfe0: qcom,ife0@ac62000 {
 	cell-index = <0>;
 	compatible = "qcom,vfe680";
-	reg-names = "ife", "cam_camnoc", "rt_wrapper";
+	reg-names = "ife", "cam_camnoc";
 	reg = <0xac62000 0xF000>,
-		<0xac19000 0x9000>,
-		<0xac62000 0x64000>;
-	reg-cam-base = <0x62000 0x19000 0x62000>;
+		<0xac19000 0x9000>;
+	reg-cam-base = <0x62000 0x19000>;
+	rt-wrapper-base = <0x62000>;
 	interrupt-names = "ife";
 	interrupts = <GIC_SPI 465 IRQ_TYPE_EDGE_RISING>;
 	regulator-names = "camss", "ife0";

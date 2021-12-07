@@ -22,10 +22,11 @@ First Level Node - CAM IFE CSID device
   Value type: <string>
   Definition: Should be "qcom,csid170", "qcom,csid170_200", "qcom,csid175",
 	"qcom,csid175_200", "qcom,csid480", "qcom,csid570", "qcom,csid580",
-	"qcom,csid680", "qcom,csid165_204", "qcom,csid-lite170",
+	"qcom,csid680", "qcom,csid680_110", "qcom,csid165_204", "qcom,csid-lite170",
 	"qcom,csid-lite175", "qcom,csid-lite480", "qcom,csid-custom480",
 	"qcom,csid-lite580", "qcom,csid-lite580", "qcom,csid-custom580",
-	"qcom,csid-lite680" or "qcom,csid-custom680", "qcom,csid-lite165".
+	"qcom,csid-lite680", "qcom,csid-lite680_110" or "qcom,csid-custom680",
+	"qcom,csid-lite165".
 
 - reg-names
   Usage: required
@@ -41,6 +42,11 @@ First Level Node - CAM IFE CSID device
   Usage: required
   Value type: <u32>
   Definition: List of bases.
+
+- rt-wrapper-base
+  Usage: required
+  Value type: u32
+  Definition: Titan offset of start of the RT Wrapper.
 
 - interrupt-names
   Usage: Required
@@ -103,11 +109,11 @@ Example:
 cam_csid0: qcom,csid0@acb7000 {
 	cell-index = <0>;
 	compatible = "qcom,csid680";
-	reg-names = "csid", "csid_top", "rt_wrapper";
+	reg-names = "csid", "csid_top";
 	reg = <0xacb7000 0xd00>,
-		<0xacb6000 0x1000>,
-		<0xac62000 0x64000>;
-	reg-cam-base = <0xb7000 0xb6000 0x62000>;
+		<0xacb6000 0x1000>;
+	reg-cam-base = <0xb7000 0xb6000>;
+	rt-wrapper-base = <0x62000>;
 	interrupt-names = "csid";
 	interrupts = <GIC_SPI 464 IRQ_TYPE_EDGE_RISING>;
 	regulator-names = "camss";
