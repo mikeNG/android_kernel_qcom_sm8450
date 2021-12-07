@@ -5,6 +5,10 @@ dtbo-y += waipio-v2-mmrm.dtbo
 dtbo-y += waipio-v2-mmrm-test.dtbo
 endif
 
+ifeq ($(CONFIG_ARCH_CAPE), y)
+dtbo-y += cape-mmrm.dtbo
+endif
+
 ifeq ($(CONFIG_ARCH_DIWALI), y)
 dtbo-y += diwali-mmrm.dtbo
 endif
