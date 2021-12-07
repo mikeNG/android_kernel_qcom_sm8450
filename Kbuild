@@ -10,7 +10,14 @@ dtbo-$(CONFIG_ARCH_WAIPIO) += waipio-audio.dtbo \
 dtbo-$(CONFIG_ARCH_DIWALI) += diwali-audio.dtbo \
                  diwali-audio-idp.dtbo \
                  diwali-audio-qrd.dtbo \
+                 diwali-audio-atp.dtbo \
                  diwali-audio-idp-usbc.dtbo
+
+dtbo-$(CONFIG_ARCH_CAPE) += cape-audio.dtbo \
+                 cape-audio-cdp.dtbo \
+                 cape-audio-mtp.dtbo \
+                 cape-audio-atp.dtbo \
+                 cape-audio-qrd.dtbo
 
  always-y    := $(dtb-y) $(dtbo-y)
  subdir-y    := $(dts-dirs)
