@@ -425,7 +425,7 @@
 		qcom,msm_audio_ssr_devs = <&audio_gpr>, <&lpi_tlmm>,
 				  <&lpass_cdc>;
 		qcom,upd_backends_used = "wcd";
-		qcom,upd_lpass_reg_addr = <0x00000418 0x33B0300>;
+		qcom,upd_lpass_reg_addr = <0x3200418 0x33B0300>;
 		qcom,upd_ear_pa_reg_addr = <0x300A>;
 	};
 
