@@ -12,6 +12,9 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 
+		/* LLCC Cache */
+		cache-slice-names = "vidsc0";
+
 		/* Supply */
 		iris-ctl-supply = <&video_cc_mvs0c_gdsc>;
 		vcodec-supply = <&video_cc_mvs0_gdsc>;
@@ -40,16 +43,17 @@
 		vidc,firmware-name = "vpu20_4v";
 
 		/* Bus Interconnects */
-		interconnect-names = "venus-cnoc", "venus-ddr";
+		interconnect-names = "venus-cnoc", "venus-ddr", "venus-llcc";
 		interconnects = <&gem_noc MASTER_APPSS_PROC
 					&config_noc SLAVE_VENUS_CFG>,
+				<&mc_virt MASTER_LLCC
+					&mc_virt SLAVE_EBI1>,
 				<&mmss_noc MASTER_VIDEO_P0
-					&mc_virt SLAVE_EBI1>;
-
+					&gem_noc SLAVE_LLCC>;
 		/* Bus BW range (low, high) for each bus */
 		qcom,bus-range-kbps = <1000 1000
+					1000 15000000
 					1000 15000000>;
-
 		/* MMUs */
 		non_secure_cb {
 			compatible = "qcom,msm-vidc,context-bank";
