@@ -75,6 +75,7 @@ struct qpnp_tri_led_chip {
 	u16			reg_base;
 	u8			subtype;
 	u8			bitmap;
+	u32			divider;
 };
 
 static int qpnp_tri_led_read(struct qpnp_tri_led_chip *chip, u16 addr, u8 *val)
@@ -284,6 +285,8 @@ static int qpnp_tri_led_set_brightness(struct led_classdev *led_cdev,
 	mutex_lock(&led->lock);
 	if (brightness > LED_FULL)
 		brightness = LED_FULL;
+
+	brightness /= led->chip->divider;
 
 	if (brightness == led->led_setting.brightness &&
 			!led->blinking && !led->breathing) {
@@ -517,6 +520,11 @@ static int qpnp_tri_led_parse_dt(struct qpnp_tri_led_chip *chip)
 			return rc;
 		}
 	}
+
+	rc = of_property_read_u32(chip->dev->of_node, "pwm-divider",
+				  &chip->divider);
+	if (rc < 0)
+		chip->divider = 1;
 
 	chip->leds = devm_kcalloc(chip->dev, chip->num_leds,
 			sizeof(struct qpnp_led_dev), GFP_KERNEL);
