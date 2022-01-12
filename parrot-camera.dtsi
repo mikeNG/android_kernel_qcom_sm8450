@@ -484,11 +484,12 @@
 
 		msm_cam_smmu_icp {
 			compatible = "qcom,msm-cam-smmu-cb";
-			iommus = <&apps_smmu 0x2040 0xA0>,
-				<&apps_smmu 0x2060 0xA0>,
-				<&apps_smmu 0x20C0 0xA0>,
-				<&apps_smmu 0x20E0 0xA0>,
-				<&apps_smmu 0x2100 0x00>;
+			iommus = <&apps_smmu 0x2020 0x0000>,
+				<&apps_smmu 0x2040 0x00A0>,
+				<&apps_smmu 0x2060 0x00A0>,
+				<&apps_smmu 0x20E0 0x00A0>,
+				<&apps_smmu 0x2100 0x0000>,
+				<&apps_smmu 0x20C0 0x00A0>;
 			cam-smmu-label = "icp";
 			qcom,iommu-dma-addr-pool = <0x10c00000 0xee300000>;
 			iova-region-discard = <0xe0000000 0x800000>;
@@ -559,7 +560,7 @@
 
 		msm_cam_smmu_cpas_cdm {
 			compatible = "qcom,msm-cam-smmu-cb";
-			iommus = <&apps_smmu 0x2020 0x0000>;
+			iommus = <&apps_smmu 0x2000 0x0000>;
 			cam-smmu-label = "cpas-cdm";
 			qcom,iommu-dma-addr-pool = <0x100000 0xffe00000>;
 			dma-coherent;
@@ -601,10 +602,10 @@
 		interrupt-names = "cpas_camnoc";
 		interrupts = <GIC_SPI 459 IRQ_TYPE_EDGE_RISING>;
 		camnoc-axi-min-ib-bw = <3000000000>;
-		regulator-names = "camss-vdd";
-		gdsc-supply = <&cam_cc_camss_top_gdsc>;
+		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
-			"gcc_ahb_clk",
+			"cam_cc_soc_ahb_clk",
 			"gcc_axi_hf_clk",
 			"gcc_axi_sf_clk",
 			"cam_cc_slow_ahb_clk_src",
@@ -614,14 +615,14 @@
 			"camnoc_axi_clk_src",
 			"camnoc_axi_clk";
 		clocks =
-			<&gcc GCC_CAMERA_AHB_CLK>,
+			<&camcc CAM_CC_SOC_AHB_CLK>,
 			<&gcc GCC_CAMERA_HF_AXI_CLK>,
 			<&gcc GCC_CAMERA_SF_AXI_CLK>,
 			<&camcc CAM_CC_SLOW_AHB_CLK_SRC>,
 			<&camcc CAM_CC_CPAS_AHB_CLK>,
 			<&camcc CAM_CC_CORE_AHB_CLK>,
 			<&camcc CAM_CC_FAST_AHB_CLK_SRC>,
-			<&camcc CAM_CC_CAMNOC_AXI_CLK_SR>,
+			<&camcc CAM_CC_CAMNOC_AXI_CLK_SRC>,
 			<&camcc CAM_CC_CAMNOC_AXI_CLK>;
 		clock-rates =
 			<0 0 0 0 0 0 0 0 0>,
@@ -657,13 +658,13 @@
 		vdd-corner-ahb-mapping = "suspend", "lowsvs",
 			"lowsvs", "svs", "svs_l1",
 			"nominal", "nominal", "nominal",
-			"turbo", "turbo_l1";
+			"turbo", "turbo";
 		client-id-based;
 		client-names =
 			"csiphy0", "csiphy1", "csiphy2", "csiphy3", "cci0", "cci1",
 			"csid0", "csid1", "csid2", "tfe0", "tfe1", "tfe2", "ipe0",
 			"cpas-cdm0", "cam-cdm-intf0", "bps0", "icp0", "tpg13",
-			"tpg14", "cre";
+			"tpg14", "cre0";
 		status = "ok";
 
 		camera-bus-nodes {
@@ -815,7 +816,7 @@
 					node-name = "tfe0-bayer-stats-wr";
 					client-name = "tfe0";
 					traffic-data =
-					<CAM_CPAS_PATH_DATA_IFE_LINEAR_STATS>;
+					<CAM_CPAS_PATH_DATA_ALL>;
 					traffic-transaction-type =
 					<CAM_CPAS_TRANSACTION_WRITE>;
 					constituent-paths =
@@ -825,12 +826,12 @@
 					parent-node = <&level1_rt0_wr0>;
 				};
 
-				tfe1_bayer_stats_wr: ife1-ubwc-wr {
+				tfe1_bayer_stats_wr: tfe1-ubwc-wr {
 					cell-index = <15>;
-					node-name = "ife1-ubwc-wr";
-					client-name = "ife1";
+					node-name = "tfe1-ubwc-wr";
+					client-name = "tfe1";
 					traffic-data =
-					<CAM_CPAS_PATH_DATA_IFE_LINEAR_STATS>;
+					<CAM_CPAS_PATH_DATA_ALL>;
 					traffic-transaction-type =
 					<CAM_CPAS_TRANSACTION_WRITE>;
 					constituent-paths =
@@ -840,12 +841,12 @@
 					parent-node = <&level1_rt0_wr0>;
 				};
 
-				tfe2_bayer_stats_wr: ife2-ubwc-wr {
+				tfe2_bayer_stats_wr: tfe2-ubwc-wr {
 					cell-index = <16>;
-					node-name = "ife2-ubwc-wr";
-					client-name = "ife2";
+					node-name = "tfe2-ubwc-wr";
+					client-name = "tfe2";
 					traffic-data =
-					<CAM_CPAS_PATH_DATA_IFE_LINEAR_STATS>;
+					<CAM_CPAS_PATH_DATA_ALL>;
 					traffic-transaction-type =
 					<CAM_CPAS_TRANSACTION_WRITE>;
 					constituent-paths =
@@ -871,9 +872,9 @@
 					parent-node = <&level1_rt0_wr1>;
 				};
 
-				tfe1_rdi_raw_wr: ife1-rdi-pixel-raw-wr {
+				tfe1_rdi_raw_wr: tfe1-rdi-pixel-raw-wr {
 					cell-index = <18>;
-					node-name = "ife1-rdi-pixel-raw-wr";
+					node-name = "tfe1-rdi-pixel-raw-wr";
 					client-name = "tfe1";
 					traffic-data =
 					<CAM_CPAS_PATH_DATA_IFE_RDI_PIXEL_RAW>;
@@ -887,9 +888,9 @@
 					parent-node = <&level1_rt0_wr1>;
 				};
 
-				tfe2_rdi_raw_wr: ife2-rdi-pixel-raw-wr {
+				tfe2_rdi_raw_wr: tfe2-rdi-pixel-raw-wr {
 					cell-index = <19>;
-					node-name = "ife2-rdi-pixel-raw-wr";
+					node-name = "tfe2-rdi-pixel-raw-wr";
 					client-name = "tfe2";
 					traffic-data =
 					<CAM_CPAS_PATH_DATA_IFE_RDI_PIXEL_RAW>;
@@ -959,24 +960,27 @@
 					parent-node = <&level2_nrt0_rd>;
 				};
 
+                                cre_all_rd: cre-all-rd {
+                                        cell-index = <25>;
+                                        node-name = "cre-all-rd";
+                                        client-name = "cre0";
+                                        traffic-data = <CAM_CPAS_PATH_DATA_ALL>;
+                                        traffic-transaction-type =
+                                             <CAM_CPAS_TRANSACTION_READ>;
+                                        constituent-paths =
+                                           <CAM_CPAS_PATH_DATA_CRE_RD_IN>;
+                                        parent-node = <&level2_nrt0_rd>;
+                                };
 				cre_all_wr: cre-all-wr {
-					cell-index = <25>;
+					cell-index = <26>;
 					node-name = "cre-all-wr";
 					client-name = "cre0";
 					traffic-data = <CAM_CPAS_PATH_DATA_ALL>;
 					traffic-transaction-type =
-					<CAM_CPAS_TRANSACTION_WRITE>;
+					        <CAM_CPAS_TRANSACTION_WRITE>;
+                                        constituent-paths =
+                                           <CAM_CPAS_PATH_DATA_CRE_WR_OUT>;
 					parent-node = <&level2_nrt0_wr>;
-				};
-
-				cre_all_rd: cre-all-rd {
-					cell-index = <26>;
-					node-name = "cre-all-rd";
-					client-name = "cre0";
-					traffic-data = <CAM_CPAS_PATH_DATA_ALL>;
-					traffic-transaction-type =
-					<CAM_CPAS_TRANSACTION_READ>;
-					parent-node = <&level2_nrt0_rd>;
 				};
 
 				cpas_cdm0_all_rd: cpas-cdm0-all-rd {
@@ -1020,8 +1024,8 @@
 		reg-cam-base = <0x24000>;
 		interrupt-names = "cpas-cdm";
 		interrupts = <GIC_SPI 461 IRQ_TYPE_EDGE_RISING>;
-		regulator-names = "gdsc";
-		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names = "cam_cc_cpas_ahb_clk";
 		clocks = <&camcc CAM_CC_CPAS_AHB_CLK>;
 		clock-rates = <0>;
@@ -1051,6 +1055,7 @@
 		interrupt-names = "csid0";
 		interrupts = <GIC_SPI 464 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
 			"tfe_csid_clk_src",
 			"tfe_csid_clk",
@@ -1071,7 +1076,7 @@
 			<400000000 0 400000000 0 548000000 0>,
 			<400000000 0 400000000 0 630000000 0>,
 			<400000000 0 400000000 0 630000000 0>;
-		clock-cntl-level = "lowsvs", "svs", "svs_l1", "norm", "turbo";
+		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal", "turbo";
 		src-clock-name = "tfe_csid_clk_src";
 		clock-control-debugfs = "true";
 		status = "ok";
@@ -1086,6 +1091,7 @@
 		interrupt-names = "tfe0";
 		interrupts = <GIC_SPI 465 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
 			"tfe_ahb_clk",
 			"tfe_clk_src",
@@ -1100,7 +1106,7 @@
 			<0 548000000 0>,
 			<0 630000000 0>,
 			<0 630000000 0>;
-		clock-cntl-level = "lowsvs", "svs", "svs_l1", "norm", "turbo";
+		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal", "turbo";
 		src-clock-name = "tfe_clk_src";
 		clock-control-debugfs = "true";
 		cam_hw_pid = < 4 8 >;
@@ -1117,6 +1123,7 @@
 		interrupt-names = "csid1";
 		interrupts = <GIC_SPI 466 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
 			"tfe_csid_clk_src",
 			"tfe_csid_clk",
@@ -1137,7 +1144,7 @@
 			<400000000 0 400000000 0 548000000 0>,
 			<400000000 0 400000000 0 630000000 0>,
 			<400000000 0 400000000 0 630000000 0>;
-		clock-cntl-level = "lowsvs", "svs", "svs_l1", "norm", "turbo";
+		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal", "turbo";
 		src-clock-name = "tfe_csid_clk_src";
 		clock-control-debugfs = "true";
 		status = "ok";
@@ -1152,6 +1159,7 @@
 		interrupt-names = "tfe1";
 		interrupts = <GIC_SPI 467 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
 			"tfe_ahb_clk",
 			"tfe_clk_src",
@@ -1166,7 +1174,7 @@
 			<0 548000000 0>,
 			<0 630000000 0>,
 			<0 630000000 0>;
-		clock-cntl-level = "lowsvs", "svs", "svs_l1", "norm", "turbo";
+		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal", "turbo";
 		src-clock-name = "tfe_clk_src";
 		clock-control-debugfs = "true";
 		cam_hw_pid = < 5 9 >;
@@ -1183,6 +1191,7 @@
 		interrupt-names = "csid2";
 		interrupts = <GIC_SPI 640 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
 			"tfe_csid_clk_src",
 			"tfe_csid_clk",
@@ -1203,7 +1212,7 @@
 			<400000000 0 400000000 0 548000000 0>,
 			<400000000 0 400000000 0 630000000 0>,
 			<400000000 0 400000000 0 630000000 0>;
-		clock-cntl-level = "lowsvs", "svs", "svs_l1", "norm", "turbo";
+		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal", "turbo";
 		src-clock-name = "tfe_csid_clk_src";
 		clock-control-debugfs = "true";
 		status = "ok";
@@ -1218,6 +1227,7 @@
 		interrupt-names = "tfe2";
 		interrupts = <GIC_SPI 641 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
 			"tfe_ahb_clk",
 			"tfe_clk_src",
@@ -1232,7 +1242,7 @@
 			<0 548000000 0>,
 			<0 630000000 0>,
 			<0 630000000 0>;
-		clock-cntl-level = "lowsvs", "svs", "svs_l1", "norm", "turbo";
+		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal", "turbo";
 		src-clock-name = "tfe_clk_src";
 		clock-control-debugfs = "true";
 		cam_hw_pid = < 6 10 >;
@@ -1310,7 +1320,6 @@
 		status = "ok";
 		icp_pc_en;
 		icp_use_pil;
-		ipe_bps_pc_en;
 	};
 
 	cam_lx7: qcom,lx7 {
@@ -1323,8 +1332,8 @@
 		reg-cam-base = <0x1000 0x1800 0x4000>;
 		interrupt-names = "lx7";
 		interrupts = <GIC_SPI 463 IRQ_TYPE_EDGE_RISING>;
-		regulator-names = "gdsc";
-		gdsc-supply = <&cam_cc_titan_top_gdsc>;
+		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		memory-region = <&camera_mem>;
 		clock-names =
 			"icp_clk_src",
@@ -1374,6 +1383,7 @@
 		interrupts = <GIC_SPI 469 IRQ_TYPE_EDGE_RISING>;
 		interrupt-names = "cre";
 		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
 			"cre_ahb_clk",
 			"cre_clk_src",
@@ -1403,8 +1413,8 @@
 		reg = <0xac42000 0x16000>;
 		reg-names = "ipe0_top";
 		reg-cam-base = <0x42000>;
-		regulator-names = "ipe0-vdd";
-		ipe0-vdd-supply = <&cam_cc_ipe_0_gdsc>;
+		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
 			"ope_ahb_clk",
 			"ope_areg_clk",
@@ -1425,7 +1435,7 @@
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal",
 			"turbo";
 		nrt-device;
-		src-clock-name = "ipe_nps_clk_src";
+		src-clock-name = "ope_clk_src";
 		clock-control-debugfs = "true";
 		cam_hw_pid = <16 2>;
 		status = "ok";
@@ -1437,8 +1447,8 @@
 		reg = <0xac2c000 0x7800>;
 		reg-names = "bps_top";
 		reg-cam-base = <0x2c000>;
-		regulator-names = "bps-vdd";
-		bps-vdd-supply = <&cam_cc_bps_gdsc>;
+		regulator-names = "camss";
+		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names =
 			"bps_ahb_clk",
 			"bps_areg_clk",
