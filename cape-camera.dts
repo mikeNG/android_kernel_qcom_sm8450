@@ -10,7 +10,7 @@
 #include "cape-camera.dtsi"
 / {
 	model = "Qualcomm Technologies, Inc. Cape v1 SoC";
-	compatible = "qcom,cape";
-	qcom,msm-id = <530 0x10000>, <540 0x10000>;
+	compatible = "qcom,cape", "qcom,capep";
+	qcom,msm-id = <530 0x10000>, <531 0x10000>, <540 0x10000>;
 	qcom,board-id = <0 0>;
 };
