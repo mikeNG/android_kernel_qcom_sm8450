@@ -1962,11 +1962,11 @@
 	cam_sfe0: qcom,sfe0@ac9e000 {
 		cell-index = <0>;
 		compatible = "qcom,sfe680";
-		reg-names = "sfe0", "rt_wrapper";
-		reg = <0xac9e000 0x8000>,
-			<0xac62000 0x64000>;
-		reg-cam-base = <0x9e000 0x62000>;
-		interrupt-names = "sfe0";
+		reg-names = "sfe0";
+		reg = <0xac9e000 0x8000>;
+		reg-cam-base = <0x9e000>;
+		rt-wrapper-base = <0x62000>;
+		interrupt-names = "sfe";
 		interrupts = <GIC_SPI 462 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc", "sfe0";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
@@ -1998,11 +1998,11 @@
 	cam_sfe1: qcom,sfe1@aca6000 {
 		cell-index = <1>;
 		compatible = "qcom,sfe680";
-		reg-names = "sfe1", "rt_wrapper";
-		reg = <0xaca6000 0x8000>,
-			<0xac62000 0x64000>;
-		reg-cam-base = <0xa6000 0x62000>;
-		interrupt-names = "sfe1";
+		reg-names = "sfe1";
+		reg = <0xaca6000 0x8000>;
+		reg-cam-base = <0xa6000>;
+		rt-wrapper-base = <0x62000>;
+		interrupt-names = "sfe";
 		interrupts = <GIC_SPI 653 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc", "sfe1";
 		gdsc-supply = <&cam_cc_titan_top_gdsc>;
@@ -2034,11 +2034,11 @@
 	cam_csid0: qcom,csid0@acb7000 {
 		cell-index = <0>;
 		compatible = "qcom,csid680_110";
-		reg-names = "csid", "csid_top", "rt_wrapper";
+		reg-names = "csid", "csid_top";
 		reg = <0xacb7000 0xd00>,
-			<0xacb6000 0x1000>,
-			<0xac62000 0x64000>;
-		reg-cam-base = <0xb7000 0xb6000 0x62000>;
+			<0xacb6000 0x1000>;
+		reg-cam-base = <0xb7000 0xb6000>;
+		rt-wrapper-base = <0x62000>;
 		interrupt-names = "csid";
 		interrupts = <GIC_SPI 464 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
@@ -2068,11 +2068,11 @@
 	cam_vfe0: qcom,ife0@ac62000 {
 		cell-index = <0>;
 		compatible = "qcom,vfe680_110";
-		reg-names = "ife", "cam_camnoc", "rt_wrapper";
+		reg-names = "ife", "cam_camnoc";
 		reg = <0xac62000 0xf000>,
-			<0xac19000 0x9000>,
-			<0xac62000 0x64000>;
-		reg-cam-base = <0x62000 0x19000 0x62000>;
+			<0xac19000 0x9000>;
+		reg-cam-base = <0x62000 0x19000>;
+		rt-wrapper-base = <0x62000>;
 		interrupt-names = "ife";
 		interrupts = <GIC_SPI 465 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc", "ife0";
@@ -2109,11 +2109,11 @@
 	cam_csid1: qcom,csid1@acb9000 {
 		cell-index = <1>;
 		compatible = "qcom,csid680_110";
-		reg-names = "csid", "csid_top", "rt_wrapper";
+		reg-names = "csid", "csid_top";
 		reg = <0xacb9000 0xd00>,
-			<0xacb6000 0x1000>,
-			<0xac62000 0x64000>;
-		reg-cam-base = <0xb9000 0xb6000 0x62000>;
+			<0xacb6000 0x1000>;
+		reg-cam-base = <0xb9000 0xb6000>;
+		rt-wrapper-base = <0x62000>;
 		interrupt-names = "csid";
 		interrupts = <GIC_SPI 466 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
@@ -2143,11 +2143,11 @@
 	cam_vfe1: qcom,ife1@ac71000 {
 		cell-index = <1>;
 		compatible = "qcom,vfe680_110";
-		reg-names = "ife", "cam_camnoc", "rt_wrapper";
+		reg-names = "ife", "cam_camnoc";
 		reg = <0xac71000 0xf000>,
-			<0xac19000 0x9000>,
-			<0xac62000 0x64000>;
-		reg-cam-base = <0x71000 0x19000 0x62000>;
+			<0xac19000 0x9000>;
+		reg-cam-base = <0x71000 0x19000>;
+		rt-wrapper-base = <0x62000>;
 		interrupt-names = "ife";
 		interrupts = <GIC_SPI 467 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc", "ife1";
@@ -2184,11 +2184,11 @@
 	cam_csid2: qcom,csid2@acbb000 {
 		cell-index = <2>;
 		compatible = "qcom,csid680_110";
-		reg-names = "csid", "csid_top", "rt_wrapper";
+		reg-names = "csid", "csid_top";
 		reg = <0xacbb000 0xd00>,
-			<0xacb6000 0x1000>,
-			<0xac62000 0x64000>;
-		reg-cam-base = <0xbb000 0xb6000 0x62000>;
+			<0xacb6000 0x1000>;
+		reg-cam-base = <0xbb000 0xb6000>;
+		rt-wrapper-base = <0x62000>;
 		interrupt-names = "csid";
 		interrupts = <GIC_SPI 640 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
@@ -2218,11 +2218,11 @@
 	cam_vfe2: qcom,ife2@ac80000 {
 		cell-index = <2>;
 		compatible = "qcom,vfe680_110";
-		reg-names = "ife", "cam_camnoc", "rt_wrapper";
+		reg-names = "ife", "cam_camnoc";
 		reg = <0xac80000 0xf000>,
-			<0xac19000 0x9000>,
-			<0xac62000 0x64000>;
-		reg-cam-base = <0x80000 0x19000 0x62000>;
+			<0xac19000 0x9000>;
+		reg-cam-base = <0x80000 0x19000>;
+		rt-wrapper-base = <0x62000>;
 		interrupt-names = "ife";
 		interrupts = <GIC_SPI 641 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc", "ife2";
@@ -2636,10 +2636,11 @@
 
 	cam_jpeg_enc: qcom,jpegenc@ac2a000 {
 		cell-index = <0>;
-		compatible = "qcom,cam_jpeg_enc";
-		reg-names = "jpege_hw";
-		reg = <0xac2a000 0x1000>;
-		reg-cam-base = <0x2a000>;
+		compatible = "qcom,cam_jpeg_enc_680";
+		reg-names = "jpege_hw", "cam_camnoc";
+		reg = <0xac2a000 0x1000>,
+			<0x0ac19000 0x9000>;
+		reg-cam-base = <0x2a000 0x19000>;
 		interrupt-names = "jpeg";
 		interrupts = <GIC_SPI 474 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
@@ -2663,10 +2664,11 @@
 
 	cam_jpeg_dma: qcom,jpegdma@ac2b000 {
 		cell-index = <0>;
-		compatible = "qcom,cam_jpeg_dma";
-		reg-names = "jpegdma_hw";
-		reg = <0xac2b000 0x1000>;
-		reg-cam-base = <0x2b000>;
+		compatible = "qcom,cam_jpeg_dma_680";
+		reg-names = "jpegdma_hw", "cam_camnoc";
+		reg = <0xac2b000 0x1000>,
+			<0x0ac19000 0x9000>;
+		reg-cam-base = <0x2b000 0x19000>;
 		interrupt-names = "jpegdma";
 		interrupts = <GIC_SPI 475 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdsc";
