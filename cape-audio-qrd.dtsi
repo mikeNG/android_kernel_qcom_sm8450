@@ -1,5 +1,1 @@
 #include "waipio-audio-qrd.dtsi"
-
-&waipio_snd {
-	qcom,ext-disp-audio-rx = <0>;
-};
