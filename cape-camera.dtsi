@@ -542,7 +542,7 @@
 		interrupts = <GIC_SPI 477 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		gdscr-supply = <&cam_cc_titan_top_gdsc>;
-		csi-vdd-1p2-supply = <&L6B>;
+		csi-vdd-1p2-supply = <&L10C>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
 		rgltr-enable-sync = <1>;
@@ -576,7 +576,7 @@
 		interrupts = <GIC_SPI 478 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		gdscr-supply = <&cam_cc_titan_top_gdsc>;
-		csi-vdd-1p2-supply = <&L6B>;
+		csi-vdd-1p2-supply = <&L10C>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
 		rgltr-enable-sync = <1>;
@@ -611,7 +611,7 @@
 		interrupts = <GIC_SPI 479 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		gdscr-supply = <&cam_cc_titan_top_gdsc>;
-		csi-vdd-1p2-supply = <&L6B>;
+		csi-vdd-1p2-supply = <&L10C>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
 		rgltr-enable-sync = <1>;
@@ -645,7 +645,7 @@
 		interrupts = <GIC_SPI 448 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		gdscr-supply = <&cam_cc_titan_top_gdsc>;
-		csi-vdd-1p2-supply = <&L6B>;
+		csi-vdd-1p2-supply = <&L10C>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
 		rgltr-enable-sync = <1>;
@@ -679,7 +679,7 @@
 		interrupts = <GIC_SPI 122 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		gdscr-supply = <&cam_cc_titan_top_gdsc>;
-		csi-vdd-1p2-supply = <&L6B>;
+		csi-vdd-1p2-supply = <&L10C>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
 		rgltr-enable-sync = <1>;
@@ -713,7 +713,7 @@
 		interrupts = <GIC_SPI 89 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "gdscr", "csi-vdd-1p2", "csi-vdd-0p9";
 		gdscr-supply = <&cam_cc_titan_top_gdsc>;
-		csi-vdd-1p2-supply = <&L6B>;
+		csi-vdd-1p2-supply = <&L10C>;
 		csi-vdd-0p9-supply = <&L5B>;
 		rgltr-cntrl-support;
 		rgltr-enable-sync = <1>;
