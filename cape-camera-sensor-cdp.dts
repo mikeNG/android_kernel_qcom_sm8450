@@ -12,5 +12,5 @@
 	model = "Qualcomm Technologies, Inc. Cape CDP";
 	compatible = "qcom,cape", "qcom,capep";
 	qcom,msm-id = <530 0x10000>, <531 0x10000>, <540 0x10000>;
-	qcom,board-id = <1 0>, <0x10001 0>;
+	qcom,board-id = <1 0>, <0x10001 0>, <0x10001 2>;
 };
