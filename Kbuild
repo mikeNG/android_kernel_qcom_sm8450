@@ -20,6 +20,7 @@ dtbo-$(CONFIG_ARCH_CAPE) += cape-audio.dtbo \
                  cape-audio-cdp-qhd.dtbo \
                  cape-audio-mtp.dtbo \
                  cape-audio-mtp-120fps.dtbo \
+                 cape-audio-mtp-nodisplay.dtbo \
                  cape-audio-atp.dtbo \
                  cape-audio-qrd.dtbo
 
