@@ -446,7 +446,6 @@
 		pinctrl-0 = <&wsa_swr_clk_active &wsa_swr_data_active>;
 		pinctrl-1 = <&wsa_swr_clk_sleep &wsa_swr_data_sleep>;
 		qcom,lpi-gpios;
-		qcom,tlmm-pins = <176>;
 		#gpio-cells = <0>;
 	};
 
@@ -456,7 +455,6 @@
 		pinctrl-0 = <&wsa2_swr_clk_active &wsa2_swr_data_active>;
 		pinctrl-1 = <&wsa2_swr_clk_sleep &wsa2_swr_data_sleep>;
 		qcom,lpi-gpios;
-		qcom,tlmm-pins = <181>;
 		#gpio-cells = <0>;
 	};
 
@@ -468,7 +466,6 @@
 		pinctrl-1 = <&rx_swr_clk_sleep &rx_swr_data_sleep
 				&rx_swr_data1_sleep>;
 		qcom,lpi-gpios;
-		qcom,tlmm-pins = <169>;
 		#gpio-cells = <0>;
 	};
 
@@ -480,7 +477,6 @@
 		pinctrl-1 = <&tx_swr_clk_sleep &tx_swr_data0_sleep
 			    &tx_swr_data1_sleep &tx_swr_data2_sleep>;
 		qcom,lpi-gpios;
-		qcom,tlmm-pins = <166>;
 		#gpio-cells = <0>;
 	};
 
@@ -490,7 +486,6 @@
 		pinctrl-0 = <&cdc_dmic01_clk_active &cdc_dmic01_data_active>;
 		pinctrl-1 = <&cdc_dmic01_clk_sleep &cdc_dmic01_data_sleep>;
 		qcom,lpi-gpios;
-		qcom,tlmm-pins = <171 172>;
 		#gpio-cells = <0>;
 	};
 
@@ -500,7 +495,6 @@
 		pinctrl-0 = <&cdc_dmic23_clk_active &cdc_dmic23_data_active>;
 		pinctrl-1 = <&cdc_dmic23_clk_sleep &cdc_dmic23_data_sleep>;
 		qcom,lpi-gpios;
-		qcom,tlmm-pins = <174>;
 		#gpio-cells = <0>;
 	};
 
@@ -510,7 +504,6 @@
 		pinctrl-0 = <&cdc_dmic45_clk_active &cdc_dmic45_data_active>;
 		pinctrl-1 = <&cdc_dmic45_clk_sleep &cdc_dmic45_data_sleep>;
 		qcom,lpi-gpios;
-		qcom,tlmm-pins = <177>;
 		#gpio-cells = <0>;
 	};
 
@@ -520,7 +513,6 @@
 		pinctrl-0 = <&cdc_dmic67_clk_active &cdc_dmic67_data_active>;
 		pinctrl-1 = <&cdc_dmic67_clk_sleep &cdc_dmic67_data_sleep>;
 		qcom,lpi-gpios;
-		qcom,tlmm-pins = <182>;
 		#gpio-cells = <0>;
 	};
 };
