@@ -5,6 +5,7 @@ KBUILD_OPTIONS += CONFIG_DRM_MSM=m
 KBUILD_EXTRA_SYMBOLS := $(M)/../mmrm/Module.symvers
 
 all:
+	$(shell cp -r $(shell pwd)/include/uapi/display $(KERNEL_SRC)/include/uapi/)
 	$(MAKE) -C $(KERNEL_SRC) M=$(M) modules $(KBUILD_OPTIONS) $(KBUILD_EXTRA_SYMBOLS)
 
 modules_install:
