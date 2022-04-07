@@ -6,6 +6,7 @@ KBUILD_OPTIONS += MODNAME=camera
 KBUILD_EXTRA_SYMBOLS := $(M)/../mmrm/Module.symvers
 
 all: modules
+	$(shell cp -r $(shell pwd)/include/uapi/camera $(KERNEL_SRC)/include/uapi/)
 
 modules dtbs:
 	$(MAKE) -C $(KERNEL_SRC) M=$(M) modules $(KBUILD_OPTIONS) $(KBUILD_EXTRA_SYMBOLS)
