@@ -382,12 +382,25 @@ class MergedDeviceTree(object):
 			yield mdt.save(name, out_dir)
 
 def parse_dt_files(dt_folder):
-	for root, dirs, files in os.walk(dt_folder):
-		for filename in files:
-			if os.path.splitext(filename)[1] not in ['.dtb', '.dtbo']:
-				continue
-			filepath = os.path.join(root, filename)
-			yield DeviceTree(filepath)
+	for filename in os.listdir(dt_folder):
+		if os.path.splitext(filename)[1] not in ['.dtb', '.dtbo']:
+			continue
+		filepath = os.path.join(dt_folder, filename)
+		yield DeviceTree(filepath)
+
+def parse_dt_files_subfolder(dt_folder):
+	subfolder = ['camera', 'display', 'video', 'audio', 'mmrm']
+	index = 0
+	while index < len(subfolder):
+		folder = subfolder[index]
+		index += 1
+		print("Looking into " + dt_folder+folder);
+		for root, dirs, files in os.walk(dt_folder+folder):
+			for filename in files:
+				if os.path.splitext(filename)[1] not in ['.dtb', '.dtbo']:
+					continue
+				filepath = os.path.join(root, filename)
+				yield DeviceTree(filepath)
 
 def main():
 	if len(sys.argv) != 4:
@@ -397,7 +410,7 @@ def main():
 
 	# 1. Parse the devicetrees -- extract the device info (msm-id, board-id, pmic-id)
 	bases = parse_dt_files(sys.argv[1])
-	techpacks = parse_dt_files(sys.argv[2])
+	techpacks = parse_dt_files_subfolder(sys.argv[2])
 
 	# 2.1: Create an intermediate representation of the merged devicetrees, starting with the base
 	merged_devicetrees = list(map(lambda dt: MergedDeviceTree(dt), bases))
