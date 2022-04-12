@@ -191,6 +191,23 @@ fi
 KERNEL_BINARY=Image
 
 ################################################################################
+## DTBS merge
+function make_dtbs_merge() {
+  rm -rf ${COMMON_OUT_DIR}/dtbs
+  mkdir -p ${COMMON_OUT_DIR}/dtbs
+  PATH=${COMMON_OUT_DIR}/host/bin:${PATH} ${KERNEL_DIR}/scripts/merge_dtbs.py \
+    ${OUT_DIR}/arch/arm64/boot/dts/vendor/qcom/ ${OUT_DIR}/arch/arm64/boot/dts/vendor/qcom/ \
+    ${COMMON_OUT_DIR}/dtbs
+  cp -v ${COMMON_OUT_DIR}/dtbs/*dtb* ${OUT_DIR}/arch/arm64/boot/dts/vendor/qcom/
+  rm -f ${OUT_DIR}/arch/arm64/boot/dts/vendor/qcom/*audio*dtbo
+  rm -f ${OUT_DIR}/arch/arm64/boot/dts/vendor/qcom/*camera*dtbo
+  rm -f ${OUT_DIR}/arch/arm64/boot/dts/vendor/qcom/*display*dtbo
+}
+if [ ! -z $DT_OVERLAY_SUPPORT ] && [ ! $DT_OVERLAY_SUPPORT -eq "0" ]; then
+  append_cmd EXTRA_CMDS 'make_dtbs_merge'
+fi
+
+################################################################################
 ## DT Overlay
 LIBUFDT_PREBUILTS_BIN=tools/libufdt/utils/src
 function make_dtbo_img() {
@@ -223,7 +240,7 @@ fi
 ################################################################################
 ## Copy prebuilt files to ${COMMON_OUT_DIR}/host/bin to be used by CI tools
 DIST_BINS="""
-build/android/merge_dtbs.py
+${KERNEL_DIR}/scripts/merge_dtbs.py
 build/build-tools/path/linux-x86/ufdt_apply_overlay
 """
 function copy_dist_bins() (
