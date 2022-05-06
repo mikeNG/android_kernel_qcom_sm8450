@@ -15,6 +15,16 @@ dtbo-$(CONFIG_ARCH_DIWALI) += diwali-audio.dtbo \
                  diwali-audio-idp-hsp.dtbo \
                  diwali-audio-idp-usbc.dtbo
 
+dtbo-$(CONFIG_ARCH_PARROT) += parrot-audio.dtbo \
+                 parrot-audio-idp.dtbo \
+                 parrot-audio-idp-wcn3990.dtbo \
+                 parrot-audio-idp-wcn3990-amoled-rcm.dtbo \
+                 parrot-audio-idp-wcn6750-amoled.dtbo \
+                 parrot-audio-idp-wcn6750-amoled-rcm.dtbo \
+                 parrot-audio-qrd.dtbo \
+                 parrot-audio-qrd-wcn6750.dtbo \
+                 parrot-audio-atp.dtbo
+
 dtbo-$(CONFIG_ARCH_CAPE) += cape-audio.dtbo \
                  cape-audio-cdp.dtbo \
                  cape-audio-cdp-qhd.dtbo \
