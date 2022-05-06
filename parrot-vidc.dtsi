@@ -17,8 +17,8 @@
 		vcodec-supply = <&video_cc_mvs0_gdsc>;
 
 		/* Clocks */
-		clock-names = "video_cc_mvsc_ctl_axi",
-			"video_cc_mvs0_ctl_axi", "core_clk",
+		clock-names = "video_ctl_axi0_clk",
+			"video_mvs0_axi_clk", "core_clk",
 			"vcodec_clk", "iface_clk", "video_cc_iris_clk_src";
 		clock-ids = <VIDEO_CC_MVSC_CTL_AXI_CLK VIDEO_CC_MVS0_AXI_CLK
 			VIDEO_CC_MVSC_CORE_CLK VIDEO_CC_MVS0_CORE_CLK
@@ -29,8 +29,8 @@
 			<&videocc VIDEO_CC_MVS0_CORE_CLK>,
 			<&videocc VIDEO_CC_VENUS_AHB_CLK>,
 			<&videocc VIDEO_CC_IRIS_CLK_SRC>;
-		qcom,proxy-clock-names = "video_cc_mvsc_ctl_axi",
-			"video_cc_mvs0_ctl_axi", "core_clk",
+		qcom,proxy-clock-names = "video_ctl_axi0_clk",
+			"video_mvs0_axi_clk", "core_clk",
 			"vcodec_clk", "iface_clk", "video_cc_iris_clk_src";
 		/* Mask: Bit0: Clock Scaling, Bit1: Mem Retention*/
 		qcom,clock-configs = <0x0 0x0 0x0 0x0 0x0 0x1>;
