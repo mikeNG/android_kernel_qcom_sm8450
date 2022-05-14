@@ -679,7 +679,7 @@
 		reg-names = "cci";
 		reg-cam-base = <0x15000>;
 		interrupt-names = "cci0";
-		interrupts = <GIC_SPI 24 IRQ_TYPE_EDGE_RISING>;
+		interrupts = <GIC_SPI 460 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "camss";
 		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names = "cci_0_clk_src",
@@ -771,7 +771,7 @@
 		reg-names = "cci";
 		reg-cam-base = <0x16000>;
 		interrupt-names = "cci1";
-		interrupts = <GIC_SPI 25 IRQ_TYPE_EDGE_RISING>;
+		interrupts = <GIC_SPI 271 IRQ_TYPE_EDGE_RISING>;
 		regulator-names = "camss";
 		camss-supply = <&cam_cc_camss_top_gdsc>;
 		clock-names = "cci_1_clk_src",
