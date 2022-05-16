@@ -1,8 +1,8 @@
 #include "parrot-audio-overlay.dtsi"
 
 &waipio_snd {
-	qcom,model = "diwali-parrot-qrd-snd-card";
-	qcom,sku-model = "diwali-qrd-sku1-snd-card";
+	qcom,model = "parrot-qrd-snd-card";
+	qcom,sku-model = "parrot-qrd-sku1-snd-card";
 	nvmem-cells = <&adsp_variant>;
 	nvmem-cell-names = "adsp_variant";
 	qcom,msm-mbhc-usbc-audio-supported = <1>;
