@@ -1564,7 +1564,7 @@
 		cell-index = <1>;
 		compatible = "qcom,tfe640";
 		reg-names = "tfe1";
-		reg = <0xac71000 0x5000>;
+		reg = <0xac71000 0xD000>;
 		reg-cam-base = <0x71000>;
 		interrupt-names = "tfe1";
 		interrupts = <GIC_SPI 467 IRQ_TYPE_EDGE_RISING>;
@@ -1634,7 +1634,7 @@
 		cell-index = <2>;
 		compatible = "qcom,tfe640";
 		reg-names = "tfe2";
-		reg = <0xac80000 0x5000>;
+		reg = <0xac80000 0xD000>;
 		reg-cam-base = <0x80000>;
 		interrupt-names = "tfe2";
 		interrupts = <GIC_SPI 641 IRQ_TYPE_EDGE_RISING>;
