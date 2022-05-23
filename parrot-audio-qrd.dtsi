@@ -1,8 +1,8 @@
 #include "parrot-audio-overlay.dtsi"
 
 &waipio_snd {
-	qcom,model = "diwali-qrd-snd-card";
-	qcom,sku-model = "diwali-qrd-sku1-snd-card";
+	qcom,model = "parrot-qrd-snd-card";
+	qcom,sku-model = "parrot-qrd-sku1-snd-card";
 	nvmem-cells = <&adsp_variant>;
 	nvmem-cell-names = "adsp_variant";
 	qcom,msm-mbhc-usbc-audio-supported = <1>;
@@ -18,7 +18,7 @@
 			"AMIC4", "Analog Mic4",
 			"AMIC4", "MIC BIAS1",
 			"AMIC5", "Analog Mic5",
-			"AMIC5", "MIC BIAS4",
+			"AMIC5", "MIC BIAS1",
 			"VA AMIC1", "Analog Mic1",
 			"VA AMIC1", "VA MIC BIAS1",
 			"VA AMIC2", "Analog Mic2",
@@ -28,7 +28,7 @@
 			"VA AMIC4", "Analog Mic4",
 			"VA AMIC4", "VA MIC BIAS1",
 			"VA AMIC5", "Analog Mic5",
-			"VA AMIC5", "VA MIC BIAS4",
+			"VA AMIC5", "VA MIC BIAS1",
 			"TX DMIC0", "Digital Mic0",
 			"TX DMIC0", "MIC BIAS3",
 			"TX DMIC1", "Digital Mic1",

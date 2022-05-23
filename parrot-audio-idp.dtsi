@@ -5,7 +5,7 @@
 //};
 
 &waipio_snd {
-	qcom,sku-model = "diwali-idp-sku1-snd-card";
+	qcom,sku-model = "parrot-idp-sku1-snd-card";
 	nvmem-cells = <&adsp_variant>;
 	nvmem-cell-names = "adsp_variant";
 	asoc-codec = <&stub_codec>, <&lpass_cdc>,
