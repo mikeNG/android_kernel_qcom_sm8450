@@ -7,10 +7,10 @@
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
 
-#include "parrot-camera-sensor-idp.dtsi"
+#include "parrot-camera-sensor-qrd.dtsi"
 / {
-	model = "Qualcomm Technologies, Inc. Parrot IDP";
+	model = "Qualcomm Technologies, Inc. Parrot QRD";
 	compatible = "qcom,parrot";
 	qcom,msm-id = <537 0x10000>;
-	qcom,board-id = <34 0>, <34 1>, <34 2>, <34 3>, <34 4>;
+	qcom,board-id = <0x1000B 0>;
 };
