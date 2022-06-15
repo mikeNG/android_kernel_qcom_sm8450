@@ -186,7 +186,11 @@
  * Gesture function enable
  * default: disable
  */
+#ifdef CONFIG_ARCH_QTI_VM
 #define FTS_GESTURE_EN                          0
+#else
+#define FTS_GESTURE_EN                          1
+#endif
 
 /*
  * ESD check & protection
