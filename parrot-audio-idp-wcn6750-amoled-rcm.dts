@@ -2,6 +2,7 @@
 /plugin/;
 
 #include "parrot-audio-idp.dtsi"
+#include "parrot-audio-wcn6750.dtsi"
 
 / {
 	model = "Qualcomm Technologies, Inc. Parrot WCN6750 IDP + AMOLED + RCM";

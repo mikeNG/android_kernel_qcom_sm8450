@@ -2,6 +2,7 @@
 /plugin/;
 
 #include "parrot-audio-qrd.dtsi"
+#include "parrot-audio-wcn6750.dtsi"
 
 / {
 	model = "Qualcomm Technologies, Inc. Parrot QRD";

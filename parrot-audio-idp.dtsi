@@ -1,9 +1,5 @@
 #include "parrot-audio-overlay.dtsi"
 
-//&cdc_tert_mi2s_gpios {
-//	status = "ok";
-//};
-
 &waipio_snd {
 	qcom,sku-model = "parrot-idp-sku1-snd-card";
 	nvmem-cells = <&adsp_variant>;
