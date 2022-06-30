@@ -11,5 +11,5 @@
 	model = "Qualcomm Technologies, Inc. Parrot";
 	compatible = "qcom,parrot";
 	qcom,msm-id = <537 0x10000>;
-	qcom,board-id = <0 0>;
+	qcom,board-id = <0 0>, <0 0x600>;
 };
