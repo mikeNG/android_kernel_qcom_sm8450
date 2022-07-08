@@ -1687,7 +1687,7 @@
 			<400000000 0 300000000 0>,
 			<400000000 0 300000000 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal";
-		src-clock-name = "csi0phytimer_clk_src";
+		src-clock-name = "cphy_rx_clk_src";
 		status = "ok";
 	};
 
@@ -1717,7 +1717,7 @@
 			<400000000 0 300000000 0>,
 			<400000000 0 300000000 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal";
-		src-clock-name = "csi1phytimer_clk_src";
+		src-clock-name = "cphy_rx_clk_src";
 		status = "ok";
 	};
 
