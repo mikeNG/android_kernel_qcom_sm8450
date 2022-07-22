@@ -12,5 +12,5 @@
 	model = "Qualcomm Technologies, Inc. Parrot v1 SoC";
 	compatible = "qcom,parrot";
 	qcom,msm-id = <537 0x10000>;
-	qcom,board-id = <0 0>;
+	qcom,board-id = <0 0>, <0 0x600>;
 };
