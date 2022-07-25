@@ -1,0 +1,5 @@
+#include "cape-audio-qrd.dtsi"
+
+&waipio_snd {
+	qcom,model = "ukee-qrd-snd-card";
+};
