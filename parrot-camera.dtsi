@@ -1466,32 +1466,20 @@
 			"tfe0_ahb_clk",
 			"tfe0_csid_clk_src",
 			"tfe0_csid_clk",
-			"cphy_rx_clk_src",
 			"tfe0_cphy_rx_clk",
-			"tfe0_clk_src",
 			"tfe0_clk";
                 clocks =
 			<&camcc CAM_CC_TFE_0_AHB_CLK>,
                         <&camcc CAM_CC_TFE_0_CSID_CLK_SRC>,
                         <&camcc CAM_CC_TFE_0_CSID_CLK>,
-			<&camcc CAM_CC_CPHY_RX_CLK_SRC>,
 			<&camcc CAM_CC_TFE_0_CPHY_RX_CLK>,
-			<&camcc CAM_CC_TFE_0_CLK_SRC>,
 			<&camcc CAM_CC_TFE_0_CLK>;
 		clock-rates =
-			<0 300000000 0 300000000 0 350000000 0>,
-			<0 400000000 0 400000000 0 432000000 0>,
-			<0 400000000 0 400000000 0 548000000 0>,
-			<0 400000000 0 400000000 0 630000000 0>,
-			<0 400000000 0 400000000 0 630000000 0>;
-		agg-clks =
-			<0 0>,
-			<0 0>,
-			<0 0>,
-			<0 0>,
-			<0 0>,
-			<1 CAM_COMMON_TFE_SRC_CLK>,
-			<0 0>;
+			<0 300000000 0 0 0>,
+			<0 400000000 0 0 0>,
+			<0 400000000 0 0 0>,
+			<0 400000000 0 0 0>,
+			<0 400000000 0 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal", "turbo";
 		src-clock-name = "tfe0_csid_clk_src";
 		clock-control-debugfs = "true";
@@ -1548,32 +1536,20 @@
 			"tfe1_ahb_clk",
 			"tfe1_csid_clk_src",
 			"tfe1_csid_clk",
-			"cphy_rx_clk_src",
 			"tfe1_cphy_rx_clk",
-			"tfe1_clk_src",
 			"tfe1_clk";
 		clocks =
 			<&camcc CAM_CC_TFE_1_AHB_CLK>,
 			<&camcc CAM_CC_TFE_1_CSID_CLK_SRC>,
 			<&camcc CAM_CC_TFE_1_CSID_CLK>,
-			<&camcc CAM_CC_CPHY_RX_CLK_SRC>,
 			<&camcc CAM_CC_TFE_1_CPHY_RX_CLK>,
-			<&camcc CAM_CC_TFE_1_CLK_SRC>,
 			<&camcc CAM_CC_TFE_1_CLK>;
 		clock-rates =
-			<0 300000000 0 300000000 0 350000000 0>,
-			<0 400000000 0 400000000 0 432000000 0>,
-			<0 400000000 0 400000000 0 548000000 0>,
-			<0 400000000 0 400000000 0 630000000 0>,
-			<0 400000000 0 400000000 0 630000000 0>;
-		agg-clks =
-			<0 0>,
-			<0 0>,
-			<0 0>,
-			<0 0>,
-			<0 0>,
-			<1 CAM_COMMON_TFE_SRC_CLK>,
-			<0 0>;
+			<0 300000000 0 0 0>,
+			<0 400000000 0 0 0>,
+			<0 400000000 0 0 0>,
+			<0 400000000 0 0 0>,
+			<0 400000000 0 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal", "turbo";
 		src-clock-name = "tfe1_csid_clk_src";
 		clock-control-debugfs = "true";
@@ -1630,32 +1606,20 @@
 			"tfe2_ahb_clk",
 			"tfe2_csid_clk_src",
 			"tfe2_csid_clk",
-			"cphy_rx_clk_src",
 			"tfe2_cphy_rx_clk",
-			"tfe2_clk_src",
 			"tfe2_clk";
 		clocks =
 			<&camcc CAM_CC_TFE_2_AHB_CLK>,
 			<&camcc CAM_CC_TFE_2_CSID_CLK_SRC>,
 			<&camcc CAM_CC_TFE_2_CSID_CLK>,
-			<&camcc CAM_CC_CPHY_RX_CLK_SRC>,
 			<&camcc CAM_CC_TFE_2_CPHY_RX_CLK>,
-			<&camcc CAM_CC_TFE_2_CLK_SRC>,
 			<&camcc CAM_CC_TFE_2_CLK>;
 		clock-rates =
-			<0 300000000 0 300000000 0 350000000 0>,
-			<0 400000000 0 400000000 0 432000000 0>,
-			<0 400000000 0 400000000 0 548000000 0>,
-			<0 400000000 0 400000000 0 630000000 0>,
-			<0 400000000 0 400000000 0 630000000 0>;
-		agg-clks =
-			<0 0>,
-			<0 0>,
-			<0 0>,
-			<0 0>,
-			<0 0>,
-			<1 CAM_COMMON_TFE_SRC_CLK>,
-			<0 0>;
+			<0 300000000 0 0 0>,
+			<0 400000000 0 0 0>,
+			<0 400000000 0 0 0>,
+			<0 400000000 0 0 0>,
+			<0 400000000 0 0 0>;
 		clock-cntl-level = "lowsvs", "svs", "svs_l1", "nominal", "turbo";
 		src-clock-name = "tfe2_csid_clk_src";
 		clock-control-debugfs = "true";
