@@ -4,8 +4,8 @@
 #include "ukee-audio-cdp.dtsi"
 
 / {
-	model = "Qualcomm Technologies, Inc. Cape CDP";
-	compatible = "qcom,cape-cdp", "qcom,cape", "qcom,cdp";
-	qcom,msm-id = <530 0x10000>, <531 0x10000>, <540 0x10000>;
+	model = "Qualcomm Technologies, Inc. Ukee CDP";
+	compatible = "qcom,ukee-cdp", "qcom,ukee", "qcom,cdp";
+	qcom,msm-id = <591 0x10000>;
 	qcom,board-id = <0x10001 0>;
 };
