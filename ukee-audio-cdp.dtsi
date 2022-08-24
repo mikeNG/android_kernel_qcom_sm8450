@@ -1,0 +1,6 @@
+#include "cape-audio-cdp.dtsi"
+
+&waipio_snd {
+	qcom,model = "ukee-cdp-snd-card";
+};
+

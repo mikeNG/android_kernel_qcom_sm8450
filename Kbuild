@@ -32,7 +32,11 @@ dtbo-$(CONFIG_ARCH_CAPE) += cape-audio.dtbo \
                  cape-audio-mtp-120fps.dtbo \
                  cape-audio-mtp-nodisplay.dtbo \
                  cape-audio-atp.dtbo \
-                 cape-audio-qrd.dtbo
+                 cape-audio-qrd.dtbo \
+                 ukee-audio-mtp.dtbo \
+                 ukee-audio-qrd.dtbo \
+                 ukee-audio-atp.dtbo \
+                 ukee-audio-cdp.dtbo
 
  always-y    := $(dtb-y) $(dtbo-y)
  subdir-y    := $(dts-dirs)

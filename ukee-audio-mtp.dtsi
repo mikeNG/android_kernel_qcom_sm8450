@@ -1,0 +1,6 @@
+#include "cape-audio-mtp.dtsi"
+
+&waipio_snd {
+	qcom,model = "ukee-mtp-snd-card";
+};
+
