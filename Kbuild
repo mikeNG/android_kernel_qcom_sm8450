@@ -39,6 +39,7 @@ dtbo-$(CONFIG_ARCH_CAPE) += cape-audio.dtbo \
                  ukee-audio-atp.dtbo \
                  ukee-audio-mtp-120fps.dtbo \
                  ukee-audio-mtp-nodisplay.dtbo \
+                 ukee-audio-cdp-qhd.dtbo \
                  ukee-audio-cdp.dtbo
 
  always-y    := $(dtb-y) $(dtbo-y)
