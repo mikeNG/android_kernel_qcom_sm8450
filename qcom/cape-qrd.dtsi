@@ -119,6 +119,10 @@
 	};
 };
 
+&pm8350c_rgb {
+	status = "disabled";
+};
+
 &pm8350c_switch0 {
 	qcom,led-mask = <9>; /* Channels 1 & 4 */
 	qcom,symmetry-en;
