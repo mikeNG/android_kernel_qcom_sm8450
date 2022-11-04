@@ -558,7 +558,7 @@
 		cell-index = <0>;
 		compatible = "qcom,csid640_210";
 		reg-names = "csid0";
-		reg = <0xac62000 0x1000>,
+		reg = <0xac62000 0x1000>;
 		reg-cam-base = <0x62000 0x19000>;
 		interrupt-names = "csid0";
 		interrupts = <GIC_SPI 464 IRQ_TYPE_EDGE_RISING>;
@@ -627,7 +627,7 @@
 		cell-index = <1>;
 		compatible = "qcom,csid640_v210";
 		reg-names = "csid1";
-		reg = <0xac71000 0x1000>,
+		reg = <0xac71000 0x1000>;
 		reg-cam-base = <0x71000 0x19000>;
 		interrupt-names = "csid1";
 		interrupts = <GIC_SPI 466 IRQ_TYPE_EDGE_RISING>;
