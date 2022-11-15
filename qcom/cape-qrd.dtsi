@@ -145,8 +145,6 @@
 		compatible = "onnn,redriver";
 		reg = <0x1c>;
 
-		lane-channel-swap;
-
 		pinctrl-names = "default";
 		pinctrl-0 = <&usb3phy_portselect_gpio>;
 		gpios = <&tlmm 91 0>;
