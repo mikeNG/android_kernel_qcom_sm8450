@@ -72,6 +72,10 @@
 			snps,dis_u2_susphy_quirk;
 			snps,dis_u3_susphy_quirk;
 			snps,ssp-u3-u0-quirk;
+			snps,gen2-tx-de-emph = <0x34C2>;
+			snps,gen2-tx-de-emph1 = <0x0600>;
+			snps,gen2-tx-de-emph2 = <0x2580>;
+			snps,gen2-tx-de-emph3 = <0x0600>;
 			tx-fifo-resize;
 			dr_mode = "otg";
 			maximum-speed = "super-speed-plus";
