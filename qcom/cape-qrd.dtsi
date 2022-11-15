@@ -256,9 +256,9 @@
 
 	#address-cells = <1>;
 	#size-cells = <0>;
-	nxp_eusb2_repeater: eusb2_repeater@4f {
+	nxp_eusb2_repeater: eusb2_repeater@43 {
 		compatible = "nxp,eusb2-repeater";
-		reg = <0x4f>;
+		reg = <0x43>;
 		vdd18-supply = <&S10B>;
 		vdd3-supply = <&L2B>;
 		reset-gpio = <&pm8350c_gpios 7 GPIO_ACTIVE_HIGH>;
