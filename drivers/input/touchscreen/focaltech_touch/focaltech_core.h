@@ -102,7 +102,10 @@
 
 #define FTX_MAX_COMPATIBLE_TYPE             4
 #define FTX_MAX_COMMMAND_LENGTH             16
-
+//add by huanghongkun for begin
+#define FTS_MAX_COMPATIBLE_TYPE             4
+#define FTS_MAX_COMMMAND_LENGTH             16
+//add by huanghongkun for end
 
 /*****************************************************************************
 *  Alternative mode (When something goes wrong, the modules may be able to solve the problem.)
