@@ -1717,7 +1717,8 @@ static int fts_input_report_b(struct fts_ts_data *data)
 			touchs |= BIT(events[i].id);
 			data->touchs |= BIT(events[i].id);
 
-			if (data->log_level >= 1) {
+			if ((data->log_level >= 2) ||
+				((1 == data->log_level) && (FTS_TOUCH_DOWN == events[i].flag))) {
 				FTS_DEBUG("[B]P%d(%d, %d)[p:%d,tm:%d] DOWN!",
 					events[i].id,
 					events[i].x, events[i].y,
