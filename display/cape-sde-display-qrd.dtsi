@@ -70,6 +70,16 @@
 	qcom,platform-reset-gpio = <&tlmm 0 0>;
 };
 
+&dsi_e667_everdisplay_amoled_cmd {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <3650>;
+	qcom,mdss-dsi-bl-inverted-dbv;
+	qcom,mdss-brightness-max-level = <3650>;
+	qcom,platform-reset-gpio = <&tlmm 0 0>;
+};
+
 &dsi_sim_cmd {
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply_sim>;
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
@@ -92,31 +102,19 @@
 };
 
 &sde_dsi {
-	qcom,dsi-default-panel = <&dsi_r66451_amoled_144hz_cmd_cphy>;
+	qcom,dsi-default-panel = <&dsi_e667_everdisplay_amoled_cmd>;
 };
 
-&qupv3_se4_spi {
-	focaltech@0 {
-		panel = <&dsi_r66451_amoled_144hz_cmd_cphy
-			&dsi_r66451_amoled_144hz_video_cphy
-			&dsi_r66451_amoled_video_cphy
-			&dsi_r66451_amoled_cmd_cphy
-			&dsi_r66451_amoled_120hz_cmd_cphy
-			&dsi_r66451_amoled_90hz_cmd_cphy_nodsc
-			&dsi_r66451_amoled_90hz_video_cphy_nodsc>;
+&qupv3_se4_i2c {
+	focaltech@38 {
+		panel = <&dsi_e667_everdisplay_amoled_cmd>;
 	};
 };
 
 &spmi_bus {
 	qcom,pm8350b@3 {
 		qcom,amoled-ecm@f900 {
-			display-panels = <&dsi_r66451_amoled_144hz_cmd_cphy
-					&dsi_r66451_amoled_144hz_video_cphy
-					&dsi_r66451_amoled_video_cphy
-					&dsi_r66451_amoled_cmd_cphy
-					&dsi_r66451_amoled_120hz_cmd_cphy
-					&dsi_r66451_amoled_90hz_cmd_cphy_nodsc
-					&dsi_r66451_amoled_90hz_video_cphy_nodsc>;
+			display-panels = <&dsi_e667_everdisplay_amoled_cmd>;
 		};
 	};
 };

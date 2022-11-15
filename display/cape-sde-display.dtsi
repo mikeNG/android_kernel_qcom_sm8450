@@ -125,3 +125,7 @@
 &dsi_sim_dsc_10b_cmd {
 	qcom,ulps-enabled;
 };
+
+&dsi_e667_everdisplay_amoled_cmd {
+	qcom,ulps-enabled;
+};

@@ -18,6 +18,7 @@
 #include "dsi-panel-sim-dsc-10bit-cmd.dtsi"
 #include "dsi-panel-sim-dsc375-cmd.dtsi"
 #include "dsi-panel-sim-fhd-plus-120hz-video-cphy.dtsi"
+#include "dsi-panel-e667-everdisplay-fhd-plus-cmd.dtsi"
 
 #include "cape-sde-display-pinctrl.dtsi"
 
@@ -137,6 +138,7 @@
 			qcom,supply-enable-load = <10000>;
 			qcom,supply-disable-load = <0>;
 			qcom,supply-post-on-sleep = <0>;
+			qcom,supply-post-off-sleep = <5>;
 		};
 
 		qcom,panel-supply-entry@2 {
@@ -174,7 +176,7 @@
 		qcom,panel-te-source = <0>;
 
 		qcom,mdp = <&mdss_mdp>;
-		qcom,dsi-default-panel = <&dsi_r66451_amoled_video_cphy>;
+		qcom,dsi-default-panel = <&dsi_e667_everdisplay_amoled_cmd>;
 		qcom,demura-panel-id = <0x0122e700 0x000000b0>;
 	};
 
@@ -536,6 +538,38 @@
 		timing@0 {
 			qcom,mdss-dsi-panel-phy-timings = [00 22 09 09 19 23 09
 				09 09 02 04 00 1d 0e];
+			qcom,display-topology = <2 2 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
+&dsi_e667_everdisplay_amoled_cmd {
+	qcom,dsi-select-clocks = "pll_byte_clk0", "pll_dsi_clk0";
+
+	qcom,esd-check-enabled;
+	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
+	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 68];
+	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+	qcom,mdss-dsi-panel-status-value = <0x00>;
+	qcom,mdss-dsi-panel-status-read-length = <1>;
+
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-phy-timings = [00 1a 06 06 16 20 07		/*120HZ*/
+				07 07 02 04 00 16 0c];
+			qcom,display-topology = <2 2 1>;
+			qcom,default-topology-index = <0>;
+		};
+		timing@1 {
+			qcom,mdss-dsi-panel-phy-timings = [00 1a 06 06 16 20 07		/*90HZ*/
+				07 07 02 04 00 16 0c];
+			qcom,display-topology = <2 2 1>;
+			qcom,default-topology-index = <0>;
+		};
+		timing@2 {
+			qcom,mdss-dsi-panel-phy-timings = [00 1a 06 06 16 20 07		/*60HZ*/
+				07 07 02 04 00 16 0c];
 			qcom,display-topology = <2 2 1>;
 			qcom,default-topology-index = <0>;
 		};
