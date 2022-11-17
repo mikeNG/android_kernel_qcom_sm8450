@@ -12,6 +12,763 @@
 #include "cam_common_util.h"
 #include "cam_packet_util.h"
 
+#include "dw9784_fw_data.h"
+
+#define EOK						0
+#define ERROR_SECOND_ID 				1
+#define ERROR_WHOAMI					2
+#define ERROR_FW_VALID					3
+#define ERROR_FW_VERIFY 				4
+#define ERROR_FW_CHECKSUM				5
+#define ERROR_FW_DOWN_FMC				6
+#define ERROR_FW_DWON_FAIL				7
+#define ERROR_ALL_CHECKUM				8
+#define ERROR_WHO_AMI					9
+#define ERROR_WAIT_CHECK_REG				10
+#define ERROR_GYRO_OFS_CAL				11
+#define ERROR_CAL_STORE					12
+
+
+#define GYRO_TDK_ICM20690				0
+#define GYRO_ST_LSM6DSM					2
+#define GYRO_ST_LSM6DSOQ				4
+#define GYRO_TDK_ICM42631				5
+#define GYRO_BOSCH_BMI260				6
+#define GYRO_TDK_ICM42692				7
+
+#define GYRO_FRONT_LAYOUT				0
+#define GYRO_BACK_LAYOUT				1
+
+#define GYRO_DEGREE_0					0
+#define GYRO_DEGREE_90					90
+#define GYRO_DEGREE_180					180
+#define GYRO_DEGREE_270					270
+
+#define DW9784_CHIP_ID_ADDRESS			0x7000
+#define DW9784_CHIP_ID					0x9784
+
+#define MCS_SIZE_W						10240	//20KB
+#define DATPKT_SIZE						256
+#define PID_SIZE_W						256		//0.5KB
+
+#define IF_START_ADDRESS				0x8000
+#define MCS_START_ADDRESS				0x8000
+
+//#define USE_FW_CHECK
+
+#define LOOP_A						200
+#define LOOP_B						LOOP_A-1
+#define WAIT_TIME					100
+
+/* gyro offset calibration */
+#define GYRO_OFS_CAL_DONE_FAIL				0xFF
+#define X_AXIS_GYRO_OFS_PASS				0x1
+#define X_AXIS_GYRO_OFS_FAIL				0x1
+#define Y_AXIS_GYRO_OFS_PASS				0x2
+#define Y_AXIS_GYRO_OFS_FAIL				0x2
+#define X_AXIS_GYRO_OFS_OVER_MAX_LIMIT			0x10
+#define Y_AXIS_GYRO_OFS_OVER_MAX_LIMIT			0x20
+#define XY_AXIS_CHECK_GYRO_RAW_DATA			0x800
+
+//#define USE_GYRO_OFS_ZERO
+
+extern bool DW9784_calibration_enable;
+extern int DW9784_calibration_status;
+
+
+
+typedef struct
+{
+	unsigned short driverIc;
+	unsigned short *fwContentPtr;
+	unsigned short version;
+}FirmwareContex;
+
+
+
+/*Global buffer for flash download*/
+FirmwareContex g_firmwareContext;
+unsigned short g_downloadByForce;
+unsigned short g_updateFw;
+
+unsigned short set_gyro_type = 0;	/* gyro type on the phone set */
+int gyro_arrangement = 0;
+int gyro_degree = 0;
+
+static int32_t write_reg_value(struct camera_io_master *io_master_info,uint32_t reg,uint32_t data,uint32_t delay_ms)
+{
+	struct cam_sensor_i2c_reg_setting  i2c_reg_setting;
+	struct cam_sensor_i2c_reg_array    reg_setting;
+	int32_t rc=0;
+
+	reg_setting.reg_addr = reg;
+	reg_setting.reg_data = data;
+	reg_setting.delay = 0;
+	reg_setting.data_mask = 0;
+
+	i2c_reg_setting.addr_type = CAMERA_SENSOR_I2C_TYPE_WORD;
+	i2c_reg_setting.data_type = CAMERA_SENSOR_I2C_TYPE_WORD;
+	i2c_reg_setting.size = 1;
+	i2c_reg_setting.delay = delay_ms;
+	i2c_reg_setting.reg_setting = &reg_setting;
+
+	rc = camera_io_dev_write_continuous(io_master_info,
+		&i2c_reg_setting, CAM_SENSOR_I2C_WRITE_SEQ);
+
+	return rc;
+}
+
+static int32_t write_block_16bit_value(struct camera_io_master *io_master_info,uint32_t reg,
+unsigned short *data,uint32_t size)
+{
+#if 1
+	struct cam_sensor_i2c_reg_setting  i2c_reg_setting;
+	void *vaddr = NULL;
+	int32_t rc=0,mem_size=0,cnt=0;
+
+	mem_size = (sizeof(struct cam_sensor_i2c_reg_array) * size);
+	vaddr = vmalloc(mem_size);
+	if (!vaddr) {
+		CAM_ERR(CAM_ACTUATOR,
+			"Failed in allocating i2c_array: mem_size: %u", mem_size);
+		return -ENOMEM;
+	}
+
+	i2c_reg_setting.reg_setting = (struct cam_sensor_i2c_reg_array *) (
+		vaddr);
+
+	for (cnt = 0; cnt < size; cnt++ ) {
+		i2c_reg_setting.reg_setting[cnt].reg_addr = reg + cnt;
+		i2c_reg_setting.reg_setting[cnt].reg_data = data[cnt];
+		i2c_reg_setting.reg_setting[cnt].delay = 0;
+		i2c_reg_setting.reg_setting[cnt].data_mask = 0;
+	}
+
+	i2c_reg_setting.addr_type = CAMERA_SENSOR_I2C_TYPE_WORD;
+	i2c_reg_setting.data_type = CAMERA_SENSOR_I2C_TYPE_WORD;
+	i2c_reg_setting.size = size;
+	i2c_reg_setting.delay = 0;
+
+	rc = camera_io_dev_write_continuous(io_master_info,
+		&i2c_reg_setting, CAM_SENSOR_I2C_WRITE_SEQ);
+
+	vfree(vaddr);
+#else
+	uint32_t i=0,addr=0;
+	int32_t rc=0;
+
+	for(i=0;i<size;i++)
+	{
+		addr = reg+i;
+		rc=write_reg_value(io_master_info,addr,data[i],0);
+	}
+#endif
+	return rc;
+
+}
+
+static int32_t read_reg_value(struct camera_io_master *io_master_info,uint32_t reg,uint32_t* data)
+{
+	int32_t rc=0;
+
+	rc = camera_io_dev_read(io_master_info,reg, data, CAMERA_SENSOR_I2C_TYPE_WORD,
+		CAMERA_SENSOR_I2C_TYPE_WORD);
+
+	return rc;
+}
+
+static int dw9784_wait_check_register(struct camera_io_master *io_master_info,unsigned short reg, unsigned short ref)
+{
+	uint32_t r_data;
+	int i=0;
+
+	for(i = 0; i < LOOP_A; i++) {
+		read_reg_value(io_master_info,reg,&r_data); //Read status
+		if(r_data == ref) {
+			break;
+		}
+		else {
+			if (i >= LOOP_B) {
+				CAM_ERR(CAM_ACTUATOR,"[dw9784_wait_check_register]fail: 0x%04X", r_data);
+				return ERROR_WAIT_CHECK_REG;
+			}
+		}
+		msleep(WAIT_TIME);
+	}
+	return EOK;
+}
+
+
+static void dw9784_flash_acess(struct camera_io_master *io_master_info)
+{
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_flash_acess] start");
+	/* release all protection */
+	write_reg_value(io_master_info,0xFAFA, 0x98AC,1);
+
+	write_reg_value(io_master_info,0xF053, 0x70BD,2);
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_flash_acess] finish");
+}
+
+static void dw9784_ois_reset(struct camera_io_master *io_master_info)
+{
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_ois_reset] start ois reset");
+	write_reg_value(io_master_info,0xD002, 0x0001,4); /* logic reset */
+	write_reg_value(io_master_info,0xD001, 0x0001,25); /* Active mode (DSP ON) */
+	write_reg_value(io_master_info,0xEBF1, 0x56FA,0); /* User protection release */
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_ois_reset] finish");
+}
+
+static int dw9784_whoami_chk(struct camera_io_master *io_master_info)
+{
+	uint32_t sec_chip_id;
+	write_reg_value(io_master_info, 0xD000, 0x0001, 4); /* chip enable */
+	write_reg_value(io_master_info, 0xD001, 0x0000, 1); /* dsp off mode */
+
+	dw9784_flash_acess(io_master_info); /* All protection */
+
+	read_reg_value(io_master_info,0xD060,&sec_chip_id);
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_ois_ready_check] sec_chip_id : 0x%04x", sec_chip_id);
+	if(sec_chip_id != 0x0020)
+	{
+		CAM_ERR(CAM_ACTUATOR,"[dw9784] second_chip_id check fail : 0x%04X", sec_chip_id);
+		CAM_ERR(CAM_ACTUATOR,"[dw9784] second_enter shutdown mode");
+		CAM_ERR(CAM_ACTUATOR,"[dw9784] dw9784 cannot work");
+		write_reg_value(io_master_info,0xD000, 0x0000,0); /* ic */
+		return ERROR_SECOND_ID;
+	}
+
+	dw9784_ois_reset(io_master_info); /* ois reset */
+	return EOK;
+}
+
+static uint32_t dw9784_chip_id_chk(struct camera_io_master *io_master_info)
+{
+	uint32_t chip_id;
+	read_reg_value(io_master_info,DW9784_CHIP_ID_ADDRESS, &chip_id);
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_chip_id] chip_id : 0x%04X", chip_id);
+	return chip_id;
+}
+
+static int dw9784_checksum_fw_chk(struct camera_io_master *io_master_info)
+{
+	/*
+	Bit [0]: FW checksum error
+	Bit [1]: Module cal. checksum error
+	Bit [2]: Set cal. checksum error
+	*/
+	uint32_t reg_fw_checksum;			// 0x700C
+	uint32_t reg_checksum_status;		// 0x700D
+
+	read_reg_value(io_master_info,0x700C, &reg_fw_checksum);
+	read_reg_value(io_master_info,0x700D, &reg_checksum_status);
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_checksum_fw_chk] reg_checksum_status : 0x%04X", reg_checksum_status);
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_checksum_fw_chk] ref_fw_checksum : 0x%04X, reg_fw_checksum : 0x%04X", DW9784_FW_CHECKSUM, reg_fw_checksum);
+
+	if( (reg_checksum_status & 0x0001) == 0)
+	{
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_checksum_fw_chk] fw checksum pass");
+		return EOK;
+	}else
+	{
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_checksum_fw_chk] fw checksum error");
+		return ERROR_FW_CHECKSUM;
+	}
+}
+
+static unsigned short dw9784_fw_ver_chk(struct camera_io_master *io_master_info)
+{
+	uint32_t fw_ver;
+	uint32_t fw_date;
+
+	read_reg_value(io_master_info,0x7001, &fw_ver);
+	read_reg_value(io_master_info,0x7002, &fw_date);
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_fw_ver_chk] fw version : 0x%04X", fw_ver);
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_fw_ver_chk] fw date : 0x%04X", fw_date);
+
+	return fw_ver;
+}
+
+static void dw9784_shutdown_mode(struct camera_io_master *io_master_info)
+{
+	CAM_INFO(CAM_ACTUATOR,"[all_prot_off] enter ic shutdown mode");
+	write_reg_value(io_master_info,0xD000, 0x0000,1);
+}
+
+static void dw9784_code_pt_off(struct camera_io_master *io_master_info)
+{
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_code_pt_off] start");
+	/* release all protection */
+	write_reg_value(io_master_info,0xFD00, 0x5252,1);
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_code_pt_off] finish");
+}
+
+static void dw9784_fw_eflash_erase(struct camera_io_master *io_master_info)
+{
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_fw_eflash_erase] start fw flash erase");
+	write_reg_value(io_master_info,0xde03, 0x0000,1);			// 4k Sector_0
+
+	write_reg_value(io_master_info,0xde04, 0x0002,10);			// 4k Sector Erase
+
+	write_reg_value(io_master_info,0xde03, 0x0008,1);			// 4k Sector_1
+
+	write_reg_value(io_master_info,0xde04, 0x0002,10);			// 4k Sector Erase
+
+	write_reg_value(io_master_info,0xde03, 0x0010,1);			// 4k Sector_2
+
+	write_reg_value(io_master_info,0xde04, 0x0002,10);			// 4k Sector Erase
+
+	write_reg_value(io_master_info,0xde03, 0x0018,1);			// 4k Sector_3
+
+	write_reg_value(io_master_info,0xde04, 0x0002,10);			// 4k Sector Erase
+
+	write_reg_value(io_master_info,0xde03, 0x0020,1);			// 4k Sector_4
+
+	write_reg_value(io_master_info,0xde04, 0x0002,10);			// 4k Sector Erase
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_fw_eflash_erase] finish");
+}
+
+static void dw9784_pid_erase(struct camera_io_master *io_master_info)
+{
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_pid_erase] start pid flash(IF) erase");
+	write_reg_value(io_master_info,0xde03, 0x0000,1);			// page 0
+
+	write_reg_value(io_master_info,0xde04, 0x0008,10);			// page erase
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_pid_erase] finish");
+}
+
+
+#ifdef USE_FW_CHECK
+unsigned short buf_temp[10240];
+#endif
+static int dw9784_download_fw(struct camera_io_master *io_master_info,int module_state)
+{
+	unsigned short i;
+	uint32_t addr;
+	uint32_t FMC;
+	//unsigned short buf[g_firmwareContext.size];
+#ifdef USE_FW_CHECK
+	uint32_t data_buf = 0;
+	memset(buf_temp, 0, MCS_SIZE_W * sizeof(unsigned short));
+#endif
+
+	/* step 1: MTP Erase and DSP Disable for firmware 0x8000 write */
+	write_reg_value(io_master_info,0xd001, 0x0000,0);
+
+	/* step 2: MTP setup */
+	dw9784_flash_acess(io_master_info);
+
+
+	/* step 3. FMC register check */
+	write_reg_value(io_master_info,0xDE01, 0x0000,1); // FMC block FW select
+
+	read_reg_value(io_master_info,0xDE01, &FMC);
+	if (FMC != 0)
+	{
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] FMC register value 1st warning : %04x", FMC);
+		write_reg_value(io_master_info,0xDE01, 0x0000,1);
+		FMC = 0; // initialize FMC value
+
+		read_reg_value(io_master_info,0xDE01, &FMC);
+		if (FMC != 0)
+		{
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] 2nd FMC register value 2nd warning : %04x", FMC);
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] stop f/w download");
+			return ERROR_FW_DOWN_FMC;
+		}
+	}
+
+	/* step 4. code protection off */
+	dw9784_code_pt_off(io_master_info);
+
+	/* step 5. erase flash fw data */
+	dw9784_fw_eflash_erase(io_master_info);
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_download_fw] start firmware download");
+	/* step 6. firmware sequential write to flash */
+	/* updates the module status before firmware download */
+	*(g_firmwareContext.fwContentPtr + MCS_SIZE_W -1) = module_state;
+	for (i = 0; i < MCS_SIZE_W; i += DATPKT_SIZE)
+	{
+		addr = MCS_START_ADDRESS + i;
+		write_block_16bit_value(io_master_info,addr,g_firmwareContext.fwContentPtr + i,DATPKT_SIZE);
+	}
+
+#ifdef USE_FW_CHECK
+	/* Check by reading fw flash directly to i2c */
+	/* It is disabled by default */
+	/* firmware sequential read from flash */
+	for (i = 0; i <  MCS_SIZE_W; i++)
+	{
+		addr = MCS_START_ADDRESS + i;
+		read_reg_value(io_master_info,addr, &data_buf);
+		buf_temp[i] = data_buf;
+	}
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_download_fw] read firmware from flash");
+	/* firmware verify */
+	for (i = 0; i < MCS_SIZE_W; i++)
+	{
+		if (g_firmwareContext.fwContentPtr[i] != buf_temp[i])
+		{
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] firmware verify NG!!! ADDR:%04X -- firmware:%04x -- READ:%04x ", MCS_START_ADDRESS+i, g_firmwareContext.fwContentPtr[i], buf_temp[i]);
+			return ERROR_FW_VERIFY;
+		}
+	}
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_download_fw] firmware verification pass");
+#endif
+
+	/* step 6. Writes 512Byte FW(PID) data to IF flash.	(FMC register check) */
+	write_reg_value(io_master_info,0xDE01, 0x1000, 1);
+
+	read_reg_value(io_master_info,0xDE01, &FMC);
+
+	if (FMC != 0x1000)
+	{
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] IF FMC register value 1st warning : %04x", FMC);
+		write_reg_value(io_master_info,0xDE01, 0x1000,1);
+		FMC = 0; // initialize FMC value
+
+		read_reg_value(io_master_info,0xDE01, &FMC);
+		if (FMC != 0x1000)
+		{
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] 2nd IF FMC register value 2nd fail : %04x", FMC);
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] stop firmware download");
+			return ERROR_FW_DOWN_FMC;
+		}
+	}
+
+	/* step 7. erease IF(FW/PID) eFLASH  */
+	dw9784_pid_erase(io_master_info);
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_download_fw] start firmware/pid download");
+	/* step 8. firmware sequential write to flash */
+	for (i = 0; i < PID_SIZE_W; i += DATPKT_SIZE)
+	{
+		addr = IF_START_ADDRESS + i;
+		write_block_16bit_value(io_master_info,addr,g_firmwareContext.fwContentPtr + MCS_SIZE_W + i,DATPKT_SIZE);
+	}
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_download_fw] write firmware/pid to flash");
+
+#ifdef USE_FW_CHECK
+	/* Check by reading fw flash directly to i2c */
+	/* It is disabled by default */
+	memset(buf_temp, 0, MCS_SIZE_W * sizeof(unsigned short));
+
+	/* step 9. firmware sequential read from flash */
+	for (i = 0; i <  PID_SIZE_W; i++)
+	{
+		addr = IF_START_ADDRESS + i;
+		read_reg_value(io_master_info,addr,  &data_buf);
+		buf_temp[i] = data_buf;
+	}
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_download_fw] read firmware/pid from flash");
+	/* step 10. firmware verify */
+	for (i = 0; i < PID_SIZE_W; i++)
+	{
+		if (g_firmwareContext.fwContentPtr[i + MCS_SIZE_W] != buf_temp[i])
+		{
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] firmware/pid verify fail! ADDR:%04X -- firmware:%04x -- READ:%04x ", MCS_START_ADDRESS+i, g_firmwareContext.fwContentPtr[i + MCS_SIZE_W], buf_temp[i]);
+			return ERROR_FW_VERIFY;
+		}
+	}
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_download_fw] firmware/pid verification pass");
+#endif
+	/* step 14. ic reboot */
+	dw9784_ois_reset(io_master_info);
+
+	/* step 15. check fw_checksum */
+	if(dw9784_checksum_fw_chk(io_master_info) == 0)
+	{
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_download_fw] fw download success.");
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_download_fw] finish");
+		return EOK;
+	} else
+	{
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] fw download cheksum fail.");
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_fw] finish");
+		return ERROR_FW_CHECKSUM;
+	}
+}
+
+
+
+static void GenerateFirmwareContexts(void)
+{
+	g_firmwareContext.version = DW9784_FW_VERSION;
+	g_firmwareContext.driverIc = 0x9784;
+	g_firmwareContext.fwContentPtr = DW9784_FW;
+	g_downloadByForce = 0;
+	g_updateFw = 0;
+
+	/* select phone gyro type & direction here */
+	set_gyro_type = GYRO_TDK_ICM42631;
+	gyro_arrangement = GYRO_FRONT_LAYOUT;	/* 0:front side, 1:back side */
+	gyro_degree = GYRO_DEGREE_0;			/* 0: 0deg, 90: 90deg, 180:180deg, 270:270deg */
+}
+
+static int dw9784_download_open_camera(struct camera_io_master *io_master_info)
+{
+	int err_whoami = 0;
+	unsigned short pre_module_state = 0; /* 0x0000: normal, 0xFFFF: abnormal */
+	static int updata_flag = 0;
+
+	if(updata_flag)
+	{
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_download_open_camera] no need to update");
+		return EOK;
+	}
+
+	GenerateFirmwareContexts();
+
+	err_whoami = dw9784_whoami_chk(io_master_info);
+	if (err_whoami == ERROR_SECOND_ID)
+	{
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_open_camera] failed to check the second_id(0x0020) inside the ic");
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_open_camera] stop the dw9784 ic boot operation");
+		return ERROR_WHO_AMI;
+	}
+
+	if (dw9784_chip_id_chk(io_master_info) == DW9784_CHIP_ID)
+	{
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_download_open_camera] dw9784 chip_id check pass");
+	} else
+	{
+		g_downloadByForce = 1;
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_open_camera] dw9784 chip_id check failed");
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_open_camera] force to recovery firmware");
+	}
+
+	if (dw9784_checksum_fw_chk(io_master_info) == ERROR_FW_CHECKSUM)
+	{
+		g_downloadByForce = 1;
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_open_camera] The firmware checksum check of the flash memory failed.");
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_download_open_camera] force to recovery firmware");
+	}
+
+	if (dw9784_fw_ver_chk(io_master_info) != DW9784_FW_VERSION )
+	{
+		g_updateFw = 1;
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_download_open_camera] current fw is not the latest version");
+	}else
+	{
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_download_open_camera] the firmware version is the latest version, ver: 0x%04X", DW9784_FW_VERSION);
+	}
+
+	if (g_downloadByForce == 1)
+	{
+		pre_module_state = 0xFFFF; /* abnormal state */
+	}else if( g_updateFw == 1)
+	{
+		pre_module_state = 0x0000; /* normal state */
+	}
+
+	if (g_downloadByForce || g_updateFw)
+	{
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_download_open_camera] start downloading the latest version firmware, ver: 0x%04X", DW9784_FW_VERSION);
+		if(dw9784_download_fw(io_master_info,pre_module_state) == EOK)
+		{
+			/* fw download success */
+			CAM_INFO(CAM_ACTUATOR,"[dw9784_download_open_camera] complete fw download");
+		}else
+		{
+			/* fw download failed */
+			dw9784_shutdown_mode(io_master_info);
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_download_open_camera] enter ic shutdown(sleep) mode");
+			return ERROR_FW_DWON_FAIL;
+		}
+	}
+
+#if 0
+	/* if SET has to change differnt gyro type, the code below applies */
+	store_flag += dw9784_set_gyro_select(set_gyro_type);
+	store_flag += dw9784_gyro_direction_setting(gyro_arrangement, gyro_degree);
+
+	if (store_flag)
+	{
+		ret = dw9784_set_cal_store();
+	}
+#endif
+	updata_flag = 1;
+	return EOK;
+}
+
+static int dw9784_set_cal_store(struct camera_io_master *io_master_info)
+{
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_set_cal_store] start");
+	write_reg_value(io_master_info,0x7012, 0x000A,0); //Set store mode
+
+	//When store is done, status changes to 0xA000
+	if(dw9784_wait_check_register(io_master_info,0x7010, 0xA000) == EOK) {
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_set_cal_store] successful entry into store mode");
+	}
+	else {
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_set_cal_store] failed to enter store mode");
+		return ERROR_CAL_STORE;
+	}
+
+	dw9784_code_pt_off(io_master_info); /* code protection off */
+	write_reg_value(io_master_info,0x700F, 0x5959,1); //Set protect code
+	write_reg_value(io_master_info,0x7011, 0x0001,40); //Execute store
+
+	//When store is done, status changes to 0xA001
+	if(dw9784_wait_check_register(io_master_info,0x7010, 0xA001) == EOK) {
+		dw9784_ois_reset(io_master_info);
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_set_cal_store] finish");
+	}
+	else {
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_set_cal_store] store function fail");
+		return ERROR_CAL_STORE;
+	}
+	return EOK;
+}
+
+#ifndef USE_GYRO_OFS_ZERO
+static int dw9784_gyro_ofs_calibration(struct camera_io_master *io_master_info)
+{
+	int msg = 0;
+	uint32_t x_ofs, y_ofs, gyro_status;
+
+	if(!DW9784_calibration_enable)
+	{
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration]DW9784 calibration disable");
+		return EOK;
+	}
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] start");
+
+
+	DW9784_calibration_enable = 0;
+
+	dw9784_ois_reset(io_master_info);
+
+	write_reg_value(io_master_info,0x7012, 0x0006,1); // gyro offset calibration
+
+	if(dw9784_wait_check_register(io_master_info,0x7010, 0x6000) == EOK) {
+		write_reg_value(io_master_info,0x7011, 0x0001,100);   // gyro ofs calibration execute command
+	}
+	else {
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] FUNC_FAIL");
+		DW9784_calibration_status = STATUS_CALIBRATION_FAIL;//calibration fail
+		return ERROR_GYRO_OFS_CAL;
+	}
+	if(dw9784_wait_check_register(io_master_info,0x7010, 0x6001) == EOK) { // when calibration is done, Status changes to 0x6001
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration]calibration function finish");
+	}
+	else {
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration]calibration function error");
+		DW9784_calibration_status = STATUS_CALIBRATION_FAIL;//calibration fail
+		return ERROR_GYRO_OFS_CAL;
+	}
+
+	read_reg_value(io_master_info,0x7180, &x_ofs); /* x gyro offset */
+	read_reg_value(io_master_info,0x7181, &y_ofs); /* y gyro offset */
+	read_reg_value(io_master_info,0x7195, &gyro_status); /* gyro offset status */
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration]x gyro offset: 0x%04X(%d)", x_ofs, (short)x_ofs);
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration]y gyro offset: 0x%04X(%d)", y_ofs, (short)y_ofs);
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration]gyro_status: 0x%04X", gyro_status);
+
+	if( (gyro_status & 0x8000)== 0x8000) {	/* Read Gyro offset cailbration result status */
+		if ((gyro_status & 0x1) == X_AXIS_GYRO_OFS_PASS) {
+			msg = EOK;
+			CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] x gyro ofs cal pass");
+		}else
+		{
+			msg += X_AXIS_GYRO_OFS_FAIL;
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] x gyro ofs cal fail");
+		}
+
+		if ( (gyro_status & 0x10) == X_AXIS_GYRO_OFS_OVER_MAX_LIMIT) {
+			msg += X_AXIS_GYRO_OFS_OVER_MAX_LIMIT;
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] x gyro ofs over the max. limit");
+		}
+
+		if ((gyro_status & 0x2) == Y_AXIS_GYRO_OFS_PASS) {
+			msg += EOK;
+			CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] y gyro ofs cal pass");
+		}else
+		{
+			msg += Y_AXIS_GYRO_OFS_FAIL;
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] y gyro ofs cal fail");
+		}
+
+		if ( (gyro_status & 0x20) == Y_AXIS_GYRO_OFS_OVER_MAX_LIMIT) {
+			msg += Y_AXIS_GYRO_OFS_OVER_MAX_LIMIT;
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] y gyro ofs over the max. limit");
+		}
+
+		if ( (gyro_status & 0x800) == XY_AXIS_CHECK_GYRO_RAW_DATA) {
+			msg += XY_AXIS_CHECK_GYRO_RAW_DATA;
+			CAM_ERR(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] check the x/y gyro raw data");
+		}
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] x/y gyro ofs calibration finish");
+
+		if(msg == EOK)
+		{
+			msg = dw9784_set_cal_store(io_master_info);
+		}
+		if(msg == EOK)
+		{
+			DW9784_calibration_status = STATUS_CALIBRATION_SUCCEED;//calibration succeed
+		}
+		else
+		{
+			DW9784_calibration_status = STATUS_CALIBRATION_FAIL;//calibration fail
+		}
+		return msg;
+	}
+	else {
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] x/y gyro ofs calibration done fail");
+		CAM_ERR(CAM_ACTUATOR,"[dw9784_gyro_ofs_calibration] x/y gyro ofs calibration finish");
+		DW9784_calibration_status = STATUS_CALIBRATION_FAIL;//calibration fail
+		return GYRO_OFS_CAL_DONE_FAIL;
+	}
+}
+#else
+static int dw9784_gyro_ofs_set_zero(struct camera_io_master *io_master_info)
+{
+	static int set_zero_flag = 0;
+	uint32_t x_data=0,y_data=0;
+	int ret = 0;
+
+	if(set_zero_flag)
+	{
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_set_zero] no need to set 0");
+		return EOK;
+	}
+
+	dw9784_ois_reset(io_master_info);
+
+	read_reg_value(io_master_info,0x7180, &x_data);
+	read_reg_value(io_master_info,0x7181, &y_data);
+
+	CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_set_zero]0x7180 = %d, 0x7181 = %d",x_data,y_data);
+
+	if((x_data == 0)&&(y_data == 0))
+	{
+		CAM_INFO(CAM_ACTUATOR,"[dw9784_gyro_ofs_set_zero]ofs_set had been set to 0");
+		set_zero_flag =1;
+		return EOK;
+	}
+
+	write_reg_value(io_master_info,0x7180, 0x0000,0);
+	write_reg_value(io_master_info,0x7181, 0x0000,0);
+
+	ret = dw9784_set_cal_store(io_master_info);
+	if(ret == EOK)
+	{
+		set_zero_flag = 1;
+	}
+	return ret;
+}
+#endif
+
+
 int32_t cam_actuator_construct_default_power_setting(
 	struct cam_sensor_power_ctrl_t *power_info)
 {
@@ -601,6 +1358,49 @@ int32_t cam_actuator_i2c_pkt_parse(struct cam_actuator_ctrl_t *a_ctrl,
 				goto end;
 			}
 			a_ctrl->cam_act_state = CAM_ACTUATOR_CONFIG;
+		}
+
+		rc = dw9784_download_open_camera(&(a_ctrl->io_master_info));
+		if(rc !=EOK)
+		{
+			CAM_ERR(CAM_ACTUATOR, "dw9784_download_open_camera failed");
+			rc = cam_actuator_power_down(a_ctrl);
+			if (rc < 0)
+			{
+				CAM_ERR(CAM_ACTUATOR, "Actuator Power down failed");
+			}
+			else
+			{
+				rc = cam_actuator_power_up(a_ctrl);
+				if (rc < 0) {
+					CAM_ERR(CAM_ACTUATOR,
+						" Actuator Power up failed");
+					goto end;
+				}
+			}
+		}
+#ifndef USE_GYRO_OFS_ZERO
+		rc = dw9784_gyro_ofs_calibration(&(a_ctrl->io_master_info));
+#else
+		rc = dw9784_gyro_ofs_set_zero(&(a_ctrl->io_master_info));
+#endif
+		if(rc !=EOK)
+		{
+			CAM_ERR(CAM_ACTUATOR, "dw9784_gyro_ofs_set_zero failed");
+			rc = cam_actuator_power_down(a_ctrl);
+			if (rc < 0)
+			{
+				CAM_ERR(CAM_ACTUATOR, "Actuator Power down failed");
+			}
+			else
+			{
+				rc = cam_actuator_power_up(a_ctrl);
+				if (rc < 0) {
+					CAM_ERR(CAM_ACTUATOR,
+						" Actuator Power up failed");
+					goto end;
+				}
+			}
 		}
 
 		rc = cam_actuator_apply_settings(a_ctrl,

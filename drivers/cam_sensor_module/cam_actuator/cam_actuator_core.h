@@ -8,6 +8,11 @@
 
 #include "cam_actuator_dev.h"
 
+#define STATUS_NO_CALIBRATION				0
+#define STATUS_CALIBRATION_CMD_UPDATE			1
+#define STATUS_CALIBRATION_SUCCEED			2
+#define STATUS_CALIBRATION_FAIL				3
+
 /**
  * @power_info: power setting info to control the power
  *

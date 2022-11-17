@@ -241,11 +241,19 @@ static int cam_ois_update_time(struct i2c_settings_array *i2c_set)
 				return -EINVAL;
 			}
 			for (i = 0; i < size; i++) {
+//modify by huanghongkun for dw9784 ois begin
+#if 0
 				CAM_DBG(CAM_OIS, "time: reg_data[%d]: 0x%x",
 					i, (qtime_ns & 0xFF));
 				i2c_list->i2c_settings.reg_setting[i].reg_data =
 					(qtime_ns & 0xFF);
 				qtime_ns >>= 8;
+#endif
+				CAM_DBG(CAM_OIS, "time: reg_data[%d]: 0x%x",
+					i, ((qtime_ns>>(56-8*i)) & 0xFF));
+				i2c_list->i2c_settings.reg_setting[i].reg_data =
+					((qtime_ns>>(56-8*i)) & 0xFF);
+//modify by huanghongkun for dw9784 ois end
 			}
 		}
 	}

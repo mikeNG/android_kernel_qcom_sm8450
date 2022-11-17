@@ -10,6 +10,86 @@
 #include "cam_trace.h"
 #include "camera_main.h"
 
+#include <linux/fs.h>
+#include <linux/proc_fs.h>
+
+static char calibration_res_buf[32] = {0};
+bool DW9784_calibration_enable = 0;
+int DW9784_calibration_status = STATUS_NO_CALIBRATION;
+
+static struct proc_dir_entry *DW9784_calibration_proc = NULL;
+
+
+static int DW9784_calibration_proc_show(struct seq_file *m, void *v)
+{
+	memset(calibration_res_buf,0,sizeof(calibration_res_buf));
+	switch (DW9784_calibration_status)
+	{
+		case STATUS_NO_CALIBRATION:
+			sprintf(calibration_res_buf,"No calibration");
+			break;
+		case STATUS_CALIBRATION_CMD_UPDATE:
+			sprintf(calibration_res_buf,"calibration cmd update");
+			break;
+		case STATUS_CALIBRATION_SUCCEED:
+			sprintf(calibration_res_buf,"calibration succeed");
+			break;
+		case STATUS_CALIBRATION_FAIL:
+			sprintf(calibration_res_buf,"calibration fail");
+			break;
+		default:
+			sprintf(calibration_res_buf,"No calibration");
+			break;
+	}
+	seq_printf(m, "%s", calibration_res_buf);
+
+	return 0;
+}
+
+static ssize_t DW9784_calibration_proc_write(
+    struct file *filp, const char __user *buff, size_t count, loff_t *ppos)
+{
+	char kbuf[64]={0};
+
+	if (count > sizeof(kbuf))
+		return -EINVAL;
+
+	if (copy_from_user(kbuf, buff, count))
+		return -EFAULT;
+
+	kbuf[count - 1] = '\0';
+
+	if (0 == strcmp("DW9784 calibration enable", kbuf))
+	{
+		CAM_INFO(CAM_ACTUATOR, "DW9784_calibration_enable");
+		DW9784_calibration_enable = 1;
+		DW9784_calibration_status = STATUS_CALIBRATION_CMD_UPDATE;
+	}
+	else
+	{
+		CAM_INFO(CAM_ACTUATOR, "DW9784_calibration_disable");
+		DW9784_calibration_enable = 0;
+	}
+
+	return count;
+}
+
+
+static int DW9784_calibration_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, DW9784_calibration_proc_show, NULL);
+}
+
+
+static const struct proc_ops DW9784_calibration_proc_fops =
+{
+    .proc_open     = DW9784_calibration_proc_open,
+    .proc_read     = seq_read,
+    .proc_write    =  DW9784_calibration_proc_write,
+};
+
+
+
 static int cam_actuator_subdev_close_internal(struct v4l2_subdev *sd,
 	struct v4l2_subdev_fh *fh)
 {
@@ -401,6 +481,12 @@ static int cam_actuator_platform_component_bind(struct device *dev,
 
 	platform_set_drvdata(pdev, a_ctrl);
 	a_ctrl->cam_act_state = CAM_ACTUATOR_INIT;
+
+	DW9784_calibration_proc = proc_create("DW9784_calibration", 0666, NULL, &DW9784_calibration_proc_fops);
+	if (DW9784_calibration_proc == NULL) {
+		CAM_ERR(CAM_ACTUATOR, "dw9784 calibration proc_create err");
+	}
+
 	CAM_DBG(CAM_ACTUATOR, "Component bound successfully %d",
 		a_ctrl->soc_info.index);
 
