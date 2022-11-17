@@ -177,6 +177,21 @@
 				qcom,cdc-static-supplies = "cdc-vdd-1p8";
 				sound-name-prefix = "SpkrRight";
 			};
+
+			wsa881x_0213: wsa881x@21170213 {
+				status = "disabled";
+				compatible = "qcom,wsa881x";
+				reg = <0x10 0x21170213>;
+				qcom,spkr-sd-n-node = <&wsa_spkr_en1>;
+				qcom,lpass-cdc-handle = <&lpass_cdc>;
+				wsa_dev_index = <1>;
+
+				cdc-vdd-1p8-supply = <&L21B>;
+				qcom,cdc-vdd-1p8-voltage = <1800000 1800000>;
+				qcom,cdc-vdd-1p8-current = <20000>;
+				qcom,cdc-static-supplies = "cdc-vdd-1p8";
+				sound-name-prefix = "SpkrLeft";
+			};
 		};
 	};
 
