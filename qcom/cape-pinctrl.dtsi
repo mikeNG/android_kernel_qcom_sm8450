@@ -920,12 +920,12 @@
 	spkr2_1_sd_n {
 		spkr2_1_sd_n_sleep: spkr2_1_sd_n_sleep {
 			mux {
-				pins = "gpio71";
+				pins = "gpio173";
 				function = "gpio";
 			};
 
 			config {
-				pins = "gpio71";
+				pins = "gpio173";
 				drive-strength = <2>;   /* 2 mA */
 				bias-pull-down;
 				input-enable;
@@ -934,12 +934,12 @@
 
 		spkr2_1_sd_n_active: spkr2_1_sd_n_active {
 			mux {
-				pins = "gpio71";
+				pins = "gpio173";
 				function = "gpio";
 			};
 
 			config {
-				pins = "gpio71";
+				pins = "gpio173";
 				drive-strength = <16>;   /* 16 mA */
 				bias-disable;
 				output-high;
