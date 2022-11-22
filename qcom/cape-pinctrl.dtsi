@@ -1499,12 +1499,12 @@
 	qupv3_se8_i2c_pins: qupv3_se8_i2c_pins {
 		qupv3_se8_i2c_active: qupv3_se8_i2c_active {
 			mux {
-				pins = "gpio28", "gpio29";
+				pins = "gpio66", "gpio67";
 				function = "qup8";
 			};
 
 			config {
-				pins = "gpio28", "gpio29";
+				pins = "gpio66", "gpio67";
 				drive-strength = <2>;
 				bias-pull-up;
 			};
@@ -1512,12 +1512,12 @@
 
 		qupv3_se8_i2c_sleep: qupv3_se8_i2c_sleep {
 			mux {
-				pins = "gpio28", "gpio29";
+				pins = "gpio66", "gpio67";
 				function = "gpio";
 			};
 
 			config {
-				pins = "gpio28", "gpio29";
+				pins = "gpio66", "gpio67";
 				drive-strength = <2>;
 				bias-disable;
 			};
@@ -2533,12 +2533,12 @@
 			/* active state */
 			mux {
 				/* NFC Read Interrupt */
-				pins = "gpio46";
+				pins = "gpio69";
 				function = "gpio";
 			};
 
 			config {
-				pins = "gpio46";
+				pins = "gpio69";
 				drive-strength = <2>; /* 2 MA */
 				bias-pull-down;
 			};
@@ -2548,12 +2548,12 @@
 			/* sleep state */
 			mux {
 				/* NFC Read Interrupt */
-				pins = "gpio46";
+				pins = "gpio69";
 				function = "gpio";
 			};
 
 			config {
-				pins = "gpio46";
+				pins = "gpio69";
 				drive-strength = <2>; /* 2 MA */
 				bias-pull-down;
 			};
@@ -2562,12 +2562,12 @@
 		nfc_enable_active: nfc_enable_active {
 			mux {
 				/* Enable, Firmware and Clock request gpios */
-				pins = "gpio34", "gpio45", "gpio35";
+				pins = "gpio66", "gpio66", "gpio67";
 				function = "gpio";
 			};
 
 			config {
-				pins = "gpio34", "gpio45", "gpio35";
+				pins = "gpio66", "gpio66", "gpio67";
 				drive-strength = <2>; /* 2 MA */
 				bias-disable;
 			};
@@ -2575,14 +2575,41 @@
 
 		nfc_enable_suspend: nfc_enable_suspend {
 			mux {
-				pins = "gpio34", "gpio45", "gpio35";
+				pins = "gpio66", "gpio66", "gpio67";
 				function = "gpio";
 			};
 
 			config {
-				pins = "gpio34", "gpio45", "gpio35";
+				pins = "gpio66", "gpio66", "gpio67";
 				drive-strength = <2>; /* 2 MA */
 				bias-disable;
+			};
+		};
+
+		nfc_pinctrl: nfc-pinctrl {
+			mux {
+				pins = "gpio34", "gpio35";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio34", "gpio35";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		nfc_irq: nfc-irq {
+			mux {
+				pins = "gpio46";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio46";
+				drive-strength = <2>;
+				bias-pull-down;
+				input-enable;
 			};
 		};
 	};
@@ -2785,5 +2812,19 @@
 			};
 		};
 
+	};
+	ese {
+		ese_pinctrl: ese-pinctrl {
+			mux {
+				pins = "gpio45";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio45";
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
 	};
 };

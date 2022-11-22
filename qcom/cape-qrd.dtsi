@@ -199,24 +199,19 @@
 &qupv3_se9_i2c {
 	status = "ok";
 	qcom,clk-freq-out = <1000000>;
-	#address-cells = <1>;
-	#size-cells = <0>;
-	nq@28 {
-		compatible = "qcom,sn-nci";
-		reg = <0x28>;
-		qcom,sn-irq = <&tlmm 46 0x00>;
-		qcom,sn-ven = <&tlmm 34 0x00>;
-		qcom,sn-firm = <&tlmm 45 0x00>;
-		qcom,sn-clkreq = <&tlmm 35 0x00>;
-		qcom,sn-vdd-1p8-supply = <&S10B>;
-		qcom,sn-vdd-1p8-voltage = <1800000 1800000>;
-		qcom,sn-vdd-1p8-current = <157000>;
+	st21nfc: st21nfc@08 {
+		compatible = "st,st21nfc";
+		reg = <0x08>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&nfc_pinctrl>, <&nfc_irq>;
 		interrupt-parent = <&tlmm>;
 		interrupts = <46 0>;
-		interrupt-names = "nfc_irq";
-		pinctrl-names = "nfc_active", "nfc_suspend";
-		pinctrl-0 = <&nfc_int_active &nfc_enable_active>;
-		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
+		reset-gpios = <&tlmm 34 0x00>;
+		irq-gpios = <&tlmm 46 0x00>;
+		clkreq-gpios = <&tlmm 35 0x00>;
+		/*vio_i2c-supply = <&L7J>;*/
+		st,clk_pinctrl;
+		status = "ok";
 	};
 };
 
@@ -256,6 +251,18 @@
 		focaltech,trusted-touch-io-sizes = <0x1000 0x4000>;
 		focaltech,trusted-touch-vm-gpio-list = <&tlmm 16 0 &tlmm 17 0 &tlmm 18 0
 						&tlmm 19 0 &tlmm 20 0 &tlmm 21 0x2008>;
+	};
+};
+
+&qupv3_se8_spi {
+	status = "ok";
+	st54j: ese@0 {
+		compatible = "st,st54j_se";
+		reg = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&ese_pinctrl>;
+		spi-max-frequency = <50000000>;
+		esereset-gpio = <&tlmm 45 0x00>;
 	};
 };
 
