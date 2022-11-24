@@ -40,10 +40,8 @@
 			compatible = "qcom,swr-mstr";
 			#address-cells = <2>;
 			#size-cells = <0>;
-			clock-names = "lpass_core_hw_vote",
-					"lpass_audio_hw_vote";
-			clocks = <&lpass_core_hw_vote 0>,
-					<&lpass_audio_hw_vote 0>;
+			clock-names ="lpass_audio_hw_vote";
+			clocks = <&lpass_audio_hw_vote 0>;
 			qcom,swr_master_id = <3>;
 			qcom,mipi-sdw-block-packing-mode = <1>;
 			swrm-io-base = <0x33b0000 0x0>;
@@ -97,10 +95,8 @@
 			compatible = "qcom,swr-mstr";
 			#address-cells = <2>;
 			#size-cells = <0>;
-			clock-names = "lpass_core_hw_vote",
-					"lpass_audio_hw_vote";
-			clocks = <&lpass_core_hw_vote 0>,
-					<&lpass_audio_hw_vote 0>;
+			clock-names ="lpass_audio_hw_vote";
+			clocks = <&lpass_audio_hw_vote 0>;
 			qcom,swr_master_id = <2>;
 			qcom,mipi-sdw-block-packing-mode = <1>;
 			swrm-io-base = <0x3210000 0x0>;
@@ -140,10 +136,8 @@
 			compatible = "qcom,swr-mstr";
 			#address-cells = <2>;
 			#size-cells = <0>;
-			clock-names = "lpass_core_hw_vote",
-					"lpass_audio_hw_vote";
-			clocks = <&lpass_core_hw_vote 0>,
-					<&lpass_audio_hw_vote 0>;
+			clock-names ="lpass_audio_hw_vote";
+			clocks = <&lpass_audio_hw_vote 0>;
 			qcom,swr_master_id = <1>;
 			qcom,mipi-sdw-block-packing-mode = <0>;
 			swrm-io-base = <0x3250000 0x0>;
@@ -214,10 +208,8 @@
 			compatible = "qcom,swr-mstr";
 			#address-cells = <2>;
 			#size-cells = <0>;
-			clock-names = "lpass_core_hw_vote",
-					"lpass_audio_hw_vote";
-			clocks = <&lpass_core_hw_vote 0>,
-					<&lpass_audio_hw_vote 0>;
+			clock-names ="lpass_audio_hw_vote";
+			clocks = <&lpass_audio_hw_vote 0>;
 			qcom,swr_master_id = <4>;
 			qcom,mipi-sdw-block-packing-mode = <0>;
 			swrm-io-base = <0x31f0000 0x0>;
@@ -381,7 +373,7 @@
 		qcom,mi2s-tdm-is-hw-vote-needed = <1>, <0>, <1>, <0>, <0>, <0>;
 		qcom,tdm-max-slots = <8>;
 		qcom,wcn-btfm = <0>;
-		qcom,ext-disp-audio-rx = <1>;
+		qcom,ext-disp-audio-rx = <0>;
 		qcom,tdm-clk-attribute = <0x1>, <0x1>, <0x1>, <0x1>, <0x1>, <0x1>;
 		qcom,mi2s-clk-attribute = <0x1>, <0x1>, <0x1>, <0x1>, <0x1>, <0x1>;
 		qcom,audio-routing =
@@ -515,6 +507,15 @@
 		qcom,lpi-gpios;
 		#gpio-cells = <0>;
 	};
+};
+
+&lpi_tlmm {
+	clock-names ="lpass_audio_hw_vote";
+	clocks = <&lpass_audio_hw_vote 0>;
+};
+
+&lpass_core_hw_vote {
+	status = "disabled";
 };
 
 &msm_audio_ion {
