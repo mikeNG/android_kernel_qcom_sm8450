@@ -38,7 +38,7 @@
 /*****************************************************************************
 * Private constant and macro definitions using #define
 *****************************************************************************/
-#define FTS_FW_REQUEST_SUPPORT                      1
+#define FTS_FW_REQUEST_SUPPORT                      0
 /* Example: focaltech_ts_fw_tianma.bin */
 #define FTS_FW_NAME_PREX_WITH_REQUEST               "focaltech_ts_fw_"
 
@@ -1909,7 +1909,7 @@ static int fts_get_fw_file_via_i(struct fts_upgrade *upg)
  *         TS_MODULE_ID; will use module id to distingwish different modules;
  *         If get fw via reques_firmware(), please set FTS_FW_REQUEST_SUPPORT
  *         =1, and FTS_MODULE_NAME; fw file name will be composed of "focalt-
- *         ech_ts_fw_" & FTS_VENDOR_NAME;
+ *         ech_ts_fw_" & FTS_MODULE_NAME;
  *
  *         If have flash, module_id=vendor_id, If non-flash,module_id need
  *         transfer from LCD driver(gpio or lcm_id or ...);
