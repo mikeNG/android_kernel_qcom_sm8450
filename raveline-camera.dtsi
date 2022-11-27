@@ -625,7 +625,7 @@
 
 	cam_tfe_csid1: qcom,tfe_csid1@ac71000 {
 		cell-index = <1>;
-		compatible = "qcom,csid640_v210";
+		compatible = "qcom,csid640_210";
 		reg-names = "csid1";
 		reg = <0xac71000 0x1000>;
 		reg-cam-base = <0x71000 0x19000>;
@@ -659,7 +659,7 @@
 
 	cam_tfe1: qcom,tfe1@ac71000 {
 		cell-index = <1>;
-		compatible = "qcom,tfe640_v210";
+		compatible = "qcom,tfe640_210";
 		reg-names = "tfe1";
 		reg = <0xac71000 0xD000>;
 		reg-cam-base = <0x71000>;
