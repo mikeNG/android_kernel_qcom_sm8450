@@ -164,7 +164,7 @@
 			"cam_vdig", "cam_vaf", "cam_clk";
 		rgltr-cntrl-support;
 		rgltr-min-voltage = <1808000 2904000 1800000 1104000 2704000 0>;
-		rgltr-max-voltage = <3312000 2800000 1900000 1200000 2950000 0>;
+		rgltr-max-voltage = <3312000 3000000 1900000 1200000 2950000 0>;
 		rgltr-load-current = <4000 96000 88000 872000 103000 0>;
 		gpio-no-mux = <0>;
 		pinctrl-names = "cam_default", "cam_suspend";
