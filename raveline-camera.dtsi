@@ -409,6 +409,7 @@
 			pins = "gpio106";
 			bias-disable; /* No PULL */
 			drive-strength = <2>; /* 2 MA */
+			output-low;
 		};
         };
 
