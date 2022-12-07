@@ -12,5 +12,5 @@
 	model = "Qualcomm Technologies, Inc. Raveline v1 SoC";
 	compatible = "qcom,raveline";
 	qcom,msm-id = <568 0x10000>, <602 0x10000>;
-	qcom,board-id = <0 0>;
+	qcom,board-id = <0 0>, <0 0x600>, <0 0x601>;
 };
