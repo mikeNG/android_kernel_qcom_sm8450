@@ -25,6 +25,12 @@ dtbo-$(CONFIG_ARCH_PARROT) += parrot-audio.dtbo \
                  parrot-audio-qrd-wcn6750.dtbo \
                  parrot-audio-atp.dtbo
 
+dtbo-$(CONFIG_ARCH_RAVELIN) += ravelin-audio.dtbo \
+                 ravelin-audio-idp.dtbo \
+                 ravelin-audio-idp-4gb.dtbo \
+                 ravelin-audio-qrd.dtbo \
+                 ravelin-audio-atp.dtbo
+
 dtbo-$(CONFIG_ARCH_CAPE) += cape-audio.dtbo \
                  cape-audio-cdp.dtbo \
                  cape-audio-cdp-qhd.dtbo \
