@@ -190,7 +190,7 @@
 				qcom,cdc-vdd-1p8-voltage = <1800000 1800000>;
 				qcom,cdc-vdd-1p8-current = <20000>;
 				qcom,cdc-static-supplies = "cdc-vdd-1p8";
-				sound-name-prefix = "SpkrLeft";
+				sound-name-prefix = "SpkrRight";
 			};
 		};
 	};
