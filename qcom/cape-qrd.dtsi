@@ -223,6 +223,7 @@
 	#address-cells = <1>;
 	#size-cells = <0>;
 	status = "ok";
+	qcom,la-vm;
 	qcom,i2c-touch-active = "focaltech,fts_ts";
 
 	focaltech@38 {
