@@ -24,7 +24,7 @@
 };
 
 &waipio_snd {
-	qcom,model = "waipio-qrd-snd-card";
+	qcom,model = "waipio-ingot-snd-card";
 
 	qcom,audio-routing =
 		"AMIC1", "Analog Mic1",
