@@ -88,22 +88,11 @@ static enum qcom_download_dest get_download_dest(struct qcom_dload *poweroff)
 		return QCOM_DOWNLOAD_DEST_UNKNOWN;
 }
 
-static int param_set_download_mode(const char *val,
-		const struct kernel_param *kp)
-{
-	int ret;
-
-	/* update enable_dump according to user input */
-	ret = param_set_bool(val, kp);
-	if (ret)
-		return ret;
-
-	msm_enable_dump_mode(true);
-
-	return 0;
-}
-module_param_call(download_mode, param_set_download_mode, param_get_int,
-			&enable_dump, 0644);
+static const struct kernel_param_ops download_mode_param_ops = {
+	.set = param_set_bool,
+	.get = param_get_bool,
+};
+module_param_cb(download_mode, &download_mode_param_ops, &enable_dump, 0444);
 
 /* interface for exporting attributes */
 struct reset_attribute {
