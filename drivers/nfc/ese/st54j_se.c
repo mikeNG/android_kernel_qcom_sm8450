@@ -111,7 +111,6 @@ static ssize_t st54j_se_write(struct file *filp, const char __user *ubuf,
 	int ret = -EFAULT;
 	size_t bytes = len;
 	char *tx_buf = NULL;
-	char *rx_buf = NULL;
 
 	if (len > INT_MAX)
 		return -EINVAL;
@@ -120,30 +119,21 @@ static ssize_t st54j_se_write(struct file *filp, const char __user *ubuf,
 	mutex_lock(&ese_dev->mutex);
 	while (bytes > 0) {
 		size_t block = bytes < ST54_MAX_BUF ? bytes : ST54_MAX_BUF;
-		
-		struct spi_transfer t = {
-					.tx_buf 	= tx_buf,
-					.rx_buf 	= rx_buf,
-					.len		= block,
-					.speed_hz		= 8000000,
-				};
-					
+
 		tx_buf = ese_dev->kbuf;
 		if (!tx_buf) {
 			dev_err(&ese_dev->spi->dev, "kbuf NULL\n");
 			ret = -ENOMEM;
 			goto err;
 		}
-		rx_buf = kmalloc(block*sizeof(char), GFP_KERNEL);
 		if (copy_from_user(tx_buf, ubuf, block)) {
 			dev_dbg(&ese_dev->spi->dev,
 				"failed to copy from user\n");
 			goto err;
 		}
 
-		
-		ret = spi_sync_transfer(ese_dev->spi, &t, 1);
-		kfree(rx_buf);
+		ret = spi_write(ese_dev->spi, tx_buf, block);
+
 		if (ret < 0) {
 			dev_dbg(&ese_dev->spi->dev, "failed to write to SPI\n");
 			goto err;
@@ -164,7 +154,6 @@ static ssize_t st54j_se_read(struct file *filp, char __user *ubuf, size_t len,
 	ssize_t ret = -EFAULT;
 	size_t bytes = len;
 	char *rx_buf = NULL;
-	char *tx_buf = NULL;
 
 	if (len > INT_MAX)
 		return -EINVAL;
@@ -173,29 +162,21 @@ static ssize_t st54j_se_read(struct file *filp, char __user *ubuf, size_t len,
 	mutex_lock(&ese_dev->mutex);
 	while (bytes > 0) {
 		size_t block = bytes < ST54_MAX_BUF ? bytes : ST54_MAX_BUF;
-		struct spi_transfer	t = {
-			.rx_buf		= rx_buf,
-			.tx_buf		= tx_buf,
-			.len		= block,
-			.speed_hz       = 8000000,
-		};
-			
+
 		rx_buf = ese_dev->kbuf;
 		if (!rx_buf) {
 			dev_err(&ese_dev->spi->dev, "kbuf NULL\n");
 			ret = -ENOMEM;
 			goto err;
 		}
-		tx_buf = kmalloc(block*sizeof(char), GFP_KERNEL);
-		memset(rx_buf, 0, ST54_MAX_BUF);
 
-		ret = spi_sync_transfer(ese_dev->spi, &t, 1);
+		memset(rx_buf, 0, ST54_MAX_BUF);
+		ret = spi_read(ese_dev->spi, rx_buf, block);
 		if (ret < 0) {
 			dev_err(&ese_dev->spi->dev,
 				"failed to read from SPI\n");
 			goto err;
 		}
-		kfree(tx_buf);
 		if (copy_to_user(ubuf, rx_buf, block)) {
 			dev_err(&ese_dev->spi->dev,
 				"failed to copy from user\n");
@@ -231,7 +212,7 @@ static int st54j_se_probe(struct spi_device *spi)
 	struct device_node *np = dev_of_node(&spi->dev);
 	int ret;
 
-	pr_info("%s entry\n", __func__);
+	dev_dbg(dev, "%s entry\n", __func__);
 
 	if (!np) {
 		dev_err(dev, "%s: device tree data missing\n", __func__);
@@ -250,14 +231,14 @@ static int st54j_se_probe(struct spi_device *spi)
 	ese_dev->kbuf = devm_kzalloc(dev, ST54_MAX_BUF, GFP_KERNEL|GFP_DMA);
 	if (ese_dev->kbuf == NULL)
 		return -ENOMEM;
-    pr_info("%s entry..............\n", __func__);
+
 	ese_dev->spi = spi;
 	ese_dev->device.minor = MISC_DYNAMIC_MINOR;
 	ese_dev->device.name = "st54j_se";
 	ese_dev->device.fops = &st54j_se_dev_fops;
 
 	spi->bits_per_word = 8;
-	//spi_param->spi_cs_clk_delay = 90;
+	spi_param->spi_cs_clk_delay = 90;
 	spi->controller_data = spi_param;
 
 	ese_dev->gpiod_se_reset = devm_gpiod_get(dev, "esereset",
@@ -268,14 +249,14 @@ static int st54j_se_probe(struct spi_device *spi)
 			__func__, IS_ERR(ese_dev->gpiod_se_reset));
 		return -ENODEV;
 	}
-    pr_info("%s entry22222222222222222\n", __func__);
+
 	mutex_init(&ese_dev->mutex);
 	ret = misc_register(&ese_dev->device);
 	if (ret) {
 		dev_err(dev, "%s: misc_register failed\n", __func__);
 		goto err;
 	}
-	pr_info("%s: eSE is configured\n", __func__);
+	dev_dbg(dev, "%s: eSE is configured\n", __func__);
 	spi_set_drvdata(spi, ese_dev);
 
 	return 0;
