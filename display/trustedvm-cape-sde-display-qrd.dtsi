@@ -101,8 +101,6 @@
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
 	qcom,platform-reset-gpio = <&tlmm 0 0>;
 	qcom,ulps-enabled;
-	/delete-property/ qcom,dynamic-mode-switch-enabled;
-	/delete-property/ qcom,dynamic-mode-switch-type;
 
 	qcom,mdss-dsi-display-timings {
 		timing@0 {

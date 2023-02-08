@@ -36,9 +36,6 @@
 		qcom,mdss-dsi-te-check-enable;
 		qcom,mdss-dsi-te-using-te-pin;
 
-		qcom,dynamic-mode-switch-enabled;
-		qcom,dynamic-mode-switch-type = "dynamic-switch-immediate";
-
 		qcom,mdss-dsi-display-timings {
 			timing@0 {/*120HZ*/
 				qcom,mdss-dsi-panel-framerate = <120>;/* 120HZ*/
