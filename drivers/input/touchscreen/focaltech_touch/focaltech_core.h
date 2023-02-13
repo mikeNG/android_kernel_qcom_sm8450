@@ -102,10 +102,7 @@
 
 #define FTX_MAX_COMPATIBLE_TYPE             4
 #define FTX_MAX_COMMMAND_LENGTH             16
-//add by huanghongkun for begin
-#define FTS_MAX_COMPATIBLE_TYPE             4
-#define FTS_MAX_COMMMAND_LENGTH             16
-//add by huanghongkun for end
+
 
 /*****************************************************************************
 *  Alternative mode (When something goes wrong, the modules may be able to solve the problem.)
@@ -300,9 +297,9 @@ struct fts_ts_data {
 	atomic_t trusted_touch_transition;
 	atomic_t trusted_touch_event;
 	atomic_t trusted_touch_abort_status;
-	atomic_t delayed_vm_probe_pending;
 	atomic_t trusted_touch_mode;
 #endif
+	atomic_t delayed_vm_probe_pending;
 };
 
 enum _FTS_BUS_TYPE {

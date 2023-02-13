@@ -57,6 +57,7 @@
 #define _FT7250             0x7250081A
 #define _FT7120             0x7120081B
 #define _FT8720             0x8720081C
+#define _FT8726             0x8726081C
 #define _FT8016             0x8016081D
 
 
@@ -197,7 +198,7 @@
  * Production test enable
  * 1: enable, 0:disable(default)
  */
-#define FTS_TEST_EN                             1
+#define FTS_TEST_EN                             0
 
 /*
  * Pinctrl enable

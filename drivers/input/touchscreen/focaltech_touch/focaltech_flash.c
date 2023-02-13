@@ -45,26 +45,31 @@
 /*****************************************************************************
 * Global variable or extern global variabls/functions
 *****************************************************************************/
-//modify by huanghongkun begin
 u8 fw_file[] = {
 #include FTS_UPGRADE_FW_FILE
 };
-//modify by huanghongkun end
 
 struct upgrade_module module_list[] = {
 	{FTS_MODULE_ID, FTS_MODULE_NAME, fw_file, sizeof(fw_file)},
 };
 
+struct upgrade_func upgrade_func_ft8720 = {
+	.ctype = {0x1C},
+	.fwveroff = 0x210E,
+	.fwcfgoff = 0x1000,
+	.appoff = 0x2000,
+	.licoff = 0x0000,
+	.appoff_handle_in_ic = true,
+	.pramboot_supported = false,
+	.new_return_value_from_ic = true,
+	.hid_supported = false,
+};
+
 struct upgrade_func *upgrade_func_list[] = {
 	&upgrade_func_ft5452,
-//	&upgrade_func_ft5652,
 };
 
 struct fts_upgrade *fwupgrade;
-
-//add by huanghongkun begin
-extern u8 TP_version;
-//add by huanghongkun end
 
 /*****************************************************************************
 * Static function prototypes
@@ -236,8 +241,8 @@ static int fts_pram_ecc_cal_algo(
 	int ecc = 0;
 	u8 val[2] = { 0 };
 	u8 tmp = 0;
-//modify by huanghongkun begin
 	u8 cmd[8] = { 0 };
+
 	FTS_INFO("read out pramboot checksum");
 	if ((!upg) || (!upg->func)) {
 		FTS_ERROR("upg/func is null");
@@ -253,7 +258,6 @@ static int fts_pram_ecc_cal_algo(
 	cmd[6] = BYTE_OFF_0(ecc_length);
 	cmd[7] = 0xCC;
 	ret = fts_write(cmd, 8);
-//modify by huanghongkun end
 	if (ret < 0) {
 		FTS_ERROR("write pramboot ecc cal cmd fail");
 		return ret;
@@ -267,21 +271,10 @@ static int fts_pram_ecc_cal_algo(
 			FTS_ERROR("ecc_finish read cmd fail");
 			return ret;
 		}
-//modify by huanghongkun begin
-#if 0
-		if (upg->func->new_return_value_from_ic ||
-			(upg->func->upgspec_version >= UPGRADE_SPEC_V_1_0)) {
-			tmp = FTS_ROMBOOT_CMD_ECC_FINISH_OK_A5;
-		} else {
-			tmp = FTS_ROMBOOT_CMD_ECC_FINISH_OK_00;
-		}
-		if (tmp == val[0])
-			break;
-#endif
+
 		tmp = 0x33;
 		if (tmp == val[0])
 			break;
-//modify by huanghongkun end
 	}
 	if (i >= FTS_ECC_FINISH_TIMEOUT) {
 		FTS_ERROR("wait ecc finish fail");
@@ -382,17 +375,6 @@ static int fts_pram_write_buf(struct fts_upgrade *upg, u8 *buf, u32 len)
 			packet_buf[0] = FTS_ROMBOOT_CMD_WRITE;
 			cmdlen = 1;
 		} else {
-//modify by huanghongkun begin
-#if 0
-			packet_buf[0] = FTS_ROMBOOT_CMD_WRITE;
-			packet_buf[1] = BYTE_OFF_16(offset);
-			packet_buf[2] = BYTE_OFF_8(offset);
-			packet_buf[3] = BYTE_OFF_0(offset);
-
-			packet_buf[4] = BYTE_OFF_8(packet_len);
-			packet_buf[5] = BYTE_OFF_0(packet_len);
-			cmdlen = 6;
-#else
 			packet_buf[0] = FTS_ROMBOOT_CMD_SET_PRAM_ADDR;
 			packet_buf[1] = BYTE_OFF_16(offset);
 			packet_buf[2] = BYTE_OFF_8(offset);
@@ -404,8 +386,6 @@ static int fts_pram_write_buf(struct fts_upgrade *upg, u8 *buf, u32 len)
 			}
 			packet_buf[0] = FTS_ROMBOOT_CMD_WRITE;
 			cmdlen = 1;
-#endif
-//modify by huanghongkun end
 		}
 
 		for (j = 0; j < packet_len; j++) {
@@ -1612,9 +1592,7 @@ static int fts_fwupg_get_ver_in_tp(u8 *ver)
 		FTS_ERROR("read fw ver from tp fail");
 		return ret;
 	}
-	//add by huanghongkun begin
-	TP_version = *ver;
-	//add by huanghongkun end
+
 	return 0;
 }
 
@@ -1658,10 +1636,7 @@ static bool fts_fwupg_need_upgrade(struct fts_upgrade *upg)
 		}
 
 		FTS_INFO("fw version in tp:%x, host:%x", fw_ver_in_tp, fw_ver_in_host);
-		//modify by huanghongkun begin
-		//if (fw_ver_in_tp != fw_ver_in_host) {
-		if (fw_ver_in_tp < fw_ver_in_host) {
-		//modify by huanghongkun end
+		if (fw_ver_in_tp != fw_ver_in_host) {
 			return true;
 		}
 	} else {
@@ -1861,8 +1836,8 @@ static int fts_fwupg_get_module_info(struct fts_upgrade *upg)
 			}
 		}
 		if (i >= FTS_GET_MODULE_NUM) {
-			FTS_ERROR("no module id match, don't get file");
-			return -ENODATA;
+			info = &module_list[0];
+			FTS_ERROR("no module id match, default to use first module");
 		}
 	}
 

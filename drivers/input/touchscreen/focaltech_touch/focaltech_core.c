@@ -82,19 +82,11 @@
 #define FTS_I2C_VTG_MIN_UV                  1800000
 #define FTS_I2C_VTG_MAX_UV                  1800000
 #endif
-//lxm
-static struct dentry *ctptest_dir;
-static struct dentry *ctp_on;
-static struct dentry *ctp_name;
-//end
+
 /*****************************************************************************
 * Global variable or extern global variabls/functions
 *****************************************************************************/
 struct fts_ts_data *fts_data;
-
-//add by huanghongkun begin
-u8 TP_version = 0x0;
-//add by huanghongkun end
 
 #if defined(CONFIG_DRM)
 static struct drm_panel *active_panel;
@@ -103,11 +95,7 @@ static void fts_ts_panel_notifier_callback(enum panel_event_notifier_tag tag,
 #endif
 
 static struct ft_chip_t ctype[] = {
-//modify by huanghongkun begin
-	//{0x88, 0x56, 0x52, 0x00, 0x00, 0x00, 0x00, 0x56, 0xB2},
-	//{0x81, 0x54, 0x52, 0x54, 0x52, 0x00, 0x00, 0x54, 0x5C},
 	{0x89, 0x54, 0x52, 0x54, 0x52, 0x54, 0x5B, 0x54, 0x5E},
-//modify by huanghongkun end
 };
 
 /*****************************************************************************
@@ -2743,8 +2731,7 @@ static int fts_ts_probe_delayed(struct fts_ts_data *fts_data)
 	}
 #endif
 
-	if (!FTS_CHIP_IDC(fts_data->pdata->type))
-		fts_reset_proc(200);
+	fts_reset_proc(200);
 
 	ret = fts_get_ic_information(fts_data);
 	if (ret) {
@@ -2786,43 +2773,7 @@ err_power_init:
 err_gpio_config:
 	return ret;
 }
-//lxm
-static ssize_t ctp_on_read(struct file *file,
-	char __user *user_buf, size_t len, loff_t *offset)
-{
-	unsigned char buf[64];
-	ssize_t ret;
 
-	ret = 0;
-
-	ret += snprintf(buf + ret, sizeof(buf) - ret, "ctp_on\n");
-
-	return simple_read_from_buffer(user_buf, len, offset, buf, ret);
-}
-
-static const struct file_operations ctp_fops = {
-	.owner = THIS_MODULE,
-	.read = ctp_on_read,
-};
-	
-static ssize_t ctp_name_read(struct file *file,
-	char __user *user_buf, size_t len, loff_t *offset)
-{
-	unsigned char buf[64];
-	ssize_t ret;
-
-	ret = 0;
-
-	ret += snprintf(buf + ret, sizeof(buf) - ret, "fts_ts,version:0x%x\n",TP_version);
-
-	return simple_read_from_buffer(user_buf, len, offset, buf, ret);
-}
-
-static const struct file_operations ctpname_fops = {
-	.owner = THIS_MODULE,
-	.read = ctp_name_read,
-};
-//end
 static int fts_ts_probe_entry(struct fts_ts_data *ts_data)
 {
 	int ret = 0;
@@ -2905,15 +2856,6 @@ static int fts_ts_probe_entry(struct fts_ts_data *ts_data)
 		FTS_ERROR("init gesture fail");
 	}
 
-#ifdef CONFIG_FTS_TRUSTED_TOUCH
-	fts_ts_trusted_touch_init(ts_data);
-	mutex_init(&(ts_data->fts_clk_io_ctrl_mutex));
-#endif
-	ret = fts_ts_probe_delayed(ts_data);
-	if (ret) {
-		FTS_ERROR("Failed to enable resources\n");
-		goto err_probe_delayed;
-	}
 
 #if FTS_ESDCHECK_EN
 	ret = fts_esdcheck_init(ts_data);
@@ -2922,33 +2864,30 @@ static int fts_ts_probe_entry(struct fts_ts_data *ts_data)
 	}
 #endif
 
-//add by huanghongkun for tp test begin
-#if FTS_TEST_EN
-	ret = fts_test_init(ts_data);
+#ifdef CONFIG_FTS_TRUSTED_TOUCH
+	fts_ts_trusted_touch_init(ts_data);
+	mutex_init(&(ts_data->fts_clk_io_ctrl_mutex));
+#endif
+
+#ifndef CONFIG_ARCH_QTI_VM
+	if (ts_data->pdata->type == _FT8726) {
+		atomic_set(&ts_data->delayed_vm_probe_pending, 1);
+		ts_data->suspended = true;
+	} else {
+		ret = fts_ts_probe_delayed(ts_data);
+		if (ret) {
+			FTS_ERROR("Failed to enable resources\n");
+			goto err_probe_delayed;
+		}
+	}
+#else
+	ret = fts_ts_probe_delayed(ts_data);
 	if (ret) {
-		FTS_ERROR("init production test fail");
+		FTS_ERROR("Failed to enable resources\n");
+		goto err_probe_delayed;
 	}
 #endif
-//add by huanghongkun for tp test end
-//lxm
-	ctptest_dir = debugfs_create_dir("ctptest", NULL);
-	if (!ctptest_dir) {
-		pr_err("%s: create dir fail\n", __func__);
-		return -1;
-	}
 
-	ctp_on = debugfs_create_file("ctp_on", 0444, ctptest_dir, NULL, &ctp_fops);
-	if (!ctp_on) {
-		pr_err("%s: create ctp_on interface fail\n", __func__);
-		return -1;
-	}
-	
-	ctp_name = debugfs_create_file("ctp_name", 0444, ctptest_dir, NULL, &ctpname_fops);
-	if (!ctp_name) {
-		pr_err("%s: create ctp_name interface fail\n", __func__);
-		return -1;
-	}
-//end
 #if defined(CONFIG_DRM)
 	if (ts_data->ts_workqueue)
 		INIT_WORK(&ts_data->resume_work, fts_resume_work);
@@ -3004,12 +2943,6 @@ static int fts_ts_remove_entry(struct fts_ts_data *ts_data)
 	fts_ex_mode_exit(ts_data);
 
 	fts_fwupg_exit(ts_data);
-
-//add by huanghongkun for tp test begin
-#if FTS_TEST_EN
-	fts_test_exit(ts_data);
-#endif
-//add by huanghongkun for tp test end
 
 
 #if FTS_ESDCHECK_EN
@@ -3103,6 +3036,11 @@ static int fts_ts_suspend(struct device *dev)
 				FTS_ERROR("power enter suspend fail");
 			}
 #endif
+		} else {
+#if FTS_PINCTRL_EN
+			fts_pinctrl_select_suspend(ts_data);
+#endif
+			gpio_direction_output(ts_data->pdata->reset_gpio, 0);
 		}
 	}
 
@@ -3116,6 +3054,7 @@ static int fts_ts_suspend(struct device *dev)
 static int fts_ts_resume(struct device *dev)
 {
 	struct fts_ts_data *ts_data = fts_data;
+	int ret = 0;
 
 	FTS_FUNC_ENTER();
 	if (!ts_data->suspended) {
@@ -3130,6 +3069,18 @@ static int fts_ts_resume(struct device *dev)
 			&ts_data->trusted_touch_powerdown);
 #endif
 
+	if (ts_data->pdata->type == _FT8726 &&
+			atomic_read(&ts_data->delayed_vm_probe_pending)) {
+		ret = fts_ts_probe_delayed(ts_data);
+		if (ret) {
+			FTS_ERROR("Failed to enable resources\n");
+			return ret;
+		}
+		ts_data->suspended = false;
+		atomic_set(&ts_data->delayed_vm_probe_pending, 0);
+		return ret;
+	}
+
 	mutex_lock(&ts_data->transition_lock);
 
 	fts_release_all_finger();
@@ -3138,8 +3089,13 @@ static int fts_ts_resume(struct device *dev)
 #if FTS_POWER_SOURCE_CUST_EN
 		fts_power_source_resume(ts_data);
 #endif
-		fts_reset_proc(200);
+	} else {
+#if FTS_PINCTRL_EN
+		fts_pinctrl_select_normal(ts_data);
+#endif
 	}
+
+	fts_reset_proc(200);
 
 	fts_wait_tp_to_valid();
 	fts_ex_mode_recovery(ts_data);
