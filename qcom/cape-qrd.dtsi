@@ -263,13 +263,14 @@
 
 &qupv3_se8_spi {
 	status = "ok";
-	st54j: ese@0 {
-		compatible = "st,st54j_se";
+	st54spi: ese@0 {
+		compatible = "st,st54spi";
 		reg = <0>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&ese_pinctrl>;
-		spi-max-frequency = <50000000>;
-		esereset-gpio = <&tlmm 45 0x00>;
+		spi-max-frequency = <8000000>;
+		esereset-gpio = <&tlmm 45 GPIO_ACTIVE_HIGH>;
+		power_mode = "ST54Jse";
 	};
 };
 
