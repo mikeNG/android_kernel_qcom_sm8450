@@ -29,7 +29,6 @@
 #include <linux/gpio/consumer.h>
 #include <net/nfc/nci.h>
 #include <linux/clk.h>
-#include <soc/google/exynos-pmu-if.h>
 #include "st21nfc.h"
 
 #define MAX_BUFFER_SIZE 260
@@ -37,7 +36,6 @@
 #define IDLE_CHARACTER 0x7e
 #define ST21NFC_POWER_STATE_MAX 3
 #define WAKEUP_SRC_TIMEOUT		(2000)
-#define EXYNOS_CLK_MASK		0x01
 
 #define DRIVER_VERSION "2.0.19"
 
@@ -123,8 +121,6 @@ struct st21nfc_device {
 	struct clk *s_clk;
 	uint8_t pinctrl_en;
 	bool pidle_active_low;
-	int irq_clkreq;
-	unsigned int clk_pad;
 
 	/* GPIO for NFCC IRQ pin (input) */
 	struct gpio_desc *gpiod_irq;
@@ -181,25 +177,6 @@ static int st21nfc_clock_deselect(struct st21nfc_device *st21nfc_dev)
 		st21nfc_dev->clk_run = false;
 	}
 	return 0;
-}
-
-static void st21nfc_exynos_clk_control(struct st21nfc_device *st21nfc_dev,
-				       bool enable)
-{
-	if (st21nfc_dev->clk_pad) {
-		exynos_pmu_update(st21nfc_dev->clk_pad, EXYNOS_CLK_MASK, enable ? 1 : 0);
-	}
-}
-
-static irqreturn_t st21nfc_clkreq_irq_handler(int irq, void *dev_id)
-{
-	struct st21nfc_device *st21nfc_dev = dev_id;
-	int value = gpiod_get_value(st21nfc_dev->gpiod_clkreq);
-
-	if (st21nfc_dev->pinctrl_en) {
-		st21nfc_exynos_clk_control(st21nfc_dev, value ? true : false);
-	}
-	return IRQ_HANDLED;
 }
 
 static void st21nfc_disable_irq(struct st21nfc_device *st21nfc_dev)
@@ -556,8 +533,6 @@ static int st21nfc_dev_open(struct inode *inode, struct file *filp)
 		ret = -EBUSY;
 	} else {
 		st21nfc_dev->device_open = true;
-		if (st21nfc_dev->clk_pad)
-			st21nfc_exynos_clk_control(st21nfc_dev, true);
 	}
 	return ret;
 }
@@ -570,9 +545,6 @@ static int st21nfc_release(struct inode *inode, struct file *file)
 						       st21nfc_device);
 
 	st21nfc_dev->device_open = false;
-	if (st21nfc_dev->clk_pad) {
-		st21nfc_exynos_clk_control(st21nfc_dev, false);
-	}
 	return 0;
 }
 
@@ -675,20 +647,6 @@ static long st21nfc_dev_ioctl(struct file *filp, unsigned int cmd,
 				"%s : gpiod_direction_input failed\n",
 				__func__);
 			ret = -ENODEV;
-		}
-		break;
-	case ST21NFC_CLK_ENABLE:
-		st21nfc_exynos_clk_control(st21nfc_dev, true);
-		break;
-	case ST21NFC_CLK_DISABLE:
-		st21nfc_exynos_clk_control(st21nfc_dev, false);
-		break;
-	case ST21NFC_CLK_STATE:
-		if (st21nfc_dev->clk_pad == 0 ||
-			exynos_pmu_read(st21nfc_dev->clk_pad, &ret) < 0) {
-			ret = -ENODEV;
-		} else {
-			ret &= EXYNOS_CLK_MASK;
 		}
 		break;
 	default:
@@ -1000,39 +958,9 @@ static int st21nfc_probe(struct i2c_client *client,
 			dev_dbg(dev, "[dsc]%s:[OPTIONAL] clk_pinctrl set\n",
 				__func__);
 			st21nfc_dev->pinctrl_en = 1;
-
-			/* handle clk_req irq */
-			st21nfc_dev->irq_clkreq =
-					gpiod_to_irq(st21nfc_dev->gpiod_clkreq);
-
-			ret = irq_set_irq_type(st21nfc_dev->irq_clkreq,
-				       IRQ_TYPE_EDGE_BOTH);
-			if (ret) {
-				dev_err(dev, "%s : set_irq_type failed\n",
-					__func__);
-				st21nfc_dev->pinctrl_en = 0;
-			} else {
-				ret = devm_request_irq(dev,
-						st21nfc_dev->irq_clkreq,
-						st21nfc_clkreq_irq_handler,
-						IRQF_TRIGGER_RISING |
-						IRQF_TRIGGER_FALLING,
-						"st21nfc_clkreq_handle",
-						st21nfc_dev);
-				if (ret) {
-					dev_err(dev,
-						"%s : devm_request_irq for clkreq irq failed\n",
-						__func__);
-					st21nfc_dev->pinctrl_en = 0;
-				}
-			}
-		}
-
-		/* Get clk_pad value*/
-		if (device_property_read_u32(dev, "pmu_clk_pad", &st21nfc_dev->clk_pad)) {
-			dev_err(dev, "%s : PMU_CLKOUT_PAD offset is unset\n", __func__);
-			st21nfc_dev->clk_pad = 0;
-			st21nfc_dev->pinctrl_en = 0;
+			/* Set clk_run when clock pinctrl already enabled */
+			if (st21nfc_dev->pinctrl_en != 0)
+				st21nfc_dev->clk_run = true;
 		}
 
 		ret = st21nfc_clock_select(st21nfc_dev);
