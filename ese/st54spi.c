@@ -37,10 +37,9 @@
 #include <linux/uaccess.h>
 
 #define ST54NFC_QCOM 1
-#undef ST54NFC_QCOM
 
 #ifdef ST54NFC_QCOM
-#include <linux/spi/spi-geni-qcom.h>
+#include <linux/spi/spi-msm-geni.h>
 #endif /* ST54NFC_QCOM */
 
 #ifndef GKI_MODULE
