@@ -27,7 +27,7 @@
 		qcom,mdss-dsi-lane-3-state;
 		qcom,mdss-dsi-dma-trigger = "trigger_sw";
 		qcom,mdss-dsi-mdp-trigger = "none";
-		qcom,mdss-dsi-reset-sequence = <1 20>, <0 10>, <1 20>;
+		qcom,mdss-dsi-reset-sequence = <1 10>, <0 1>, <1 15>;
 
 		qcom,mdss-dsi-te-pin-select = <1>;
 		qcom,mdss-dsi-wr-mem-start = <0x2c>;
@@ -110,14 +110,13 @@
 					39 01 00 00 00 00 02 F8 00             /*low voltage protection end*/
 					39 01 00 00 00 00 03 F0 AA 00          /*Disable access of CMD2 page*/
 					39 01 00 00 00 00 03 FF 5A 00          /*Disable access of CMD3 page*/
-					05 01 00 00 46 00 02 11 00
-					05 01 00 00 46 00 02 29 00
+					05 01 00 00 60 00 02 11 00
+					05 01 00 00 11 00 02 29 00
 				];
 
 				qcom,mdss-dsi-off-command = [
-					39 01 00 00 30 00 03 51 00 00
-					05 01 00 00 20 00 02 28 00
-					05 01 00 00 C8 00 02 10 00];
+					05 01 00 00 11 00 02 28 00
+					05 01 00 00 09 00 02 10 00];
 
 				qcom,mdss-dsi-timing-switch-command = [
 					39 01 00 00 30 00 02 6C 02];/*120HZ*/
@@ -209,14 +208,13 @@
 					39 01 00 00 00 00 02 F8 00             /*low voltage protection end*/
 					39 01 00 00 00 00 03 F0 AA 00          /*Disable access of CMD2 page*/
 					39 01 00 00 00 00 03 FF 5A 00          /*Disable access of CMD3 page*/
-					05 01 00 00 46 00 02 11 00
-					05 01 00 00 46 00 02 29 00
+					05 01 00 00 60 00 02 11 00
+					05 01 00 00 17 00 02 29 00
 				];
 
 				qcom,mdss-dsi-off-command = [
-					39 01 00 00 30 00 03 51 00 00
-					05 01 00 00 20 00 02 28 00
-					05 01 00 00 C8 00 02 10 00];
+					05 01 00 00 17 00 02 28 00
+					05 01 00 00 0C 00 02 10 00];
 
 				qcom,mdss-dsi-timing-switch-command = [
 					39 01 00 00 30 00 02 6C 01];/*90hz*/
@@ -308,14 +306,13 @@
 					39 01 00 00 00 00 02 F8 00             /*low voltage protection end*/
 					39 01 00 00 00 00 03 F0 AA 00          /*Disable access of CMD2 page*/
 					39 01 00 00 00 00 03 FF 5A 00          /*Disable access of CMD3 page*/
-					05 01 00 00 46 00 02 11 00
-					05 01 00 00 46 00 02 29 00
+					05 01 00 00 60 00 02 11 00
+					05 01 00 00 22 00 02 29 00
 				];
 
 				qcom,mdss-dsi-off-command = [
-					39 01 00 00 30 00 03 51 00 00
-					05 01 00 00 20 00 02 28 00
-					05 01 00 00 C8 00 02 10 00];
+					05 01 00 00 22 00 02 28 00
+					05 01 00 00 11 00 02 10 00];
 
 				qcom,mdss-dsi-timing-switch-command = [
 					39 01 00 00 30 00 02 6C 00]; /*60hz*/
