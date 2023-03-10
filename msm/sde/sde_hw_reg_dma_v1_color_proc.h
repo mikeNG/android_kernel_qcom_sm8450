@@ -257,7 +257,7 @@ void reg_dmav1_setup_ltm_vlutv1(struct sde_hw_dspp *ctx, void *cfg);
  * @cfg: pointer to struct sde_hw_cp_cfg
  * @returns: 0 if success, non-zero otherwise
  */
-int reg_dmav1_setup_rc_datav1(struct sde_hw_dspp *ctx, void *cfg);
+int reg_dmav1_setup_rc_datav1(struct sde_hw_dspp *ctx, void *cfg, u32 regs[10]);
 
 /**
  * reg_dmav1_deinit_ltm_ops() - deinitialize the ltm feature op for sde v4

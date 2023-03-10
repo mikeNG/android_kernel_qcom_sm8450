@@ -425,7 +425,8 @@ static int _sde_hw_rc_program_enable_bits(
 		enum rc_param_b param_b,
 		enum rc_param_r param_r,
 		int merge_mode,
-		struct sde_rect *rc_roi)
+		struct sde_rect *rc_roi,
+		u32 dma_regs[10])
 {
 	int rc = 0;
 	u32 val = 0, param_c = 0, rc_merge_mode = 0, ystart = 0;
@@ -469,9 +470,15 @@ static int _sde_hw_rc_program_enable_bits(
 	SDE_EVT32(flags, r1_valid, r2_valid, pu_in_r1, pu_in_r2, ystart);
 
 	val |= param_c;
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG1, val);
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG13, ystart);
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG9, rc_merge_mode);
+	if (dma_regs) {
+		dma_regs[0] = val;
+		dma_regs[1] = ystart;
+		dma_regs[2] = rc_merge_mode;
+	} else {
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG1, val);
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG13, ystart);
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG9, rc_merge_mode);
+	}
 
 	return rc;
 }
@@ -480,7 +487,8 @@ static int _sde_hw_rc_program_roi(
 		struct sde_hw_dspp *hw_dspp,
 		struct drm_msm_rc_mask_cfg *rc_mask_cfg,
 		int merge_mode,
-		struct sde_rect *rc_roi)
+		struct sde_rect *rc_roi,
+		u32 dma_regs[10])
 {
 	int rc = 0;
 	u32 val2 = 0, val3 = 0, val4 = 0;
@@ -502,7 +510,8 @@ static int _sde_hw_rc_program_roi(
 
 	param_a = rc_mask_cfg->cfg_param_03;
 	rc = _sde_hw_rc_program_enable_bits(hw_dspp, rc_mask_cfg,
-			param_a, param_b, param_r, merge_mode, rc_roi);
+			param_a, param_b, param_r, merge_mode, rc_roi,
+			dma_regs);
 	if (rc) {
 		SDE_ERROR("failed to program enable bits, rc:%d\n", rc);
 		return rc;
@@ -520,16 +529,23 @@ static int _sde_hw_rc_program_roi(
 		val4 = (rc_mask_cfg->cfg_param_04[1]);
 	}
 
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG2, val2);
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG3, val3);
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG4, val4);
+	if (dma_regs) {
+		dma_regs[3] = val2;
+		dma_regs[4] = val3;
+		dma_regs[5] = val4;
+	} else {
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG2, val2);
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG3, val3);
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG4, val4);
+	}
 
 	return 0;
 }
 
 static int _sde_hw_rc_program_data_offset(
 		struct sde_hw_dspp *hw_dspp,
-		struct drm_msm_rc_mask_cfg *rc_mask_cfg)
+		struct drm_msm_rc_mask_cfg *rc_mask_cfg,
+		u32 dma_regs[10])
 {
 	int rc = 0;
 	u32 val5 = 0, val6 = 0, val7 = 0, val8 = 0;
@@ -561,10 +577,17 @@ static int _sde_hw_rc_program_data_offset(
 		val8 = (rc_mask_cfg->cfg_param_06[1] + cfg_param_07);
 	}
 
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG5, val5);
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG6, val6);
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG7, val7);
-	_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG8, val8);
+	if (dma_regs) {
+		dma_regs[6] = val5;
+		dma_regs[7] = val6;
+		dma_regs[8] = val7;
+		dma_regs[9] = val8;
+	} else {
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG5, val5);
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG6, val6);
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG7, val7);
+		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG8, val8);
+	}
 
 	return rc;
 }
@@ -879,7 +902,7 @@ int sde_hw_rc_setup_pu_roi(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 	param_a = rc_mask_cfg->cfg_param_03;
 	rc = _sde_hw_rc_program_enable_bits(hw_dspp, rc_mask_cfg,
-			param_a, param_b, param_r, merge_mode, &rc_roi);
+			param_a, param_b, param_r, merge_mode, &rc_roi, NULL);
 	if (rc) {
 		SDE_ERROR("failed to program enable bits, rc:%d\n", rc);
 		return rc;
@@ -892,7 +915,8 @@ int sde_hw_rc_setup_pu_roi(struct sde_hw_dspp *hw_dspp, void *cfg)
 	return 0;
 }
 
-int sde_hw_rc_setup_mask(struct sde_hw_dspp *hw_dspp, void *cfg)
+static int __sde_hw_rc_setup_mask(struct sde_hw_dspp *hw_dspp, void *cfg,
+				  u32 dma_regs[10])
 {
 	int rc = 0;
 	struct sde_hw_cp_cfg *hw_cfg = cfg;
@@ -952,13 +976,13 @@ int sde_hw_rc_setup_mask(struct sde_hw_dspp *hw_dspp, void *cfg)
 	}
 
 	rc = _sde_hw_rc_program_roi(hw_dspp, rc_mask_cfg,
-			merge_mode, &rc_roi);
+			merge_mode, &rc_roi, dma_regs);
 	if (rc) {
 		SDE_ERROR("unable to program rc roi, rc:%d\n", rc);
 		return rc;
 	}
 
-	rc = _sde_hw_rc_program_data_offset(hw_dspp, rc_mask_cfg);
+	rc = _sde_hw_rc_program_data_offset(hw_dspp, rc_mask_cfg, dma_regs);
 	if (rc) {
 		SDE_ERROR("unable to program data offsets, rc:%d\n", rc);
 		return rc;
@@ -971,11 +995,17 @@ int sde_hw_rc_setup_mask(struct sde_hw_dspp *hw_dspp, void *cfg)
 	return 0;
 }
 
+int sde_hw_rc_setup_mask(struct sde_hw_dspp *hw_dspp, void *cfg)
+{
+	return __sde_hw_rc_setup_mask(hw_dspp, cfg, NULL);
+}
+
 int sde_hw_rc_setup_data_dma(struct sde_hw_dspp *hw_dspp, void *cfg)
 {
 	int rc = 0;
 	struct sde_hw_cp_cfg *hw_cfg = cfg;
 	struct drm_msm_rc_mask_cfg *rc_mask_cfg;
+	u32 dma_regs[10];
 
 	if (!hw_dspp || !hw_cfg) {
 		SDE_ERROR("invalid arguments\n");
@@ -984,7 +1014,7 @@ int sde_hw_rc_setup_data_dma(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 	if ((hw_cfg->len == 0 && hw_cfg->payload == NULL)) {
 		SDE_DEBUG("RC feature disabled, skip data programming\n");
-		return 0;
+		return sde_hw_rc_setup_mask(hw_dspp, cfg);
 	}
 
 	if (hw_cfg->len != sizeof(struct drm_msm_rc_mask_cfg) ||
@@ -997,10 +1027,16 @@ int sde_hw_rc_setup_data_dma(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 	if (rc_mask_cfg->flags & SDE_HW_RC_SKIP_DATA_PROG) {
 		SDE_DEBUG("skip data programming\n");
-		return 0;
+		return sde_hw_rc_setup_mask(hw_dspp, cfg);
 	}
 
-	rc = reg_dmav1_setup_rc_datav1(hw_dspp, cfg);
+	rc = __sde_hw_rc_setup_mask(hw_dspp, cfg, dma_regs);
+	if (rc) {
+		SDE_ERROR("unable to setup rc mask with dma, rc:%d\n", rc);
+		return rc;
+	}
+
+	rc = reg_dmav1_setup_rc_datav1(hw_dspp, cfg, dma_regs);
 	if (rc) {
 		SDE_ERROR("unable to setup rc with dma, rc:%d\n", rc);
 		return rc;
@@ -1011,7 +1047,7 @@ int sde_hw_rc_setup_data_dma(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 int sde_hw_rc_setup_data_ahb(struct sde_hw_dspp *hw_dspp, void *cfg)
 {
-	int rc = 0, i = 0;
+	int i = 0;
 	u32 data = 0, cfg_param_07 = 0;
 	struct sde_hw_cp_cfg *hw_cfg = cfg;
 	struct drm_msm_rc_mask_cfg *rc_mask_cfg;
@@ -1023,7 +1059,7 @@ int sde_hw_rc_setup_data_ahb(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 	if ((hw_cfg->len == 0 && hw_cfg->payload == NULL)) {
 		SDE_DEBUG("rc feature disabled, skip data programming\n");
-		return 0;
+		return sde_hw_rc_setup_mask(hw_dspp, cfg);
 	}
 
 	if (hw_cfg->len != sizeof(struct drm_msm_rc_mask_cfg) ||
@@ -1036,7 +1072,7 @@ int sde_hw_rc_setup_data_ahb(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 	if (rc_mask_cfg->flags & SDE_HW_RC_SKIP_DATA_PROG) {
 		SDE_DEBUG("skip data programming\n");
-		return 0;
+		return sde_hw_rc_setup_mask(hw_dspp, cfg);
 	}
 
 	cfg_param_07 = rc_mask_cfg->cfg_param_07;
@@ -1054,7 +1090,7 @@ int sde_hw_rc_setup_data_ahb(struct sde_hw_dspp *hw_dspp, void *cfg)
 		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG10, data);
 	}
 
-	return rc;
+	return sde_hw_rc_setup_mask(hw_dspp, cfg);
 }
 
 int sde_hw_rc_init(struct sde_hw_dspp *hw_dspp)

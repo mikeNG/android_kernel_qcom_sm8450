@@ -753,17 +753,17 @@ static int _set_rc_mask_feature(struct sde_hw_dspp *hw_dspp,
 	DRM_DEBUG_DRIVER("dspp %d setup mask for rc instance %u\n",
 			hw_dspp->idx, hw_dspp->cap->sblk->rc.idx);
 
-	ret = hw_dspp->ops.setup_rc_mask(hw_dspp, hw_cfg);
-	if (ret) {
-		DRM_ERROR("failed to setup rc mask, ret %d\n", ret);
-		goto exit;
-	}
-
 	/* rc data should be programmed once if dspp are in multi-pipe mode */
 	if (hw_dspp->cap->sblk->rc.idx % hw_cfg->num_of_mixers == 0) {
 		ret = hw_dspp->ops.setup_rc_data(hw_dspp, hw_cfg);
 		if (ret) {
 			DRM_ERROR("failed to setup rc data, ret %d\n", ret);
+			goto exit;
+		}
+	} else {
+		ret = hw_dspp->ops.setup_rc_mask(hw_dspp, hw_cfg);
+		if (ret) {
+			DRM_ERROR("failed to setup rc mask, ret %d\n", ret);
 			goto exit;
 		}
 	}

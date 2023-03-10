@@ -67,7 +67,7 @@
 #define MEMCOLOR_MEM_SIZE ((sizeof(struct drm_msm_memcol)) + \
 		REG_DMA_HEADERS_BUFFER_SZ)
 
-#define RC_MEM_SIZE ((RC_DATA_SIZE_MAX * 2 * sizeof(u32)) + \
+#define RC_MEM_SIZE (((RC_DATA_SIZE_MAX * 2 + 10) * sizeof(u32)) + \
 		REG_DMA_HEADERS_BUFFER_SZ)
 
 #define QSEED3_MEM_SIZE (sizeof(struct sde_hw_scaler3_cfg) + \
@@ -1151,7 +1151,7 @@ void reg_dmav1_setup_dspp_igcv31(struct sde_hw_dspp *ctx, void *cfg)
 		DRM_ERROR("failed to kick off ret %d\n", rc);
 }
 
-int reg_dmav1_setup_rc_datav1(struct sde_hw_dspp *ctx, void *cfg)
+int reg_dmav1_setup_rc_datav1(struct sde_hw_dspp *ctx, void *cfg, u32 regs[10])
 {
 	struct drm_msm_rc_mask_cfg *rc_mask_cfg;
 	struct sde_hw_reg_dma_ops *dma_ops;
@@ -1179,7 +1179,7 @@ int reg_dmav1_setup_rc_datav1(struct sde_hw_dspp *ctx, void *cfg)
 
 	rc_mask_cfg = hw_cfg->payload;
 	buf_sz = rc_mask_cfg->cfg_param_08 * 2 * sizeof(u32);
-	abs_offset = ctx->hw.blk_off + ctx->cap->sblk->rc.base + 0x28;
+	abs_offset = ctx->hw.blk_off + ctx->cap->sblk->rc.base;
 
 	dma_ops = sde_reg_dma_get_ops();
 	dma_ops->reset_reg_dma_buf(dspp_buf[RC_DATA][ctx->idx]);
@@ -1211,11 +1211,53 @@ int reg_dmav1_setup_rc_datav1(struct sde_hw_dspp *ctx, void *cfg)
 		data[i * 2 + 1] = ((cfg_param_09 >> 18) & 0x3FFFF);
 	}
 
-	REG_DMA_SETUP_OPS(dma_write_cfg, abs_offset, data, buf_sz,
+	REG_DMA_SETUP_OPS(dma_write_cfg, abs_offset + 0x28, data, buf_sz,
 			REG_BLK_WRITE_INC, 0, 0, 0);
 	rc = dma_ops->setup_payload(&dma_write_cfg);
 	if (rc) {
 		DRM_ERROR("rc dma write failed ret %d\n", rc);
+		goto exit;
+	}
+
+	/*
+	 * Write the registers, in order:
+	 * - enable regs: REG1, REG13, REG9
+	 * - ROI regs: REG2, REG3, REG4
+	 * - data offset regs: REG5, REG6, REG7, REG8
+	 */
+	/* REG1 */
+	REG_DMA_SETUP_OPS(dma_write_cfg, abs_offset + 0x4, regs, 4,
+			REG_SINGLE_WRITE, 0, 0, 0);
+	rc = dma_ops->setup_payload(&dma_write_cfg);
+	if (rc) {
+		DRM_ERROR("rc reg1 dma write failed ret %d\n", rc);
+		goto exit;
+	}
+
+	/* REG13 */
+	REG_DMA_SETUP_OPS(dma_write_cfg, abs_offset + 0x34, regs + 1, 4,
+			REG_SINGLE_WRITE, 0, 0, 0);
+	rc = dma_ops->setup_payload(&dma_write_cfg);
+	if (rc) {
+		DRM_ERROR("rc reg13 dma write failed ret %d\n", rc);
+		goto exit;
+	}
+
+	/* REG9 */
+	REG_DMA_SETUP_OPS(dma_write_cfg, abs_offset + 0x24, regs + 2, 4,
+			REG_SINGLE_WRITE, 0, 0, 0);
+	rc = dma_ops->setup_payload(&dma_write_cfg);
+	if (rc) {
+		DRM_ERROR("rc reg9 dma write failed ret %d\n", rc);
+		goto exit;
+	}
+
+	/* REG2 - REG8 */
+	REG_DMA_SETUP_OPS(dma_write_cfg, abs_offset + 0x8, regs + 3, 28,
+			REG_BLK_WRITE_SINGLE, 0, 0, 0);
+	rc = dma_ops->setup_payload(&dma_write_cfg);
+	if (rc) {
+		DRM_ERROR("rc reg2 - reg8 dma write failed ret %d\n", rc);
 		goto exit;
 	}
 
