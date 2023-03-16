@@ -39,6 +39,12 @@
 
 #define SDE_HW_RC_PU_SKIP_OP 0x1
 
+enum sde_hw_rc_data_state {
+	DATA_NOT_PROGRAMMED,
+	DATA_DMA_PENDING,
+	DATA_PROGRAMMED
+};
+
 /**
  * struct sde_hw_rc_state - rounded corner cached state per RC instance
  *
@@ -46,12 +52,14 @@
  * @mask_programmed: true if mask was programmed at least once to RC hardware.
  * @last_roi_list: cached value of most recent processed list of ROIs.
  * @roi_programmed: true if list of ROIs were processed at least once.
+ * @data_state: tristate indicating the state of data programming.
  */
 struct sde_hw_rc_state {
 	struct drm_msm_rc_mask_cfg *last_rc_mask_cfg;
 	bool mask_programmed;
 	struct msm_roi_list *last_roi_list;
 	bool roi_programmed;
+	enum sde_hw_rc_data_state data_state;
 };
 
 static struct sde_hw_rc_state rc_state[RC_MAX - RC_0] = {
@@ -60,12 +68,14 @@ static struct sde_hw_rc_state rc_state[RC_MAX - RC_0] = {
 		.last_roi_list = NULL,
 		.mask_programmed = false,
 		.roi_programmed = false,
+		.data_state = DATA_NOT_PROGRAMMED,
 	},
 	{
 		.last_rc_mask_cfg = NULL,
 		.last_roi_list = NULL,
 		.mask_programmed = false,
 		.roi_programmed = false,
+		.data_state = DATA_NOT_PROGRAMMED,
 	},
 };
 #define RC_STATE(hw_dspp) rc_state[hw_dspp->cap->sblk->rc.idx]
@@ -788,6 +798,7 @@ int sde_hw_rc_check_pu_roi(struct sde_hw_dspp *hw_dspp, void *cfg)
 	struct sde_rect rc_roi, merged_roi;
 	struct drm_msm_rc_mask_cfg *rc_mask_cfg;
 	bool mask_programmed = false;
+	bool data_programmed = false;
 	enum rc_param_r param_r = RC_PARAM_R0;
 	enum rc_param_b param_b = RC_PARAM_B0;
 
@@ -810,9 +821,10 @@ int sde_hw_rc_check_pu_roi(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 	rc_mask_cfg = RC_STATE(hw_dspp).last_rc_mask_cfg;
 	mask_programmed = RC_STATE(hw_dspp).mask_programmed;
+	data_programmed = RC_STATE(hw_dspp).data_state == DATA_PROGRAMMED;
 
 	/* early return when there is no mask in memory */
-	if (!mask_programmed || !rc_mask_cfg) {
+	if (!mask_programmed || !rc_mask_cfg || !data_programmed) {
 		SDE_DEBUG("no previous rc mask programmed\n");
 		return SDE_HW_RC_PU_SKIP_OP;
 	}
@@ -853,6 +865,7 @@ int sde_hw_rc_setup_pu_roi(struct sde_hw_dspp *hw_dspp, void *cfg)
 	enum rc_param_b param_b = RC_PARAM_B0;
 	u32 merge_mode = 0;
 	bool mask_programmed = false;
+	bool data_programmed = false;
 
 	if (!hw_dspp || !hw_cfg) {
 		SDE_ERROR("invalid arguments\n");
@@ -873,9 +886,10 @@ int sde_hw_rc_setup_pu_roi(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 	rc_mask_cfg = RC_STATE(hw_dspp).last_rc_mask_cfg;
 	mask_programmed = RC_STATE(hw_dspp).mask_programmed;
+	data_programmed = RC_STATE(hw_dspp).data_state == DATA_PROGRAMMED;
 
 	/* early return when there is no mask in memory */
-	if (!mask_programmed || !rc_mask_cfg) {
+	if (!mask_programmed || !rc_mask_cfg || !data_programmed) {
 		SDE_DEBUG("no previous rc mask programmed\n");
 		return SDE_HW_RC_PU_SKIP_OP;
 	}
@@ -941,6 +955,7 @@ static int __sde_hw_rc_setup_mask(struct sde_hw_dspp *hw_dspp, void *cfg,
 		memset(RC_STATE(hw_dspp).last_roi_list, 0,
 				sizeof(struct msm_roi_list));
 		RC_STATE(hw_dspp).roi_programmed = false;
+		RC_STATE(hw_dspp).data_state = DATA_NOT_PROGRAMMED;
 
 		return 0;
 	}
@@ -954,6 +969,12 @@ static int __sde_hw_rc_setup_mask(struct sde_hw_dspp *hw_dspp, void *cfg,
 	rc_mask_cfg = hw_cfg->payload;
 	last_roi_list = RC_STATE(hw_dspp).last_roi_list;
 	roi_programmed = RC_STATE(hw_dspp).roi_programmed;
+
+	/* Data programming must precede mask programming */
+	if (!dma_regs && RC_STATE(hw_dspp).data_state != DATA_PROGRAMMED) {
+		SDE_ERROR("no rc data programmed\n");
+		return -EINVAL;
+	}
 
 	if (!roi_programmed) {
 		SDE_DEBUG("full frame update\n");
@@ -1025,7 +1046,8 @@ int sde_hw_rc_setup_data_dma(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 	rc_mask_cfg = hw_cfg->payload;
 
-	if (rc_mask_cfg->flags & SDE_HW_RC_SKIP_DATA_PROG) {
+	if ((rc_mask_cfg->flags & SDE_HW_RC_SKIP_DATA_PROG) &&
+	    RC_STATE(hw_dspp).data_state == DATA_PROGRAMMED) {
 		SDE_DEBUG("skip data programming\n");
 		return sde_hw_rc_setup_mask(hw_dspp, cfg);
 	}
@@ -1041,6 +1063,7 @@ int sde_hw_rc_setup_data_dma(struct sde_hw_dspp *hw_dspp, void *cfg)
 		SDE_ERROR("unable to setup rc with dma, rc:%d\n", rc);
 		return rc;
 	}
+	RC_STATE(hw_dspp).data_state = DATA_DMA_PENDING;
 
 	return rc;
 }
@@ -1070,7 +1093,8 @@ int sde_hw_rc_setup_data_ahb(struct sde_hw_dspp *hw_dspp, void *cfg)
 
 	rc_mask_cfg = hw_cfg->payload;
 
-	if (rc_mask_cfg->flags & SDE_HW_RC_SKIP_DATA_PROG) {
+	if ((rc_mask_cfg->flags & SDE_HW_RC_SKIP_DATA_PROG) &&
+	    RC_STATE(hw_dspp).data_state == DATA_PROGRAMMED) {
 		SDE_DEBUG("skip data programming\n");
 		return sde_hw_rc_setup_mask(hw_dspp, cfg);
 	}
@@ -1090,6 +1114,10 @@ int sde_hw_rc_setup_data_ahb(struct sde_hw_dspp *hw_dspp, void *cfg)
 		_sde_hw_rc_reg_write(hw_dspp, SDE_HW_RC_REG10, data);
 	}
 
+	/* Data programming must precede mask programming */
+	wmb();
+	RC_STATE(hw_dspp).data_state = DATA_PROGRAMMED;
+
 	return sde_hw_rc_setup_mask(hw_dspp, cfg);
 }
 
@@ -1108,4 +1136,41 @@ int sde_hw_rc_init(struct sde_hw_dspp *hw_dspp)
 		return -ENOMEM;
 
 	return rc;
+}
+
+bool sde_hw_rc_data_programmed(struct sde_hw_dspp *hw_dspp)
+{
+	return RC_STATE(hw_dspp).data_state == DATA_PROGRAMMED;
+}
+
+bool sde_hw_rc_dma_pending(struct sde_crtc *sde_crtc)
+{
+	struct sde_hw_dspp *hw_dspp;
+	int i;
+
+	for (i = 0; i < sde_crtc->num_mixers && i < DSPP_MAX; i++) {
+		hw_dspp = sde_crtc->mixers[i].hw_dspp;
+		if (!hw_dspp)
+			continue;
+
+		if (RC_STATE(hw_dspp).data_state == DATA_DMA_PENDING)
+			return true;
+	}
+
+	return false;
+}
+
+void sde_hw_rc_dma_done(struct sde_crtc *sde_crtc)
+{
+	struct sde_hw_dspp *hw_dspp;
+	int i;
+
+	for (i = 0; i < sde_crtc->num_mixers && i < DSPP_MAX; i++) {
+		hw_dspp = sde_crtc->mixers[i].hw_dspp;
+		if (!hw_dspp)
+			continue;
+
+		if (RC_STATE(hw_dspp).data_state == DATA_DMA_PENDING)
+			RC_STATE(hw_dspp).data_state = DATA_PROGRAMMED;
+	}
 }

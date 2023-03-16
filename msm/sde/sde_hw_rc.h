@@ -7,6 +7,7 @@
 #define _SDE_HW_RC_H
 
 #include "sde_hw_mdss.h"
+#include "sde_crtc.h"
 
 
 /**
@@ -67,5 +68,26 @@ int sde_hw_rc_setup_data_ahb(struct sde_hw_dspp *hw_dspp, void *cfg);
  * Return: 0 on success, non-zero otherwise.
  */
 int sde_hw_rc_setup_data_dma(struct sde_hw_dspp *hw_dspp, void *cfg);
+
+/**
+ * sde_hw_rc_data_programmed - Check if mask data is programmed
+ * @hw_dspp: DSPP instance.
+ * Return: true if data is programmed, false otherwise.
+ */
+bool sde_hw_rc_data_programmed(struct sde_hw_dspp *hw_dspp);
+
+/**
+ * sde_hw_rc_dma_pending - Check if mask data programming over DMA is pending
+ * @sde_crtc: Pointer to sde crtc
+ * Return: true if DMA programming is pending, false otherwise.
+ */
+bool sde_hw_rc_dma_pending(struct sde_crtc *sde_crtc);
+
+/**
+ * sde_hw_rc_dma_done - Indicate that DMA programming of mask data is done
+ * @sde_crtc: Pointer to sde crtc
+ * Return: none.
+ */
+void sde_hw_rc_dma_done(struct sde_crtc *sde_crtc);
 
 #endif

@@ -43,6 +43,7 @@
 #include "sde_hw_qdss.h"
 #include "sde_encoder_dce.h"
 #include "sde_vm.h"
+#include "sde_hw_rc.h"
 
 #define SDE_DEBUG_ENC(e, fmt, ...) SDE_DEBUG("enc%d " fmt,\
 		(e) ? (e)->base.base.id : -1, ##__VA_ARGS__)
@@ -3896,7 +3897,8 @@ static void _sde_encoder_kickoff_phys(struct sde_encoder_virt *sde_enc,
 		is_vid_mode = true;
 
 	is_regdma_blocking = (is_vid_mode ||
-			_sde_encoder_is_autorefresh_enabled(sde_enc));
+			_sde_encoder_is_autorefresh_enabled(sde_enc) ||
+			sde_hw_rc_dma_pending(sde_crtc));
 
 	/* don't perform flush/start operations for slave encoders */
 	for (i = 0; i < sde_enc->num_phys_encs; i++) {
@@ -3916,8 +3918,10 @@ static void _sde_encoder_kickoff_phys(struct sde_encoder_virt *sde_enc,
 
 		if (!phys->ops.needs_single_flush ||
 				!phys->ops.needs_single_flush(phys)) {
-			if (config_changed && ctl->ops.reg_dma_flush)
+			if (config_changed && ctl->ops.reg_dma_flush) {
 				ctl->ops.reg_dma_flush(ctl, is_regdma_blocking);
+				sde_hw_rc_dma_done(sde_crtc);
+			}
 			_sde_encoder_trigger_flush(&sde_enc->base, phys, 0x0,
 					config_changed);
 		} else if (ctl->ops.get_pending_flush) {
@@ -3928,8 +3932,10 @@ static void _sde_encoder_kickoff_phys(struct sde_encoder_virt *sde_enc,
 	/* for split flush, combine pending flush masks and send to master */
 	if (pending_flush.pending_flush_mask && sde_enc->cur_master) {
 		ctl = sde_enc->cur_master->hw_ctl;
-		if (config_changed && ctl->ops.reg_dma_flush)
+		if (config_changed && ctl->ops.reg_dma_flush) {
 			ctl->ops.reg_dma_flush(ctl, is_regdma_blocking);
+			sde_hw_rc_dma_done(sde_crtc);
+		}
 		_sde_encoder_trigger_flush(&sde_enc->base, sde_enc->cur_master,
 						&pending_flush,
 						config_changed);

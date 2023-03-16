@@ -19,6 +19,7 @@
 #include "sde_core_irq.h"
 #include "dsi_panel.h"
 #include "sde_hw_color_proc_common_v4.h"
+#include "sde_hw_rc.h"
 
 struct sde_cp_node {
 	u32 property_id;
@@ -754,7 +755,8 @@ static int _set_rc_mask_feature(struct sde_hw_dspp *hw_dspp,
 			hw_dspp->idx, hw_dspp->cap->sblk->rc.idx);
 
 	/* rc data should be programmed once if dspp are in multi-pipe mode */
-	if (hw_dspp->cap->sblk->rc.idx % hw_cfg->num_of_mixers == 0) {
+	if (hw_dspp->cap->sblk->rc.idx % hw_cfg->num_of_mixers == 0 ||
+	    !sde_hw_rc_data_programmed(hw_dspp)) {
 		ret = hw_dspp->ops.setup_rc_data(hw_dspp, hw_cfg);
 		if (ret) {
 			DRM_ERROR("failed to setup rc data, ret %d\n", ret);
