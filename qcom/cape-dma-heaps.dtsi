@@ -75,5 +75,12 @@
 			qcom,dma-heap-type = <HEAP_TYPE_CMA>;
 			memory-region = <&audio_cma_mem>;
 		};
+
+		osom,tui_argon {
+			qcom,dma-heap-name = "osom,tui-argon";
+			qcom,dma-heap-type = <HEAP_TYPE_CMA>;
+			qcom,max-align = <0>;
+			memory-region = <&tui_argon_mem>;
+		};
 	};
 };
