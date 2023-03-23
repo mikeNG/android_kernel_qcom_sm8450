@@ -1095,11 +1095,6 @@ static ssize_t hcc_min_freq_store(struct device *dev,
 	const char *cp = buf;
 
 	mutex_lock(&the_hcd->reservation_mutex);
-	if (!is_vcpu_info_populated) {
-		pr_err("VCPU info isn't populated\n");
-		goto err_out;
-	}
-
 	if (!freq_qos_init_done) {
 		if (init_freq_qos_req())
 			goto err_out;
