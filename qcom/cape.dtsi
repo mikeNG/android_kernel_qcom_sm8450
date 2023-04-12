@@ -453,10 +453,8 @@
 		compatible = "ramoops";
 		alloc-ranges = <0x0 0x00000000 0xffffffff 0xffffffff>;
 		size = <0x0 0x200000>;
-		record-size = <0x8000>;
 		console-size = <0x100000>;
-		ftrace-size = <0>;
-		pmsg-size = <0x80000>;
+		pmsg-size = <0x100000>;
 		mem-type = <2>;
 	};
 };
