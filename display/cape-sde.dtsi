@@ -277,6 +277,7 @@
 	qcom,dsi-pll-ssc-en;
 	qcom,dsi-pll-ssc-mode = "down-spread";
 	pll_codes_region = <&dsi_pll_codes_data>;
+	qcom,panel-allow-phy-poweroff;
 
 };
 
