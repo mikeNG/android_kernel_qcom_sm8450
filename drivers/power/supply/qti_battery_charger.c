@@ -2293,6 +2293,7 @@ static void panel_event_notifier_callback(enum panel_event_notifier_tag tag,
 			struct panel_event_notification *notification, void *data)
 {
 	struct battery_chg_dev *bcdev = data;
+	int val, rc;
 
 	if (!notification) {
 		pr_debug("Invalid panel notification\n");
@@ -2301,16 +2302,25 @@ static void panel_event_notifier_callback(enum panel_event_notifier_tag tag,
 
 	pr_debug("panel event received, type: %d\n", notification->notif_type);
 	switch (notification->notif_type) {
+	case DRM_PANEL_EVENT_BLANK_LP:
+		val = 0;
+		break;
 	case DRM_PANEL_EVENT_BLANK:
 		battery_chg_notify_disable(bcdev);
+		val = 0;
 		break;
 	case DRM_PANEL_EVENT_UNBLANK:
 		battery_chg_notify_enable(bcdev);
+		val = 1;
 		break;
 	default:
 		pr_debug("Ignore panel event: %d\n", notification->notif_type);
-		break;
+		return;
 	}
+
+	rc = qti_battery_charger_set_prop("usb", DISPLAY_ACTIVE, val);
+	if (rc)
+		pr_debug("Failed to set display active prop, rc=%d\n", rc);
 }
 
 static int battery_chg_register_panel_notifier(struct battery_chg_dev *bcdev)
