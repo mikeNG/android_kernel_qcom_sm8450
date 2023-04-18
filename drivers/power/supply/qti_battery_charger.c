@@ -122,6 +122,7 @@ enum usb_property_id {
 	USB_SCOPE,
 	USB_CONNECTOR_TYPE,
 	F_ACTIVE,
+	D_ACTIVE,
 	USB_PROP_MAX,
 };
 
@@ -608,6 +609,10 @@ int qti_battery_charger_set_prop(const char *name,
 	case FLASH_ACTIVE:
 		pst = &bcdev->psy_list[PSY_TYPE_USB];
 		rc = write_property_id(bcdev, pst, F_ACTIVE, val);
+		break;
+	case DISPLAY_ACTIVE:
+		pst = &bcdev->psy_list[PSY_TYPE_USB];
+		rc = write_property_id(bcdev, pst, D_ACTIVE, val);
 		break;
 	default:
 		break;
