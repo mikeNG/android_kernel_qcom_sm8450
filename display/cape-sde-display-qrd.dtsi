@@ -118,3 +118,7 @@
 		};
 	};
 };
+
+&battery_charger {
+	qcom,display-panels = <&dsi_e667_everdisplay_amoled_cmd>;
+};
