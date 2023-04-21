@@ -120,7 +120,7 @@
 };
 
 &pm8350c_rgb {
-	pwm-divider = <8>;
+	status = "disabled";
 };
 
 &pm8350c_switch0 {
