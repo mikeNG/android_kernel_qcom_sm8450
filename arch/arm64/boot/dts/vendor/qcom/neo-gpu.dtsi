@@ -34,6 +34,9 @@
 
 		qcom,chipid = <0x06020100>;
 
+		nvmem-cells = <&gpu_speed_bin>;
+		nvmem-cell-names = "speed_bin";
+
 		qcom,min-access-length = <32>;
 		qcom,ubwc-mode = <3>;
 
@@ -80,6 +83,7 @@
 				qcom,bus-min = <6>;
 				qcom,bus-max = <8>;
 
+				qcom,acd-level = <0xC8285FFD>;
 			};
 		};
 	};
@@ -139,6 +143,9 @@
 
 		qcom,gmu-freq-table = <220000000 RPMH_REGULATOR_LEVEL_LOW_SVS>,
 			<550000000 RPMH_REGULATOR_LEVEL_SVS>;
+
+		mboxes = <&qmp_aop 0>;
+		mbox-names = "aop";
 
 		/* GPU-MPROC IPC page */
 		qcom,ipc-core = <0x0ed19000 0x1000>;

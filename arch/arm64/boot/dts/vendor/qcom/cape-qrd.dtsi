@@ -22,6 +22,16 @@
 			linux,can-disable;
 		};
 	};
+	fingerprint {
+		compatible = "betterlife,fingerprint";
+		reg = <0>;
+		interrupt-parent = <&tlmm>;
+		spi-max-frequency = <1000000>;
+		fpint-gpio = <&tlmm 40 0x00>;
+		fpreset-gpio = <&tlmm 41 0x00>;
+		vcc-supply = <&L11C>;
+		status = "ok";
+	};
 };
 
 &sdhc_2 {
@@ -38,7 +48,7 @@
 	pinctrl-0 = <&sdc2_on>;
 	pinctrl-1 = <&sdc2_off>;
 
-	cd-gpios = <&tlmm 92 GPIO_ACTIVE_LOW>;
+	cd-gpios = <&tlmm 92 GPIO_ACTIVE_HIGH>;
 };
 
 &ufsphy_mem {
@@ -109,6 +119,10 @@
 	};
 };
 
+&pm8350c_rgb {
+	pwm-divider = <8>;
+};
+
 &pm8350c_switch0 {
 	qcom,led-mask = <9>; /* Channels 1 & 4 */
 	qcom,symmetry-en;
@@ -145,20 +159,18 @@
 		compatible = "onnn,redriver";
 		reg = <0x1c>;
 
-		lane-channel-swap;
-
 		pinctrl-names = "default";
 		pinctrl-0 = <&usb3phy_portselect_gpio>;
 		gpios = <&tlmm 91 0>;
 
 		eq = /bits/ 8 <
 				/* Parameters for USB */
-				0x4 0x4 0x4 0x4
+				0x5 0x5 0x5 0x5
 				/* Parameters for DP */
 				0x4 0x6 0x6 0x4>;
 		flat-gain = /bits/ 8 <
 				/* Parameters for USB */
-				0x0 0x1 0x1 0x2
+				0x2 0x3 0x3 0x2
 				/* Parameters for DP */
 				0x0 0x3 0x3 0x0>;
 		output-comp = /bits/ 8 <
@@ -191,49 +203,47 @@
 &qupv3_se9_i2c {
 	status = "ok";
 	qcom,clk-freq-out = <1000000>;
-	#address-cells = <1>;
-	#size-cells = <0>;
-	nq@28 {
-		compatible = "qcom,sn-nci";
-		reg = <0x28>;
-		qcom,sn-irq = <&tlmm 46 0x00>;
-		qcom,sn-ven = <&tlmm 34 0x00>;
-		qcom,sn-firm = <&tlmm 45 0x00>;
-		qcom,sn-clkreq = <&tlmm 35 0x00>;
-		qcom,sn-vdd-1p8-supply = <&S10B>;
-		qcom,sn-vdd-1p8-voltage = <1800000 1800000>;
-		qcom,sn-vdd-1p8-current = <157000>;
+	st21nfc: st21nfc@08 {
+		compatible = "st,st21nfc";
+		reg = <0x08>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&nfc_pinctrl>, <&nfc_irq>;
 		interrupt-parent = <&tlmm>;
 		interrupts = <46 0>;
-		interrupt-names = "nfc_irq";
-		pinctrl-names = "nfc_active", "nfc_suspend";
-		pinctrl-0 = <&nfc_int_active &nfc_enable_active>;
-		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
+		reset-gpios = <&tlmm 34 0x00>;
+		irq-gpios = <&tlmm 46 0x00>;
+		clkreq-gpios = <&tlmm 35 0x00>;
+		/*vio_i2c-supply = <&L7J>;*/
+		st,clk_pinctrl;
+		status = "ok";
 	};
 };
 
 &qupv3_se4_spi {
-	status = "ok";
+	status= "disabled";
+};
 
+&qupv3_se4_i2c {
 	#address-cells = <1>;
 	#size-cells = <0>;
-	qcom,spi-touch-active = "focaltech,fts_ts";
+	status = "ok";
 	qcom,la-vm;
+	qcom,i2c-touch-active = "focaltech,fts_ts";
 
-	focaltech@0 {
+	focaltech@38 {
 		compatible = "focaltech,fts_ts";
-		reg = <0x0>;
-		spi-max-frequency = <6000000>;
+		reg = <0x38>;
 		interrupt-parent = <&tlmm>;
 		interrupts = <21 0x2008>;
 		focaltech,reset-gpio = <&tlmm 20 0x00>;
 		focaltech,irq-gpio = <&tlmm 21 0x2008>;
-		focaltech,display-coords = <0 0 1080 2340>;
-		focaltech,max-touch-number = <5>;
-		focaltech,ic-type = <0x3658D488>;
+		focaltech,display-coords = <0 0 1080 2400>;
+		focaltech,max-touch-number = <10>;
+		focaltech,ic-type = <0x35190489>;
 		focaltech,touch-type = "primary";
 
 		vdd-supply = <&L3C>;
+		vcc_i2c-supply = <&L8C>;
 
 		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend", "pmx_ts_release";
 		pinctrl-0 = <&ts_active>;
@@ -251,14 +261,27 @@
 	};
 };
 
+&qupv3_se8_spi {
+	status = "ok";
+	st54spi: ese@0 {
+		compatible = "st,st54spi";
+		reg = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&ese_pinctrl>;
+		spi-max-frequency = <8000000>;
+		esereset-gpio = <&tlmm 45 GPIO_ACTIVE_HIGH>;
+		power_mode = "ST54Jse";
+	};
+};
+
 &qupv3_se5_i2c {
 	status = "ok";
 
 	#address-cells = <1>;
 	#size-cells = <0>;
-	nxp_eusb2_repeater: eusb2_repeater@4f {
+	nxp_eusb2_repeater: eusb2_repeater@43 {
 		compatible = "nxp,eusb2-repeater";
-		reg = <0x4f>;
+		reg = <0x43>;
 		vdd18-supply = <&S10B>;
 		vdd3-supply = <&L2B>;
 		reset-gpio = <&pm8350c_gpios 7 GPIO_ACTIVE_HIGH>;
@@ -322,4 +345,24 @@
 			};
 		};
 	};
+};
+
+&trust_ui_vm_mem {
+	reg = <0x0 0xe0b00000 0x0 0x78f3000>;
+};
+
+&trust_ui_vm_qrtr {
+	reg = <0x0 0xe83f3000 0x0 0x9000>;
+};
+
+&trust_ui_vm {
+	reg = <0xe83fc000 0x104000>;
+};
+
+&trust_ui_vm_vblk0_ring {
+	reg = <0x0 0xe83fc000 0x0 0x4000>;
+};
+
+&trust_ui_vm_swiotlb {
+	reg = <0x0 0xe8400000 0x0 0x100000>;
 };

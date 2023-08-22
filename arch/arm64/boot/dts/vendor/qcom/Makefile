@@ -490,27 +490,23 @@ ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 dtbo-$(CONFIG_ARCH_RAVELIN) += ravelin-rumi-overlay.dtbo \
 	ravelin-atp-overlay.dtbo \
 	ravelin-idp-overlay.dtbo \
-	ravelin-idp-wcn3988-overlay.dtbo \
+	ravelin-idp-wcn3988-4gb-overlay.dtbo \
 	ravelin-idp-wcn3950-amoled-rcm-overlay.dtbo \
 	ravelin-qrd-overlay.dtbo \
-	ravelin-idp-4gb-overlay.dtbo \
 	ravelin-qrd-4gb-overlay.dtbo \
 	montague-rumi-overlay.dtbo \
-	montague-qrd-overlay.dtbo \
 	montague-hsp-overlay.dtbo \
 	montague-moselle-overlay.dtbo \
 	montague-rcm-overlay.dtbo
 
-ravelin-rumi-overlay.dtbo-base := ravelin.dtb
-ravelin-atp-overlay.dtbo-base := ravelin.dtb ravelinp.dtb
-ravelin-idp-overlay.dtbo-base := ravelin.dtb ravelinp.dtb
-ravelin-idp-wcn3988-overlay.dtbo-base := ravelin.dtb ravelinp.dtb
-ravelin-idp-wcn3950-amoled-rcm-overlay.dtbo-base := ravelin.dtb ravelinp.dtb
-ravelin-qrd-overlay.dtbo-base := ravelin.dtb ravelinp.dtb
-ravelin-idp-4gb-overlay.dtbo-base := ravelin-4gb.dtb ravelinp-4gb.dtb
-ravelin-qrd-4gb-overlay.dtbo-base := ravelin-4gb.dtb ravelinp-4gb.dtb
+ravelin-rumi-overlay.dtbo-base := ravelin.dtb montague.dtb
+ravelin-atp-overlay.dtbo-base := ravelin.dtb ravelinp.dtb montague.dtb montaguep.dtb
+ravelin-idp-overlay.dtbo-base := ravelin.dtb ravelinp.dtb montague.dtb montaguep.dtb
+ravelin-idp-wcn3988-4gb-overlay.dtbo-base := ravelin-4gb.dtb ravelinp-4gb.dtb
+ravelin-idp-wcn3950-amoled-rcm-overlay.dtbo-base := ravelin.dtb ravelinp.dtb montague.dtb montaguep.dtb
+ravelin-qrd-overlay.dtbo-base := ravelin.dtb ravelinp.dtb montague.dtb montaguep.dtb
+ravelin-qrd-4gb-overlay.dtbo-base := ravelin-4gb.dtb ravelinp-4gb.dtb montague.dtb montaguep.dtb
 montague-rumi-overlay.dtbo-base := montague.dtb montaguep.dtb
-montague-qrd-overlay.dtbo-base := montague.dtb montaguep.dtb
 montague-hsp-overlay.dtbo-base := montague.dtb montaguep.dtb
 montague-moselle-overlay.dtbo-base := montague.dtb montaguep.dtb
 montague-rcm-overlay.dtbo-base := montague.dtb montaguep.dtb
@@ -518,25 +514,21 @@ else
 dtb-$(CONFIG_ARCH_RAVELIN) += ravelin-rumi.dtb \
 	ravelin-atp.dtb \
 	ravelin-idp.dtb \
-	ravelin-idp-wcn3988.dtb \
+	ravelin-idp-wcn3988-4gb.dtb \
 	ravelin-idp-wcn3950-amoled-rcm.dtb \
 	ravelin-qrd.dtb \
-	ravelin-idp-4gb.dtb \
 	ravelin-qrd-4gb.dtb \
 	ravelinp-atp.dtb \
 	ravelinp-idp.dtb \
-	ravelinp-idp-wcn3988.dtb \
+	ravelinp-idp-wcn3988-4gb.dtb \
 	ravelinp-idp-wcn3950-amoled-rcm.dtb \
 	ravelinp-qrd.dtb \
-	ravelinp-idp-4gb.dtb \
 	ravelinp-qrd-4gb.dtb \
 	montague-rumi.dtb \
-	montague-qrd.dtb \
 	montague-hsp.dtb \
 	montague-moselle.dtb \
 	montague-rcm.dtb \
 	montaguep-rumi.dtb \
-	montaguep-qrd.dtb \
 	montaguep-hsp.dtb \
 	montaguep-moselle.dtb \
 	montaguep-rcm.dtb
@@ -575,7 +567,8 @@ dtbo-$(CONFIG_ARCH_ANORAK) += anorak-rumi-overlay.dtbo \
 		anorak-qxr-hmt-ufs-ref-overlay.dtbo \
 		anorak-qxr-hmt-overlay.dtbo \
 		anorak-idp-sd-overlay.dtbo \
-		anorak-idp-top-hmt-overlay.dtbo
+		anorak-idp-top-hmt-overlay.dtbo \
+		anorak-idp-top-hsp-overlay.dtbo
 anorak-rumi-overlay.dtbo-base := anorak.dtb
 anorak-idp-overlay.dtbo-base := anorak.dtb
 anorak-qxr-overlay.dtbo-base := anorak.dtb
@@ -585,6 +578,7 @@ anorak-qxr-hmt-ufs-ref-overlay.dtbo-base := anorak.dtb
 anorak-qxr-hmt-overlay.dtbo-base := anorak.dtb
 anorak-idp-sd-overlay.dtbo-base := anorak.dtb
 anorak-idp-top-hmt-overlay.dtbo-base := anorak.dtb
+anorak-idp-top-hsp-overlay.dtbo-base := anorak.dtb
 else
 dtb-$(CONFIG_ARCH_ANORAK) += anorak-rumi.dtb \
 		anorak-idp.dtb \
@@ -594,7 +588,8 @@ dtb-$(CONFIG_ARCH_ANORAK) += anorak-rumi.dtb \
 		anorak-qxr-hmt-ufs-ref.dtb \
 		anorak-qxr-hmt.dtb \
 		anorak-idp-sd.dtb \
-		anorak-idp-top-hmt.dtb
+		anorak-idp-top-hmt.dtb \
+		anorak-idp-top-hsp.dtb
 endif
 
 ifeq ($(CONFIG_ARCH_LAHAINA), y)

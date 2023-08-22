@@ -9,5 +9,11 @@
 			qcom,dma-heap-type = <HEAP_TYPE_CARVEOUT>;
 			qcom,dynamic-heap;
 		};
+
+		osom,argon {
+			qcom,dma-heap-name = "osom,argon";
+			qcom,dma-heap-type = <HEAP_TYPE_CARVEOUT>;
+			qcom,dynamic-heap;
+		};
 	};
 };

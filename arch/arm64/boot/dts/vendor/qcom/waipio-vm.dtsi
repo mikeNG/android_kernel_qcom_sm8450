@@ -31,7 +31,7 @@
 			reg = <0x0 0x0>;
 			device_type = "cpu";
 			enable-method = "psci";
-			cpu-idle-states = <&CPU_PWR_DWN
+			cpu-idle-states = <&SILVER_OFF
 					   &CLUSTER_PWR_DWN>;
 		};
 
@@ -40,13 +40,41 @@
 			reg = <0x0 0x100>;
 			device_type = "cpu";
 			enable-method = "psci";
-			cpu-idle-states = <&CPU_PWR_DWN
+			cpu-idle-states = <&GOLD_OFF
+					   &CLUSTER_PWR_DWN>;
+		};
+
+		CPU2: cpu@200 {
+			compatible = "arm,armv8";
+			reg = <0x0 0x200>;
+			device_type = "cpu";
+			enable-method = "psci";
+			cpu-idle-states = <&GOLD_OFF
+					   &CLUSTER_PWR_DWN>;
+		};
+
+		CPU3: cpu@300 {
+			compatible = "arm,armv8";
+			reg = <0x0 0x300>;
+			device_type = "cpu";
+			enable-method = "psci";
+			cpu-idle-states = <&GOLD_OFF
 					   &CLUSTER_PWR_DWN>;
 		};
 	};
 
 	idle-states {
-		CPU_PWR_DWN: c4 {  /* Using Gold C4 latencies */
+		SILVER_OFF: silver-c4 {  /* C4 */
+			compatible = "arm,idle-state";
+			idle-state-name = "rail-pc";
+			entry-latency-us = <800>;
+			exit-latency-us = <750>;
+			min-residency-us = <4090>;
+			arm,psci-suspend-param = <0x40000004>;
+			local-timer-stop;
+		};
+
+		GOLD_OFF: gold-c4 {  /* C4 */
 			compatible = "arm,idle-state";
 			idle-state-name = "rail-pc";
 			entry-latency-us = <600>;
@@ -118,7 +146,7 @@
 		vcpus {
 			config = "/cpus";
 			affinity = "static";
-			affinity-map = <0x5 0x6>;
+			affinity-map = <0x3 0x5 0x6 0x7>;
 			sched-priority = <0>;       /* relative to PVM */
 			sched-timeslice = <2000>;   /* in ms */
 		};
