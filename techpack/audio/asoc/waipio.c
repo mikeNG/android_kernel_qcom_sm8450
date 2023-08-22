@@ -122,7 +122,7 @@ static struct wcd_mbhc_config wcd_mbhc_cfg = {
 	.mbhc_micbias = MIC_BIAS_2,
 	.anc_micbias = MIC_BIAS_2,
 	.enable_anc_mic_detect = false,
-	.moisture_duty_cycle_en = true,
+	.moisture_duty_cycle_en = false,
 };
 
 static bool msm_usbc_swap_gnd_mic(struct snd_soc_component *component, bool active)
@@ -301,7 +301,7 @@ static int msm_dmic_event(struct snd_soc_dapm_widget *w,
 	struct device_node *dmic_gpio;
 	char  *wname;
 
-	wname = strpbrk(w->name, "012345");
+	wname = strpbrk(w->name, "01234567");
 	if (!wname) {
 		dev_err(component->dev, "%s: widget not found\n", __func__);
 		return -EINVAL;
@@ -462,8 +462,8 @@ static void *def_wcd_mbhc_cal(void)
 		(sizeof(btn_cfg->_v_btn_low[0]) * btn_cfg->num_btn);
 
 	btn_high[0] = 75;
-	btn_high[1] = 150;
-	btn_high[2] = 237;
+	btn_high[1] = 130;
+	btn_high[2] = 257;
 	btn_high[3] = 500;
 	btn_high[4] = 500;
 	btn_high[5] = 500;
