@@ -29,6 +29,7 @@
 #define MSG_TYPE_NOTIFY			2
 
 /* opcode for battery charger */
+#define BC_GET_BATT_ID_REQ		0x00
 #define BC_SET_NOTIFY_REQ		0x04
 #define BC_DISABLE_NOTIFY_REQ		0x05
 #define BC_NOTIFY_IND			0x07
@@ -39,6 +40,7 @@
 #define BC_WLS_STATUS_GET		0x34
 #define BC_WLS_STATUS_SET		0x35
 #define BC_SHIP_MODE_REQ_SET		0x36
+#define BC_GET_OTG_STATUS_REQ		0x39
 #define BC_WLS_FW_CHECK_UPDATE		0x40
 #define BC_WLS_FW_PUSH_BUF_REQ		0x41
 #define BC_WLS_FW_UPDATE_STATUS_RESP	0x42
@@ -120,6 +122,7 @@ enum usb_property_id {
 	USB_SCOPE,
 	USB_CONNECTOR_TYPE,
 	F_ACTIVE,
+	D_ACTIVE,
 	USB_PROP_MAX,
 };
 
@@ -210,6 +213,20 @@ struct wireless_fw_get_version_resp {
 	u32			fw_version;
 };
 
+struct batt_mngr_get_batt_id_req {
+	struct pmic_glink_hdr	hdr;
+};
+
+struct batt_mngr_get_batt_id_resp{
+	struct pmic_glink_hdr	hdr;
+	u32			battery_id;
+};
+
+struct batt_mngr_get_otg_status_resp{
+	struct pmic_glink_hdr	hdr;
+	bool		otg_id;
+};
+
 struct battery_charger_ship_mode_req_msg {
 	struct pmic_glink_hdr	hdr;
 	u32			ship_mode_type;
@@ -268,6 +285,8 @@ struct battery_chg_dev {
 	/* To track the driver initialization status */
 	bool				initialized;
 	bool				notify_en;
+	u32					batter_id;
+	bool				otg_status;
 };
 
 static const int battery_prop_map[BATT_PROP_MAX] = {
@@ -591,6 +610,10 @@ int qti_battery_charger_set_prop(const char *name,
 		pst = &bcdev->psy_list[PSY_TYPE_USB];
 		rc = write_property_id(bcdev, pst, F_ACTIVE, val);
 		break;
+	case DISPLAY_ACTIVE:
+		pst = &bcdev->psy_list[PSY_TYPE_USB];
+		rc = write_property_id(bcdev, pst, D_ACTIVE, val);
+		break;
 	default:
 		break;
 	}
@@ -628,6 +651,8 @@ static void handle_message(struct battery_chg_dev *bcdev, void *data,
 	struct wireless_fw_push_buf_resp *fw_resp_msg;
 	struct wireless_fw_update_status *fw_update_msg;
 	struct wireless_fw_get_version_resp *fw_ver_msg;
+	struct batt_mngr_get_batt_id_resp *batt_id_msg;
+	struct batt_mngr_get_otg_status_resp *otg_status_msg;
 	struct psy_state *pst;
 	bool ack_set = false;
 
@@ -722,6 +747,26 @@ static void handle_message(struct battery_chg_dev *bcdev, void *data,
 		if (len == sizeof(*fw_ver_msg)) {
 			fw_ver_msg = data;
 			bcdev->wls_fw_version = fw_ver_msg->fw_version;
+			ack_set = true;
+		} else {
+			pr_err("Incorrect response length %zu for wls_fw_get_version\n",
+				len);
+		}
+		break;
+	case BC_GET_BATT_ID_REQ:
+		if (len == sizeof(*batt_id_msg)) {
+			batt_id_msg = data;
+			bcdev->batter_id = batt_id_msg->battery_id;
+			ack_set = true;
+		} else {
+			pr_err("Incorrect response length %zu for wls_fw_get_version\n",
+				len);
+		}
+		break;
+	case BC_GET_OTG_STATUS_REQ:
+		if (len == sizeof(*otg_status_msg)) {
+			otg_status_msg = data;
+			bcdev->otg_status = otg_status_msg->otg_id;
 			ack_set = true;
 		} else {
 			pr_err("Incorrect response length %zu for wls_fw_get_version\n",
@@ -1485,7 +1530,6 @@ static int wireless_fw_check_for_update(struct battery_chg_dev *bcdev,
 	req_msg.fw_version = version;
 	req_msg.fw_size = size;
 	req_msg.fw_crc = bcdev->wls_fw_crc;
-
 	return battery_chg_write(bcdev, &req_msg, sizeof(req_msg));
 }
 
@@ -1663,6 +1707,50 @@ static ssize_t wireless_fw_version_show(struct class *c,
 }
 static CLASS_ATTR_RO(wireless_fw_version);
 
+static ssize_t battery_id_show(struct class *c,
+					struct class_attribute *attr,
+					char *buf)
+{
+	struct battery_chg_dev *bcdev = container_of(c, struct battery_chg_dev,
+						battery_class);
+	struct batt_mngr_get_batt_id_req req_msg = {};
+	int rc;
+
+	req_msg.hdr.owner = MSG_OWNER_BC;
+	req_msg.hdr.type = MSG_TYPE_REQ_RESP;
+	req_msg.hdr.opcode = BC_GET_BATT_ID_REQ;
+        
+	rc = battery_chg_write(bcdev, &req_msg, sizeof(req_msg));
+	if (rc < 0) {
+		pr_err("Failed to get battery id rc=%d\n", rc);
+		return rc;
+	}
+	return scnprintf(buf, PAGE_SIZE, "%d\n", bcdev->batter_id);
+}
+static CLASS_ATTR_RO(battery_id);
+
+static ssize_t otg_status_show(struct class *c,
+					struct class_attribute *attr,
+					char *buf)
+{
+	struct battery_chg_dev *bcdev = container_of(c, struct battery_chg_dev,
+						battery_class);
+	struct batt_mngr_get_batt_id_req req_msg = {};
+	int rc;
+
+	req_msg.hdr.owner = MSG_OWNER_BC;
+	req_msg.hdr.type = MSG_TYPE_REQ_RESP;
+	req_msg.hdr.opcode = BC_GET_OTG_STATUS_REQ;
+        
+	rc = battery_chg_write(bcdev, &req_msg, sizeof(req_msg));
+	if (rc < 0) {
+		pr_err("Failed to get otg_status rc=%d\n", rc);
+		return rc;
+	}
+	return scnprintf(buf, PAGE_SIZE, "%d\n", bcdev->otg_status);
+}
+static CLASS_ATTR_RO(otg_status);
+
 static ssize_t wireless_fw_force_update_store(struct class *c,
 					struct class_attribute *attr,
 					const char *buf, size_t count)
@@ -1695,13 +1783,33 @@ static ssize_t wireless_fw_update_store(struct class *c,
 	if (kstrtobool(buf, &val) || !val)
 		return -EINVAL;
 
+	rc = wireless_fw_check_for_update(bcdev, 1, 1);
+	if (rc < 0)
+		return rc;
+
 	rc = wireless_fw_update(bcdev, false);
 	if (rc < 0)
 		return rc;
 
 	return count;
 }
-static CLASS_ATTR_WO(wireless_fw_update);
+
+static ssize_t wireless_fw_update_show(struct class *c,
+					struct class_attribute *attr, char *buf)
+{
+	struct battery_chg_dev *bcdev = container_of(c, struct battery_chg_dev,
+						battery_class);
+	int rc;
+
+    rc = wireless_fw_check_for_update(bcdev, 1, 1);
+	if (rc < 0)
+		return rc;
+	
+	return scnprintf(buf, PAGE_SIZE, "%d\n", rc);
+	
+}
+
+static CLASS_ATTR_RW(wireless_fw_update);
 
 static ssize_t usb_typec_compliant_show(struct class *c,
 				struct class_attribute *attr, char *buf)
@@ -2009,6 +2117,8 @@ static struct attribute *battery_class_attrs[] = {
 	&class_attr_restrict_cur.attr,
 	&class_attr_usb_real_type.attr,
 	&class_attr_usb_typec_compliant.attr,
+	&class_attr_battery_id.attr,
+	&class_attr_otg_status.attr,
 	NULL,
 };
 ATTRIBUTE_GROUPS(battery_class);
@@ -2183,6 +2293,7 @@ static void panel_event_notifier_callback(enum panel_event_notifier_tag tag,
 			struct panel_event_notification *notification, void *data)
 {
 	struct battery_chg_dev *bcdev = data;
+	int val, rc;
 
 	if (!notification) {
 		pr_debug("Invalid panel notification\n");
@@ -2191,16 +2302,25 @@ static void panel_event_notifier_callback(enum panel_event_notifier_tag tag,
 
 	pr_debug("panel event received, type: %d\n", notification->notif_type);
 	switch (notification->notif_type) {
+	case DRM_PANEL_EVENT_BLANK_LP:
+		val = 0;
+		break;
 	case DRM_PANEL_EVENT_BLANK:
 		battery_chg_notify_disable(bcdev);
+		val = 0;
 		break;
 	case DRM_PANEL_EVENT_UNBLANK:
 		battery_chg_notify_enable(bcdev);
+		val = 1;
 		break;
 	default:
 		pr_debug("Ignore panel event: %d\n", notification->notif_type);
-		break;
+		return;
 	}
+
+	rc = qti_battery_charger_set_prop("usb", DISPLAY_ACTIVE, val);
+	if (rc)
+		pr_debug("Failed to set display active prop, rc=%d\n", rc);
 }
 
 static int battery_chg_register_panel_notifier(struct battery_chg_dev *bcdev)

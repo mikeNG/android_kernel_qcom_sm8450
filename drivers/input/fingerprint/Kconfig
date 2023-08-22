@@ -1,0 +1,4 @@
+config BETTERLIFE_FINGERPRINT
+  tristate "betterlife Fingerprint"
+	help
+	  betterlife fingerprint.

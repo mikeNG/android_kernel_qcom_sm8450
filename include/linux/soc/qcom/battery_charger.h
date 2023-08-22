@@ -12,6 +12,7 @@
 enum battery_charger_prop {
 	BATTERY_RESISTANCE,
 	FLASH_ACTIVE,
+	DISPLAY_ACTIVE,
 	BATTERY_CHARGER_PROP_MAX,
 };
 

@@ -37,7 +37,7 @@
 /******************************************************************************
 * Private constant and macro definitions using #define
 *****************************************************************************/
-#define KEY_GESTURE_U                           KEY_U
+#define KEY_GESTURE_U                           KEY_WAKEUP
 #define KEY_GESTURE_UP                          KEY_UP
 #define KEY_GESTURE_DOWN                        KEY_DOWN
 #define KEY_GESTURE_LEFT                        KEY_LEFT
@@ -231,8 +231,7 @@ static void fts_gesture_report(struct input_dev *input_dev, int gesture_id)
 		break;
 
 	case GESTURE_DOUBLECLICK:
-		gesture = KEY_POWER;
-
+		gesture = KEY_GESTURE_U;
 		break;
 
 	case GESTURE_O:
@@ -428,7 +427,6 @@ int fts_gesture_init(struct fts_ts_data *ts_data)
 	struct input_dev *input_dev = ts_data->input_dev;
 
 	FTS_FUNC_ENTER();
-	input_set_capability(input_dev, EV_KEY, KEY_POWER);
 	input_set_capability(input_dev, EV_KEY, KEY_GESTURE_U);
 	input_set_capability(input_dev, EV_KEY, KEY_GESTURE_UP);
 	input_set_capability(input_dev, EV_KEY, KEY_GESTURE_DOWN);
@@ -444,11 +442,11 @@ int fts_gesture_init(struct fts_ts_data *ts_data)
 	input_set_capability(input_dev, EV_KEY, KEY_GESTURE_Z);
 	input_set_capability(input_dev, EV_KEY, KEY_GESTURE_C);
 
+	__set_bit(KEY_GESTURE_U, input_dev->keybit);
 	__set_bit(KEY_GESTURE_RIGHT, input_dev->keybit);
 	__set_bit(KEY_GESTURE_LEFT, input_dev->keybit);
 	__set_bit(KEY_GESTURE_UP, input_dev->keybit);
 	__set_bit(KEY_GESTURE_DOWN, input_dev->keybit);
-	__set_bit(KEY_GESTURE_U, input_dev->keybit);
 	__set_bit(KEY_GESTURE_O, input_dev->keybit);
 	__set_bit(KEY_GESTURE_E, input_dev->keybit);
 	__set_bit(KEY_GESTURE_M, input_dev->keybit);

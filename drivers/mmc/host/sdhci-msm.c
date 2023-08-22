@@ -10,6 +10,7 @@
 #include <linux/of_device.h>
 #include <linux/delay.h>
 #include <linux/mmc/mmc.h>
+#include <linux/mmc/slot-gpio.h>
 #include <linux/pm_runtime.h>
 #include <linux/pm_opp.h>
 #include <linux/slab.h>
@@ -4403,10 +4404,29 @@ static ssize_t err_state_show(struct device *dev,
 
 static DEVICE_ATTR_RO(err_state);
 
+static ssize_t cd_gpio_show(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	struct sdhci_host *host = dev_get_drvdata(dev);
+	int ret;
+
+	if (!host || !host->mmc)
+		return -EINVAL;
+
+	ret = mmc_gpio_get_cd(host->mmc);
+	if (ret < 0)
+		return ret;
+
+	return sysfs_emit(buf, "%d\n", ret > 0);
+}
+
+static DEVICE_ATTR_RO(cd_gpio);
+
 static struct attribute *sdhci_msm_sysfs_attrs[] = {
 	&dev_attr_dbg_state.attr,
 	&dev_attr_crash_on_err.attr,
 	&dev_attr_err_state.attr,
+	&dev_attr_cd_gpio.attr,
 	NULL
 };
 

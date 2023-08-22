@@ -202,7 +202,6 @@ struct fts_upgrade {
 * Global variable or extern global variabls/functions
 *****************************************************************************/
 extern struct upgrade_func upgrade_func_ft5452;
-extern struct upgrade_func upgrade_func_ft5652;
 
 /*****************************************************************************
 * Static function prototypes

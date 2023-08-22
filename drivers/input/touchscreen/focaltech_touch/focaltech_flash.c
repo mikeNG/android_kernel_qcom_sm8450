@@ -38,20 +38,19 @@
 /*****************************************************************************
 * Private constant and macro definitions using #define
 *****************************************************************************/
-#define FTS_FW_REQUEST_SUPPORT                      1
+#define FTS_FW_REQUEST_SUPPORT                      0
 /* Example: focaltech_ts_fw_tianma.bin */
 #define FTS_FW_NAME_PREX_WITH_REQUEST               "focaltech_ts_fw_"
 
 /*****************************************************************************
 * Global variable or extern global variabls/functions
 *****************************************************************************/
-u8 fw_file[1] = {
-0,
+u8 fw_file[] = {
+#include FTS_UPGRADE_FW_FILE
 };
 
 struct upgrade_module module_list[] = {
 	{FTS_MODULE_ID, FTS_MODULE_NAME, fw_file, sizeof(fw_file)},
-	{FTS_MODULE2_ID, FTS_MODULE2_NAME, fw_file, sizeof(fw_file)},
 };
 
 struct upgrade_func upgrade_func_ft8720 = {
@@ -68,8 +67,6 @@ struct upgrade_func upgrade_func_ft8720 = {
 
 struct upgrade_func *upgrade_func_list[] = {
 	&upgrade_func_ft5452,
-	&upgrade_func_ft5652,
-	&upgrade_func_ft8720,
 };
 
 struct fts_upgrade *fwupgrade;
@@ -244,7 +241,7 @@ static int fts_pram_ecc_cal_algo(
 	int ecc = 0;
 	u8 val[2] = { 0 };
 	u8 tmp = 0;
-	u8 cmd[FTS_ROMBOOT_CMD_ECC_NEW_LEN] = { 0 };
+	u8 cmd[8] = { 0 };
 
 	FTS_INFO("read out pramboot checksum");
 	if ((!upg) || (!upg->func)) {
@@ -259,7 +256,8 @@ static int fts_pram_ecc_cal_algo(
 	cmd[4] = BYTE_OFF_16(ecc_length);
 	cmd[5] = BYTE_OFF_8(ecc_length);
 	cmd[6] = BYTE_OFF_0(ecc_length);
-	ret = fts_write(cmd, FTS_ROMBOOT_CMD_ECC_NEW_LEN);
+	cmd[7] = 0xCC;
+	ret = fts_write(cmd, 8);
 	if (ret < 0) {
 		FTS_ERROR("write pramboot ecc cal cmd fail");
 		return ret;
@@ -273,12 +271,8 @@ static int fts_pram_ecc_cal_algo(
 			FTS_ERROR("ecc_finish read cmd fail");
 			return ret;
 		}
-		if (upg->func->new_return_value_from_ic ||
-			(upg->func->upgspec_version >= UPGRADE_SPEC_V_1_0)) {
-			tmp = FTS_ROMBOOT_CMD_ECC_FINISH_OK_A5;
-		} else {
-			tmp = FTS_ROMBOOT_CMD_ECC_FINISH_OK_00;
-		}
+
+		tmp = 0x33;
 		if (tmp == val[0])
 			break;
 	}
@@ -381,14 +375,17 @@ static int fts_pram_write_buf(struct fts_upgrade *upg, u8 *buf, u32 len)
 			packet_buf[0] = FTS_ROMBOOT_CMD_WRITE;
 			cmdlen = 1;
 		} else {
-			packet_buf[0] = FTS_ROMBOOT_CMD_WRITE;
+			packet_buf[0] = FTS_ROMBOOT_CMD_SET_PRAM_ADDR;
 			packet_buf[1] = BYTE_OFF_16(offset);
 			packet_buf[2] = BYTE_OFF_8(offset);
 			packet_buf[3] = BYTE_OFF_0(offset);
-
-			packet_buf[4] = BYTE_OFF_8(packet_len);
-			packet_buf[5] = BYTE_OFF_0(packet_len);
-			cmdlen = 6;
+			ret = fts_write(packet_buf, FTS_ROMBOOT_CMD_SET_PRAM_ADDR_LEN);
+			if (ret < 0) {
+				FTS_ERROR("pramboot set write address(%d) fail", i);
+				return ret;
+			}
+			packet_buf[0] = FTS_ROMBOOT_CMD_WRITE;
+			cmdlen = 1;
 		}
 
 		for (j = 0; j < packet_len; j++) {
@@ -1912,7 +1909,7 @@ static int fts_get_fw_file_via_i(struct fts_upgrade *upg)
  *         TS_MODULE_ID; will use module id to distingwish different modules;
  *         If get fw via reques_firmware(), please set FTS_FW_REQUEST_SUPPORT
  *         =1, and FTS_MODULE_NAME; fw file name will be composed of "focalt-
- *         ech_ts_fw_" & FTS_VENDOR_NAME;
+ *         ech_ts_fw_" & FTS_MODULE_NAME;
  *
  *         If have flash, module_id=vendor_id, If non-flash,module_id need
  *         transfer from LCD driver(gpio or lcm_id or ...);

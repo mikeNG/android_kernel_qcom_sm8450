@@ -64,6 +64,13 @@
 #define DWC3_DEVICE_EVENT_CMD_CMPL		10
 #define DWC3_DEVICE_EVENT_OVERFLOW		11
 
+/* DWC 3.1 Tx De-emphasis Registers */
+#define DWC31_LCSR_TX_DEEMPH(n)	(0xd060 + ((n) * 0x80))
+#define DWC31_LCSR_TX_DEEMPH_1(n)	(0xd064 + ((n) * 0x80))
+#define DWC31_LCSR_TX_DEEMPH_2(n)	(0xd068 + ((n) * 0x80))
+#define DWC31_LCSR_TX_DEEMPH_3(n)	(0xd06c + ((n) * 0x80))
+#define DWC31_TX_DEEMPH_MASK	0x3ffff
+
 /* Controller's role while using the OTG block */
 #define DWC3_OTG_ROLE_IDLE	0
 #define DWC3_OTG_ROLE_HOST	1
@@ -1314,6 +1321,11 @@ struct dwc3 {
 	int			max_cfg_eps;
 	int			last_fifo_depth;
 	int			num_ep_resized;
+
+	u32         gen2_tx_de_emph;
+	u32         gen2_tx_de_emph1;
+	u32         gen2_tx_de_emph2;
+	u32         gen2_tx_de_emph3;
 
 	ANDROID_KABI_RESERVE(1);
 	ANDROID_KABI_RESERVE(2);

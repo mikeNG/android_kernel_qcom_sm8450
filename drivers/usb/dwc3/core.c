@@ -1040,6 +1040,19 @@ static int dwc3_core_init(struct dwc3 *dwc)
 		dwc3_writel(dwc->regs, DWC3_GUCTL2, reg);
 	}
 
+	if (dwc->gen2_tx_de_emph != -1)
+		dwc3_writel(dwc->regs, DWC31_LCSR_TX_DEEMPH(0),
+		    dwc->gen2_tx_de_emph & DWC31_TX_DEEMPH_MASK);
+	if (dwc->gen2_tx_de_emph1 != -1)
+		dwc3_writel(dwc->regs, DWC31_LCSR_TX_DEEMPH_1(0),
+		    dwc->gen2_tx_de_emph1 & DWC31_TX_DEEMPH_MASK);
+	if (dwc->gen2_tx_de_emph2 != -1)
+		dwc3_writel(dwc->regs, DWC31_LCSR_TX_DEEMPH_2(0),
+		    dwc->gen2_tx_de_emph2 & DWC31_TX_DEEMPH_MASK);
+	if (dwc->gen2_tx_de_emph3 != -1)
+		dwc3_writel(dwc->regs, DWC31_LCSR_TX_DEEMPH_3(0),
+		    dwc->gen2_tx_de_emph3 & DWC31_TX_DEEMPH_MASK);
+
 	if (!DWC3_VER_IS_PRIOR(DWC3, 250A)) {
 		reg = dwc3_readl(dwc->regs, DWC3_GUCTL1);
 
@@ -1399,6 +1412,19 @@ static void dwc3_get_properties(struct dwc3 *dwc)
 
 	dwc->dis_split_quirk = device_property_read_bool(dev,
 				"snps,dis-split-quirk");
+
+	dwc->gen2_tx_de_emph = -1;
+	device_property_read_u32(dev, "snps,gen2-tx-de-emph",
+		&dwc->gen2_tx_de_emph);
+	dwc->gen2_tx_de_emph1 = -1;
+	device_property_read_u32(dev, "snps,gen2-tx-de-emph1",
+		&dwc->gen2_tx_de_emph1);
+	dwc->gen2_tx_de_emph2 = -1;
+	device_property_read_u32(dev, "snps,gen2-tx-de-emph2",
+		&dwc->gen2_tx_de_emph2);
+	dwc->gen2_tx_de_emph3 = -1;
+	device_property_read_u32(dev, "snps,gen2-tx-de-emph3",
+		&dwc->gen2_tx_de_emph3);
 
 	dwc->lpm_nyet_threshold = lpm_nyet_threshold;
 	dwc->tx_de_emphasis = tx_de_emphasis;
