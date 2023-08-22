@@ -374,13 +374,21 @@
 			"VA AMIC5", "Analog Mic5",
 			"VA AMIC5", "VA MIC BIAS4",
 			"TX DMIC0", "Digital Mic0",
-			"TX DMIC0", "MIC BIAS3",
+			"Digital Mic0", "MIC BIAS1",
 			"TX DMIC1", "Digital Mic1",
-			"TX DMIC1", "MIC BIAS3",
+			"Digital Mic1", "MIC BIAS1",
 			"TX DMIC2", "Digital Mic2",
-			"TX DMIC2", "MIC BIAS1",
+			"Digital Mic2", "MIC BIAS3",
 			"TX DMIC3", "Digital Mic3",
-			"TX DMIC3", "MIC BIAS1",
+			"Digital Mic3", "MIC BIAS3",
+			"TX DMIC4", "Digital Mic4",
+			"Digital Mic4", "MIC BIAS4",
+			"TX DMIC5", "Digital Mic5",
+			"Digital Mic5", "MIC BIAS4",
+			"TX DMIC6", "Digital Mic6",
+			"Digital Mic6", "MIC BIAS4",
+			"TX DMIC7", "Digital Mic7",
+			"Digital Mic7", "MIC BIAS4",
 			"IN1_HPHL", "HPHL_OUT",
 			"IN2_HPHR", "HPHR_OUT",
 			"IN3_AUX", "AUX_OUT",
@@ -404,10 +412,19 @@
 			"VA DMIC1", "Digital Mic1",
 			"VA DMIC2", "Digital Mic2",
 			"VA DMIC3", "Digital Mic3",
-			"VA DMIC0", "VA MIC BIAS3",
-			"VA DMIC1", "VA MIC BIAS3",
-			"VA DMIC2", "VA MIC BIAS1",
-			"VA DMIC3", "VA MIC BIAS1";
+			"VA DMIC4", "Digital Mic4",
+			"VA DMIC5", "Digital Mic5",
+			"VA DMIC6", "Digital Mic6",
+			"VA DMIC7", "Digital Mic7",
+			"Digital Mic0", "VA MIC BIAS1",
+			"Digital Mic1", "VA MIC BIAS1",
+			"Digital Mic2", "VA MIC BIAS3",
+			"Digital Mic3", "VA MIC BIAS3",
+			"Digital Mic4", "VA MIC BIAS4",
+			"Digital Mic5", "VA MIC BIAS4",
+			"Digital Mic6", "VA MIC BIAS4",
+			"Digital Mic7", "VA MIC BIAS4";
+
 		qcom,msm-mbhc-usbc-audio-supported = <0>;
 		qcom,msm-mbhc-hphl-swh = <1>;
 		qcom,msm-mbhc-gnd-swh = <1>;
@@ -447,6 +464,7 @@
 		pinctrl-0 = <&wsa_swr_clk_active &wsa_swr_data_active>;
 		pinctrl-1 = <&wsa_swr_clk_sleep &wsa_swr_data_sleep>;
 		qcom,lpi-gpios;
+		qcom,tlmm-pins = <175 176>;
 		#gpio-cells = <0>;
 	};
 
@@ -467,6 +485,7 @@
 		pinctrl-1 = <&rx_swr_clk_sleep &rx_swr_data_sleep
 				&rx_swr_data1_sleep>;
 		qcom,lpi-gpios;
+		qcom,tlmm-pins = <168 169 170>;
 		#gpio-cells = <0>;
 	};
 
@@ -478,6 +497,7 @@
 		pinctrl-1 = <&tx_swr_clk_sleep &tx_swr_data0_sleep
 			    &tx_swr_data1_sleep &tx_swr_data2_sleep>;
 		qcom,lpi-gpios;
+		qcom,tlmm-pins = <165 166 167 179>;
 		#gpio-cells = <0>;
 	};
 
@@ -487,6 +507,7 @@
 		pinctrl-0 = <&cdc_dmic01_clk_active &cdc_dmic01_data_active>;
 		pinctrl-1 = <&cdc_dmic01_clk_sleep &cdc_dmic01_data_sleep>;
 		qcom,lpi-gpios;
+		qcom,tlmm-pins = <171 172>;
 		#gpio-cells = <0>;
 	};
 
@@ -496,6 +517,7 @@
 		pinctrl-0 = <&cdc_dmic23_clk_active &cdc_dmic23_data_active>;
 		pinctrl-1 = <&cdc_dmic23_clk_sleep &cdc_dmic23_data_sleep>;
 		qcom,lpi-gpios;
+		qcom,tlmm-pins = <173 174>;
 		#gpio-cells = <0>;
 	};
 
@@ -505,6 +527,7 @@
 		pinctrl-0 = <&cdc_dmic45_clk_active &cdc_dmic45_data_active>;
 		pinctrl-1 = <&cdc_dmic45_clk_sleep &cdc_dmic45_data_sleep>;
 		qcom,lpi-gpios;
+		qcom,tlmm-pins = <177 178>;
 		#gpio-cells = <0>;
 	};
 
@@ -514,6 +537,7 @@
 		pinctrl-0 = <&cdc_dmic67_clk_active &cdc_dmic67_data_active>;
 		pinctrl-1 = <&cdc_dmic67_clk_sleep &cdc_dmic67_data_sleep>;
 		qcom,lpi-gpios;
+		qcom,tlmm-pins = <182 183>;
 		#gpio-cells = <0>;
 	};
 };
